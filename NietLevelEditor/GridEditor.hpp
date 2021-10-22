@@ -30,5 +30,6 @@ private:
     Ui::GridEditor *ui;
     QSettings *m_standardSettingINI = nullptr, *m_pictureDataINI = nullptr;
     QString m_installDirectory;
+    QStringList m_texturesPath;
     QMap<QString, ArrayFloat_t> m_memPictureElement;
 };

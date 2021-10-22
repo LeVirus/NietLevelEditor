@@ -32,7 +32,7 @@ bool GridEditor::initGrid(const QString &installDir)
     {
         return false;
     }
-    if(!loadStandardDataINI() || !loadPictureDataINI())
+    if(!loadPictureDataINI() || !loadStandardDataINI())
     {
         return false;
     }
@@ -44,7 +44,6 @@ bool GridEditor::loadPictureDataINI()
 {
     const QStringList keysList = m_pictureDataINI->childGroups();
     ArrayFloat_t array;
-    std::cerr << keysList.size() << "\n";
     for(int32_t i = 0; i < keysList.size(); ++i)
     {
        if(keysList.at(i).contains("Sprite"))
@@ -64,12 +63,25 @@ bool GridEditor::loadPictureDataINI()
            m_memPictureElement.insert(keysList.at(i), array);
        }
     }
+    m_texturesPath = m_pictureDataINI->value("PathToTexture/textures", -1.0f).toStringList();
+    if(m_texturesPath.isEmpty())
+    {
+        return false;
+    }
     return true;
 }
 
 //======================================================================
 bool GridEditor::loadStandardDataINI()
 {
+    const QStringList keysList = m_standardSettingINI->childGroups();
+    for(int32_t i = 0; i < keysList.size(); ++i)
+    {
+       if(keysList.at(i).contains("Sprite"))
+       {
+
+       }
+    }
     return true;
 }
 
@@ -87,6 +99,7 @@ void GridEditor::clear()
         m_pictureDataINI = nullptr;
     }
     m_memPictureElement.clear();
+    m_texturesPath.clear();
 }
 
 //======================================================================
