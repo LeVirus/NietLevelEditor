@@ -22,7 +22,7 @@ private slots:
     void onOkButtonClicked();
 private:
     Ui::ConfNewLevelForm *ui;
-    QString m_strINIFilePath;
     GridEditor m_gridEditorForm;
+    QString m_installDirectory;
 };
 

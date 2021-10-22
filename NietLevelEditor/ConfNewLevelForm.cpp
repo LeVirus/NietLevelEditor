@@ -1,9 +1,7 @@
 #include "ConfNewLevelForm.hpp"
 #include "ui_ConfNewLevelForm.h"
 #include <QFileDialog>
-#include <QTextStream>
 #include <QMessageBox>
-#include <iostream>
 
 //======================================================================
 ConfNewLevelForm::ConfNewLevelForm(QWidget *parent) :
@@ -37,25 +35,15 @@ void ConfNewLevelForm::linkButtons()
 void ConfNewLevelForm::onBrowseIniFileClicked()
 {
     QFileDialog dialog;
-    QString iniContent;
-    dialog.setDefaultSuffix("ini");//doesn't work
-    m_strINIFilePath = dialog.getOpenFileName(this, tr("Load File"), ".", tr("ini(*.ini);;All files (*)"));
-    std::cerr << m_strINIFilePath.toStdString();
-    QFile file(m_strINIFilePath);
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QTextStream stream(&file);
-        stream >> iniContent;
-        file.close();
-    }
+    m_installDirectory = dialog.getExistingDirectory();
 }
 
 //======================================================================
 void ConfNewLevelForm::onOkButtonClicked()
 {
-    if(m_strINIFilePath.isEmpty())
+    if(m_installDirectory.isEmpty() || !m_gridEditorForm.initGrid(m_installDirectory))
     {
-        QMessageBox::warning(this, "Error", "INI file missing.");
+        QMessageBox::warning(this, "Error", "Please select install directory.");
         return;
     }
     m_gridEditorForm.exec();
