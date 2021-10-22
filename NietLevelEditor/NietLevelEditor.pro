@@ -2,7 +2,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++17
+CONFIG += c++20
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -11,18 +11,20 @@ CONFIG += c++17
 SOURCES += \
     ConfNewLevelForm.cpp \
     GridEditor.cpp \
-    main.cpp \
-    mainwindow.cpp
+    LevelDataManager.cpp \
+    MainWindow.cpp \
+    main.cpp
 
 HEADERS += \
     ConfNewLevelForm.hpp \
     GridEditor.hpp \
-    mainwindow.hpp
+    LevelDataManager.hpp \
+    MainWindow.hpp
 
 FORMS += \
     ConfNewLevelForm.ui \
     GridEditor.ui \
-    mainwindow.ui
+    MainWindow.ui
 
 TRANSLATIONS += \
     NietLevelEditor_fr_FR.ts
