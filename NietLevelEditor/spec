@@ -1,0 +1,24 @@
+Create a level editor for Nietsneflow.
+
+Graphic tool for edit level in Nietsneflow:
+Main purpose :
+	Write level elements emplacement in a grid and generate a ini conf file.
+
+
+Functionalities :
+	Load existing ini level file
+	Save ini level file
+	Edit level
+
+Element to include :
+	Wall
+		Possibility to include several element from different geometric shape
+			Rectangle, line, point
+	Door
+	Static element
+	Pick Object
+	Enemy
+
+
+The software have to take a standard ini conf file as input to identify existing element (graphic and physic)
+
