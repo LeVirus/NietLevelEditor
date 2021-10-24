@@ -87,35 +87,35 @@ bool LevelDataManager::loadStandardDataINI()
         }
         else if(keysList.at(i).contains("Trigger"))
         {
-
+            ok = loadTriggerData(keysList.at(i));
         }
         else if(keysList.at(i).contains("Enemy"))
         {
-
+            ok = loadEnemyData(keysList.at(i));
         }
         else if(keysList.at(i).contains("Object"))
         {
-
+            ok = loadObjectData(keysList.at(i));
         }
         else if(keysList.at(i).contains("Ground"))
         {
-
+            ok = loadStaticElementGroundData(keysList.at(i));
         }
         else if(keysList.at(i).contains("Ceiling"))
         {
-
+            ok = loadStaticElementCeilingData(keysList.at(i));
         }
         else if(keysList.at(i) == "Teleport")
         {
-
+            ok = loadTeleportData(keysList.at(i));
         }
         else if(keysList.at(i) == "Barrel")
         {
-
+            ok = loadBarrelData(keysList.at(i));
         }
         else if(keysList.at(i) == "Exit")
         {
-
+            ok = loadExitData(keysList.at(i));
         }
         if(!ok)
         {
@@ -160,6 +160,66 @@ bool LevelDataManager::loadDoorData(const QString &key)
     {
         m_doorElement[key].m_cardID = cardID;
     }
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadTriggerData(const QString &key)
+{
+    QString sprites = m_INIFile->value(key + "/Sprite", "").toString();
+    if(sprites.isEmpty())
+    {
+        return false;
+    }
+    m_triggerElement.insert({key, sprites});
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadEnemyData(const QString &key)
+{
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadObjectData(const QString &key)
+{
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadStaticElementGroundData(const QString &key)
+{
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadStaticElementCeilingData(const QString &key)
+{
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadTeleportData(const QString &key)
+{
+    QString sprites = m_INIFile->value(key + "/Sprite", "").toString();
+    if(sprites.isEmpty())
+    {
+        return false;
+    }
+    m_teleportElement.insert({key, sprites});
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadBarrelData(const QString &key)
+{
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadExitData(const QString &key)
+{
     return true;
 }
 

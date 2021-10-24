@@ -31,6 +31,14 @@ private:
     bool loadStandardDataINI();
     bool loadWallData(const QString &key);
     bool loadDoorData(const QString &key);
+    bool loadTriggerData(const QString &key);
+    bool loadEnemyData(const QString &key);
+    bool loadObjectData(const QString &key);
+    bool loadStaticElementGroundData(const QString &key);
+    bool loadStaticElementCeilingData(const QString &key);
+    bool loadTeleportData(const QString &key);
+    bool loadBarrelData(const QString &key);
+    bool loadExitData(const QString &key);
 private:
     QSettings *m_INIFile = nullptr, *m_pictureDataINI = nullptr;
     QString m_installDirectory;
@@ -38,5 +46,6 @@ private:
     std::map<QString, ArrayFloat_t> m_memPictureElement;
     std::map<QString, QStringList> m_wallElement;
     std::map<QString, DoorData> m_doorElement;
+    std::map<QString, QString> m_triggerElement, m_teleportElement;
 };
 
