@@ -122,7 +122,6 @@ bool LevelDataManager::loadStandardDataINI()
             return false;
         }
     }
-    std::cerr << m_staticGroundElement.size() << " " << m_staticCeilingElement.size() << " " << m_objectElement.size();
     return true;
 }
 
@@ -241,12 +240,29 @@ bool LevelDataManager::loadTeleportData(const QString &key)
 //======================================================================
 bool LevelDataManager::loadBarrelData(const QString &key)
 {
+    QString sprites = m_INIFile->value(key + "/StaticSprite", "").toString();
+    if(sprites.isEmpty())
+    {
+        return false;
+    }
+    QStringList strList = sprites.split(QRegularExpression("[,\\s]+"));
+    if(!checkListSpriteExist(strList))
+    {
+        return false;
+    }
+    m_barrelElement.insert({key, strList.at(0)});
     return true;
 }
 
 //======================================================================
 bool LevelDataManager::loadExitData(const QString &key)
 {
+    QString sprites = m_INIFile->value(key + "/Sprite", "").toString();
+    if(sprites.isEmpty())
+    {
+        return false;
+    }
+    m_exitElement.insert({key, sprites});
     return true;
 }
 
