@@ -19,8 +19,8 @@ bool LevelDataManager::loadLevelData(const QString &installDir)
         return false;
     }
     clear();
-    m_standardSettingINI = new QSettings(standardDataINI, QSettings::NativeFormat);
-    if(m_standardSettingINI->status() != QSettings::Status::NoError)
+    m_INIFile = new QSettings(standardDataINI, QSettings::NativeFormat);
+    if(m_INIFile->status() != QSettings::Status::NoError)
     {
         return false;
     }
@@ -72,52 +72,55 @@ bool LevelDataManager::loadPictureDataINI()
 //======================================================================
 bool LevelDataManager::loadStandardDataINI()
 {
-    const QStringList keysList = m_standardSettingINI->childGroups();
+    const QStringList keysList = m_INIFile->childGroups();
+    bool ok;
     for(int32_t i = 0; i < keysList.size(); ++i)
     {
-       if(keysList.at(i).contains("Wall"))
-       {
-            if(!loadWallData(keysList.at(i)))
-            {
-                return false;
-            }
-       }
-       else if(keysList.at(i).contains("Door"))
-       {
+        ok = true;
+        if(keysList.at(i).contains("Wall"))
+        {
+            ok = loadWallData(keysList.at(i));
+        }
+        else if(keysList.at(i).contains("Door"))
+        {
+            ok = loadDoorData(keysList.at(i));
+        }
+        else if(keysList.at(i).contains("Trigger"))
+        {
 
-       }
-       else if(keysList.at(i).contains("Trigger"))
-       {
+        }
+        else if(keysList.at(i).contains("Enemy"))
+        {
 
-       }
-       else if(keysList.at(i).contains("Enemy"))
-       {
+        }
+        else if(keysList.at(i).contains("Object"))
+        {
 
-       }
-       else if(keysList.at(i).contains("Object"))
-       {
+        }
+        else if(keysList.at(i).contains("Ground"))
+        {
 
-       }
-       else if(keysList.at(i).contains("Ground"))
-       {
+        }
+        else if(keysList.at(i).contains("Ceiling"))
+        {
 
-       }
-       else if(keysList.at(i).contains("Ceiling"))
-       {
+        }
+        else if(keysList.at(i) == "Teleport")
+        {
 
-       }
-       else if(keysList.at(i) == "Teleport")
-       {
+        }
+        else if(keysList.at(i) == "Barrel")
+        {
 
-       }
-       else if(keysList.at(i) == "Barrel")
-       {
+        }
+        else if(keysList.at(i) == "Exit")
+        {
 
-       }
-       else if(keysList.at(i) == "Exit")
-       {
-
-       }
+        }
+        if(!ok)
+        {
+            return false;
+        }
     }
     return true;
 }
@@ -125,7 +128,7 @@ bool LevelDataManager::loadStandardDataINI()
 //======================================================================
 bool LevelDataManager::loadWallData(const QString &key)
 {
-    QString sprites = m_standardSettingINI->value(key + "/Sprite", -1.0f).toString();
+    QString sprites = m_INIFile->value(key + "/Sprite", "").toString();
     if(sprites.isEmpty())
     {
         return false;
@@ -143,12 +146,30 @@ bool LevelDataManager::loadWallData(const QString &key)
 }
 
 //======================================================================
+bool LevelDataManager::loadDoorData(const QString &key)
+{
+    m_doorElement.insert({key, {}});
+    m_doorElement[key].m_sprite = m_INIFile->value(key + "/Sprite", "").toString();
+    if(m_doorElement[key].m_sprite.isEmpty())
+    {
+        return false;
+    }
+    m_doorElement[key].m_vertical = m_INIFile->value(key + "/Vertical", false).toBool();
+    QString cardID = m_INIFile->value(key + "/CardID", "").toString();
+    if(!cardID.isEmpty())
+    {
+        m_doorElement[key].m_cardID = cardID;
+    }
+    return true;
+}
+
+//======================================================================
 void LevelDataManager::clear()
 {
-    if(m_standardSettingINI)
+    if(m_INIFile)
     {
-        delete m_standardSettingINI;
-        m_standardSettingINI = nullptr;
+        delete m_INIFile;
+        m_INIFile = nullptr;
     }
     if(m_pictureDataINI)
     {
