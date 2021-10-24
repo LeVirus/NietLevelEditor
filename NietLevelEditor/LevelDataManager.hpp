@@ -23,10 +23,11 @@ public:
     bool loadLevelData(const QString &installDir);
 private:
     void clear();
-    inline bool spriteExists(const QString &sprite)
+    inline bool spriteExists(const QString &sprite)const
     {
         return (m_memPictureElement.find(sprite) != m_memPictureElement.end());
     }
+    bool checkListSpriteExist(const QStringList &strList)const;
     bool loadPictureDataINI();
     bool loadStandardDataINI();
     bool loadWallData(const QString &key);
@@ -46,6 +47,6 @@ private:
     std::map<QString, ArrayFloat_t> m_memPictureElement;
     std::map<QString, QStringList> m_wallElement;
     std::map<QString, DoorData> m_doorElement;
-    std::map<QString, QString> m_triggerElement, m_teleportElement;
+    std::map<QString, QString> m_triggerElement, m_teleportElement, m_enemyElement;
 };
 

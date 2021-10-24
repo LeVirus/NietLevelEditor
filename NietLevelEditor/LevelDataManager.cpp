@@ -122,6 +122,7 @@ bool LevelDataManager::loadStandardDataINI()
             return false;
         }
     }
+    std::cerr << m_enemyElement.size();
     return true;
 }
 
@@ -134,12 +135,9 @@ bool LevelDataManager::loadWallData(const QString &key)
         return false;
     }
     QStringList strList = sprites.split(QRegularExpression("[,\\s]+"));
-    for(int32_t i = 0; i < strList.size(); ++i)
+    if(!checkListSpriteExist(strList))
     {
-        if(!spriteExists(strList.at(i)))
-        {
-            return false;
-        }
+        return false;
     }
     m_wallElement.insert({key, strList});
     return true;
@@ -178,6 +176,17 @@ bool LevelDataManager::loadTriggerData(const QString &key)
 //======================================================================
 bool LevelDataManager::loadEnemyData(const QString &key)
 {
+    QString sprites = m_INIFile->value(key + "/StaticSpriteFront", "").toString();
+    if(sprites.isEmpty())
+    {
+        return false;
+    }
+    QStringList strList = sprites.split(QRegularExpression("[,\\s]+"));
+    if(!checkListSpriteExist(strList))
+    {
+        return false;
+    }
+    m_enemyElement.insert({key, strList.at(0)});
     return true;
 }
 
@@ -238,6 +247,19 @@ void LevelDataManager::clear()
     }
     m_memPictureElement.clear();
     m_texturesPath.clear();
+}
+
+//======================================================================
+bool LevelDataManager::checkListSpriteExist(const QStringList &strList)const
+{
+    for(int32_t i = 0; i < strList.size(); ++i)
+    {
+        if(!spriteExists(strList.at(i)))
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 //======================================================================
