@@ -1,6 +1,8 @@
 #include "LevelDataManager.hpp"
 #include <QSettings>
 #include <QFile>
+#include <QRegularExpression>
+#include <iostream>
 
 //======================================================================
 LevelDataManager::LevelDataManager()
@@ -55,10 +57,11 @@ bool LevelDataManager::loadPictureDataINI()
                    return false;
                }
            }
-           m_memPictureElement.insert(keysList.at(i), array);
+           m_memPictureElement.insert({keysList.at(i), array});
        }
     }
-    m_texturesPath = m_pictureDataINI->value("PathToTexture/textures", -1.0f).toStringList();
+    QString str = m_pictureDataINI->value("PathToTexture/textures", -1.0f).toString();
+    m_texturesPath = str.split(QRegularExpression("[,\\s]+"));
     if(m_texturesPath.isEmpty())
     {
         return false;
@@ -74,7 +77,10 @@ bool LevelDataManager::loadStandardDataINI()
     {
        if(keysList.at(i).contains("Wall"))
        {
-
+            if(!loadWallData(keysList.at(i)))
+            {
+                return false;
+            }
        }
        else if(keysList.at(i).contains("Door"))
        {
@@ -113,6 +119,26 @@ bool LevelDataManager::loadStandardDataINI()
 
        }
     }
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadWallData(const QString &key)
+{
+    QString sprites = m_standardSettingINI->value(key + "/Sprite", -1.0f).toString();
+    if(sprites.isEmpty())
+    {
+        return false;
+    }
+    QStringList strList = sprites.split(QRegularExpression("[,\\s]+"));
+    for(int32_t i = 0; i < strList.size(); ++i)
+    {
+        if(!spriteExists(strList.at(i)))
+        {
+            return false;
+        }
+    }
+    m_wallElement.insert({key, strList});
     return true;
 }
 
