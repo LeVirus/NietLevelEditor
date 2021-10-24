@@ -47,6 +47,6 @@ private:
     std::map<QString, ArrayFloat_t> m_memPictureElement;
     std::map<QString, QStringList> m_wallElement;
     std::map<QString, DoorData> m_doorElement;
-    std::map<QString, QString> m_triggerElement, m_teleportElement, m_enemyElement;
+    std::map<QString, QString> m_triggerElement, m_teleportElement, m_enemyElement, m_objectElement, m_staticCeilingElement, m_staticGroundElement;
 };
 

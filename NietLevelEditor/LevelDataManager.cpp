@@ -122,7 +122,7 @@ bool LevelDataManager::loadStandardDataINI()
             return false;
         }
     }
-    std::cerr << m_enemyElement.size();
+    std::cerr << m_staticGroundElement.size() << " " << m_staticCeilingElement.size() << " " << m_objectElement.size();
     return true;
 }
 
@@ -164,12 +164,12 @@ bool LevelDataManager::loadDoorData(const QString &key)
 //======================================================================
 bool LevelDataManager::loadTriggerData(const QString &key)
 {
-    QString sprites = m_INIFile->value(key + "/Sprite", "").toString();
-    if(sprites.isEmpty())
+    QString sprite = m_INIFile->value(key + "/Sprite", "").toString();
+    if(sprite.isEmpty())
     {
         return false;
     }
-    m_triggerElement.insert({key, sprites});
+    m_triggerElement.insert({key, sprite});
     return true;
 }
 
@@ -193,18 +193,36 @@ bool LevelDataManager::loadEnemyData(const QString &key)
 //======================================================================
 bool LevelDataManager::loadObjectData(const QString &key)
 {
+    QString sprite = m_INIFile->value(key + "/Sprite", "").toString();
+    if(sprite.isEmpty())
+    {
+        return false;
+    }
+    m_objectElement.insert({key, sprite});
     return true;
 }
 
 //======================================================================
 bool LevelDataManager::loadStaticElementGroundData(const QString &key)
 {
+    QString sprite = m_INIFile->value(key + "/Sprite", "").toString();
+    if(sprite.isEmpty())
+    {
+        return false;
+    }
+    m_staticGroundElement.insert({key, sprite});
     return true;
 }
 
 //======================================================================
 bool LevelDataManager::loadStaticElementCeilingData(const QString &key)
 {
+    QString sprite = m_INIFile->value(key + "/Sprite", "").toString();
+    if(sprite.isEmpty())
+    {
+        return false;
+    }
+    m_staticCeilingElement.insert({key, sprite});
     return true;
 }
 
