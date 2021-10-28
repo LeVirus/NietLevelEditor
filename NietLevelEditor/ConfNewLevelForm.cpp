@@ -2,6 +2,7 @@
 #include "ui_ConfNewLevelForm.h"
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSpinBox>
 
 //======================================================================
 ConfNewLevelForm::ConfNewLevelForm(QWidget *parent) :
@@ -41,7 +42,10 @@ void ConfNewLevelForm::onBrowseIniFileClicked()
 //======================================================================
 void ConfNewLevelForm::onOkButtonClicked()
 {
-    if(m_installDirectory.isEmpty() || !m_gridEditorForm.initGrid(m_installDirectory))
+    QSpinBox *widthLevelspinBox = findChild<QSpinBox*>("widthLevelspinBox"), *heightLevelspinBox = findChild<QSpinBox*>("heightLevelspinBox");
+    assert(widthLevelspinBox);
+    assert(heightLevelspinBox);
+    if(m_installDirectory.isEmpty() || !m_gridEditorForm.initGrid(m_installDirectory, widthLevelspinBox->value(), heightLevelspinBox->value()))
     {
         QMessageBox::warning(this, "Error", "Please select install directory.");
         return;

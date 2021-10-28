@@ -1,23 +1,18 @@
 #include "MainWindow.hpp"
-
+#include "GridEditor.hpp"
 #include <QApplication>
 #include <QLocale>
-#include <QTranslator>
 
 //======================================================================
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QTranslator translator;
-    const QStringList uiLanguages = QLocale::system().uiLanguages();
-    for (const QString &locale : uiLanguages) {
-        const QString baseName = "NietLevelEditor_" + QLocale(locale).name();
-        if (translator.load(":/i18n/" + baseName)) {
-            a.installTranslator(&translator);
-            break;
-        }
-    }
+    //TEST
+//    GridEditor grid;
+//    grid.initGrid("/home/cyril/Programmation/Nietsneflow/Nietsneflow3d", 150, 300);
+//    return grid.exec();
+    //TEST
     MainWindow w;
     w.show();
     return a.exec();

@@ -13,13 +13,15 @@ SOURCES += \
     GridEditor.cpp \
     LevelDataManager.cpp \
     MainWindow.cpp \
+    TableModel.cpp \
     main.cpp
 
 HEADERS += \
     ConfNewLevelForm.hpp \
     GridEditor.hpp \
     LevelDataManager.hpp \
-    MainWindow.hpp
+    MainWindow.hpp \
+    TableModel.hpp
 
 FORMS += \
     ConfNewLevelForm.ui \
