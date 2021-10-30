@@ -37,14 +37,25 @@ bool LevelDataManager::loadLevelData(const QString &installDir)
 }
 
 //======================================================================
+const std::optional<ArrayFloat_t> LevelDataManager::getPictureData(const QString &sprite) const
+{
+    std::map<QString, ArrayFloat_t>::const_iterator it = m_memPictureElement.find(sprite);
+    if(it != m_memPictureElement.end())
+    {
+        return it->second;
+    }
+    return {};
+}
+
+//======================================================================
 bool LevelDataManager::loadPictureDataINI()
 {
     const QStringList keysList = m_pictureDataINI->childGroups();
     ArrayFloat_t array;
     for(int32_t i = 0; i < keysList.size(); ++i)
     {
-       if(keysList.at(i).contains("Sprite"))
-       {
+        if(keysList.at(i).contains("Sprite"))
+        {
            array[0] = m_pictureDataINI->value(keysList.at(i) + "/texture", -1.0f).toFloat();
            array[1] = m_pictureDataINI->value(keysList.at(i) + "/texturePosX", -1.0f).toFloat();
            array[2] = m_pictureDataINI->value(keysList.at(i) + "/texturePosY", -1.0f).toFloat();
@@ -60,7 +71,7 @@ bool LevelDataManager::loadPictureDataINI()
            m_memPictureElement.insert({keysList.at(i), array});
        }
     }
-    QString str = m_pictureDataINI->value("PathToTexture/textures", -1.0f).toString();
+    QString str = m_pictureDataINI->value("PathToTexture/textures", "").toString();
     m_texturesPath = str.split(QRegularExpression("[,\\s]+"));
     if(m_texturesPath.isEmpty())
     {

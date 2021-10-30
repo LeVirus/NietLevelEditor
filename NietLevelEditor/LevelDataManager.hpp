@@ -21,6 +21,47 @@ public:
     LevelDataManager();
     ~LevelDataManager();
     bool loadLevelData(const QString &installDir);
+    inline const std::map<QString, QStringList> &getWallData()const
+    {
+        return m_wallElement;
+    }
+    inline const std::map<QString, DoorData> &getDoorData()const
+    {
+        return m_doorElement;
+    }
+    inline const std::map<QString, QString> &getTriggerData()const
+    {
+        return m_triggerElement;
+    }
+    inline const std::map<QString, QString> &getTeleportData()const
+    {
+        return m_teleportElement;
+    }
+    inline const std::map<QString, QString> &getEnemyData()const
+    {
+        return m_enemyElement;
+    }
+    inline const std::map<QString, QString> &getObjectData()const
+    {
+        return m_objectElement;
+    }
+    inline const std::map<QString, QString> &getStaticCeilingData()const
+    {
+        return m_staticCeilingElement;
+    }
+    inline const std::map<QString, QString> &getStaticGroundData()const
+    {
+        return m_staticGroundElement;
+    }
+    inline const std::map<QString, QString> &getBarrelData()const
+    {
+        return m_barrelElement;
+    }
+    inline const std::map<QString, QString> &getExitData()const
+    {
+        return m_exitElement;
+    }
+    const std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
 private:
     void clear();
     inline bool spriteExists(const QString &sprite)const
