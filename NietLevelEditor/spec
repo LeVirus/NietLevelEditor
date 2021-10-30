@@ -18,7 +18,12 @@ Element to include :
 	Static element
 	Pick Object
 	Enemy
-
+	Define background
+		Color
+		Simple texture
+		Textured ground ceiling
+	Define Player departure
+	Define Music
 
 The software have to take a standard ini conf file as input to identify existing element (graphic and physic)
 

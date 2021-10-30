@@ -37,7 +37,7 @@ bool LevelDataManager::loadLevelData(const QString &installDir)
 }
 
 //======================================================================
-const std::optional<ArrayFloat_t> LevelDataManager::getPictureData(const QString &sprite) const
+std::optional<ArrayFloat_t> LevelDataManager::getPictureData(const QString &sprite)const
 {
     std::map<QString, ArrayFloat_t>::const_iterator it = m_memPictureElement.find(sprite);
     if(it != m_memPictureElement.end())
@@ -56,7 +56,7 @@ bool LevelDataManager::loadPictureDataINI()
     {
         if(keysList.at(i).contains("Sprite"))
         {
-           array[0] = m_pictureDataINI->value(keysList.at(i) + "/texture", -1.0f).toFloat();
+           array[0] = m_pictureDataINI->value(keysList.at(i) + "/texture", 1).toInt();
            array[1] = m_pictureDataINI->value(keysList.at(i) + "/texturePosX", -1.0f).toFloat();
            array[2] = m_pictureDataINI->value(keysList.at(i) + "/texturePosY", -1.0f).toFloat();
            array[3] = m_pictureDataINI->value(keysList.at(i) + "/textureWeight", -1.0f).toFloat();

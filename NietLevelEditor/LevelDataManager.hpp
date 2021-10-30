@@ -61,7 +61,11 @@ public:
     {
         return m_exitElement;
     }
-    const std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
+    inline const QStringList &getTexturePaths()const
+    {
+        return m_texturesPath;
+    }
+    std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
 private:
     void clear();
     inline bool spriteExists(const QString &sprite)const
