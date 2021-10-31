@@ -59,10 +59,7 @@ void GridEditor::initSelectableWidgets()
         currentEnum = static_cast<LevelElement_e>(i);
         SelectableLineLayout *selectLayout = new SelectableLineLayout(getStringFromLevelElementEnum(currentEnum), currentEnum, this);
         selectableLayout->addLayout(selectLayout);
-        if(currentEnum == LevelElement_e::WALL)
-        {
-            selectLayout->setIcons(m_drawData[static_cast<uint32_t>(LevelElement_e::WALL)]);
-        }
+        selectLayout->setIcons(m_drawData[i]);
         QObject::connect(selectLayout, &SelectableLineLayout::lineSelected, this, &GridEditor::setElementSelected);
     }
 }
@@ -71,6 +68,20 @@ void GridEditor::initSelectableWidgets()
 //======================================================================
 void GridEditor::loadIconPictures(const QString &installDir)
 {
+    loadWallsPictures(installDir);
+    loadDoorsPictures(installDir);
+    loadTriggersPictures(installDir);
+    loadEnemiesPictures(installDir);
+    loadObjectsPictures(installDir);
+    loadStaticCeilingElementPictures(installDir);
+    loadStaticGroundElementPictures(installDir);
+    loadBarrelsPictures(installDir);
+    loadExitsPictures(installDir);
+}
+
+//======================================================================
+void GridEditor::loadWallsPictures(const QString &installDir)
+{
     const std::map<QString, QStringList> &wallMap = m_levelDataManager.getWallData();
     uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::WALL);
     m_drawData[currentIndex].reserve(wallMap.size());
@@ -78,6 +89,126 @@ void GridEditor::loadIconPictures(const QString &installDir)
     for(std::map<QString, QStringList>::const_iterator it = wallMap.begin(); it != wallMap.end(); ++it)
     {
         spriteData = m_levelDataManager.getPictureData(it->second[0]);
+        assert(spriteData);
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+    }
+}
+
+//======================================================================
+void GridEditor::loadDoorsPictures(const QString &installDir)
+{
+    const std::map<QString, DoorData> &doorsMap = m_levelDataManager.getDoorData();
+    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::DOOR);
+    m_drawData[currentIndex].reserve(doorsMap.size());
+    std::optional<ArrayFloat_t> spriteData;
+    for(std::map<QString, DoorData>::const_iterator it = doorsMap.begin(); it != doorsMap.end(); ++it)
+    {
+        spriteData = m_levelDataManager.getPictureData(it->second.m_sprite);
+        assert(spriteData);
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+    }
+}
+
+//======================================================================
+void GridEditor::loadTriggersPictures(const QString &installDir)
+{
+    const std::map<QString, QString> &triggersMap = m_levelDataManager.getTriggerData();
+    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::TRIGGER);
+    m_drawData[currentIndex].reserve(triggersMap.size());
+    std::optional<ArrayFloat_t> spriteData;
+    for(std::map<QString, QString>::const_iterator it = triggersMap.begin(); it != triggersMap.end(); ++it)
+    {
+        spriteData = m_levelDataManager.getPictureData(it->second);
+        assert(spriteData);
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+    }
+}
+
+//======================================================================
+void GridEditor::loadEnemiesPictures(const QString &installDir)
+{
+    const std::map<QString, QString> &enemiesMap = m_levelDataManager.getEnemyData();
+    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::ENEMY);
+    m_drawData[currentIndex].reserve(enemiesMap.size());
+    std::optional<ArrayFloat_t> spriteData;
+    for(std::map<QString, QString>::const_iterator it = enemiesMap.begin(); it != enemiesMap.end(); ++it)
+    {
+        spriteData = m_levelDataManager.getPictureData(it->second);
+        assert(spriteData);
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+    }
+}
+
+//======================================================================
+void GridEditor::loadObjectsPictures(const QString &installDir)
+{
+    const std::map<QString, QString> &objectsMap = m_levelDataManager.getObjectData();
+    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::OBJECT);
+    m_drawData[currentIndex].reserve(objectsMap.size());
+    std::optional<ArrayFloat_t> spriteData;
+    for(std::map<QString, QString>::const_iterator it = objectsMap.begin(); it != objectsMap.end(); ++it)
+    {
+        spriteData = m_levelDataManager.getPictureData(it->second);
+        assert(spriteData);
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+    }
+}
+
+//======================================================================
+void GridEditor::loadStaticCeilingElementPictures(const QString &installDir)
+{
+    const std::map<QString, QString> &staticCeilingElementsMap = m_levelDataManager.getStaticCeilingData();
+    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::STATIC_CEILING);
+    m_drawData[currentIndex].reserve(staticCeilingElementsMap.size());
+    std::optional<ArrayFloat_t> spriteData;
+    for(std::map<QString, QString>::const_iterator it = staticCeilingElementsMap.begin(); it != staticCeilingElementsMap.end(); ++it)
+    {
+        spriteData = m_levelDataManager.getPictureData(it->second);
+        assert(spriteData);
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+    }
+}
+
+//======================================================================
+void GridEditor::loadStaticGroundElementPictures(const QString &installDir)
+{
+    const std::map<QString, QString> &staticGroundElementsMap = m_levelDataManager.getStaticGroundData();
+    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::STATIC_GROUND);
+    m_drawData[currentIndex].reserve(staticGroundElementsMap.size());
+    std::optional<ArrayFloat_t> spriteData;
+    for(std::map<QString, QString>::const_iterator it = staticGroundElementsMap.begin(); it != staticGroundElementsMap.end(); ++it)
+    {
+        spriteData = m_levelDataManager.getPictureData(it->second);
+        assert(spriteData);
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+    }
+}
+
+//======================================================================
+void GridEditor::loadBarrelsPictures(const QString &installDir)
+{
+    const std::map<QString, QString> &barrelsMap = m_levelDataManager.getBarrelData();
+    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::BARREL);
+    m_drawData[currentIndex].reserve(barrelsMap.size());
+    std::optional<ArrayFloat_t> spriteData;
+    for(std::map<QString, QString>::const_iterator it = barrelsMap.begin(); it != barrelsMap.end(); ++it)
+    {
+        spriteData = m_levelDataManager.getPictureData(it->second);
+        assert(spriteData);
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+    }
+}
+
+//======================================================================
+void GridEditor::loadExitsPictures(const QString &installDir)
+{
+    const std::map<QString, QString> &exitsMap = m_levelDataManager.getExitData();
+    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::EXIT);
+    m_drawData[currentIndex].reserve(exitsMap.size());
+    std::optional<ArrayFloat_t> spriteData;
+    for(std::map<QString, QString>::const_iterator it = exitsMap.begin(); it != exitsMap.end(); ++it)
+    {
+        spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
         m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
     }

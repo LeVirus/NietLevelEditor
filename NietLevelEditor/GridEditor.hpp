@@ -41,6 +41,15 @@ private:
     void setStdTableSize();
     void initSelectableWidgets();
     void loadIconPictures(const QString &installDir);
+    void loadWallsPictures(const QString &installDir);
+    void loadDoorsPictures(const QString &installDir);
+    void loadTriggersPictures(const QString &installDir);
+    void loadEnemiesPictures(const QString &installDir);
+    void loadObjectsPictures(const QString &installDir);
+    void loadStaticCeilingElementPictures(const QString &installDir);
+    void loadStaticGroundElementPictures(const QString &installDir);
+    void loadBarrelsPictures(const QString &installDir);
+    void loadExitsPictures(const QString &installDir);
     QPixmap getSprite(const ArrayFloat_t &spriteData, const QString &installDir);
 private slots:
     void setElementSelected(LevelElement_e num);
