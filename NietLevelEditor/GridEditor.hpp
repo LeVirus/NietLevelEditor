@@ -44,6 +44,7 @@ private:
     void loadWallsPictures(const QString &installDir);
     void loadDoorsPictures(const QString &installDir);
     void loadTriggersPictures(const QString &installDir);
+    void loadTeleportsPictures(const QString &installDir);
     void loadEnemiesPictures(const QString &installDir);
     void loadObjectsPictures(const QString &installDir);
     void loadStaticCeilingElementPictures(const QString &installDir);

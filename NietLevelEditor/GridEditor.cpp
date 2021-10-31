@@ -71,6 +71,7 @@ void GridEditor::loadIconPictures(const QString &installDir)
     loadWallsPictures(installDir);
     loadDoorsPictures(installDir);
     loadTriggersPictures(installDir);
+    loadTeleportsPictures(installDir);
     loadEnemiesPictures(installDir);
     loadObjectsPictures(installDir);
     loadStaticCeilingElementPictures(installDir);
@@ -117,6 +118,21 @@ void GridEditor::loadTriggersPictures(const QString &installDir)
     m_drawData[currentIndex].reserve(triggersMap.size());
     std::optional<ArrayFloat_t> spriteData;
     for(std::map<QString, QString>::const_iterator it = triggersMap.begin(); it != triggersMap.end(); ++it)
+    {
+        spriteData = m_levelDataManager.getPictureData(it->second);
+        assert(spriteData);
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+    }
+}
+
+//======================================================================
+void GridEditor::loadTeleportsPictures(const QString &installDir)
+{
+    const std::map<QString, QString> &teleportsMap = m_levelDataManager.getTeleportData();
+    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::TELEPORT);
+    m_drawData[currentIndex].reserve(teleportsMap.size());
+    std::optional<ArrayFloat_t> spriteData;
+    for(std::map<QString, QString>::const_iterator it = teleportsMap.begin(); it != teleportsMap.end(); ++it)
     {
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
