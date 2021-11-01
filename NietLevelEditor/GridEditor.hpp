@@ -8,6 +8,8 @@
 class TableModel;
 class QGroupBox;
 class QItemSelection;
+class EventFilter;
+
 enum class LevelElement_e
 {
     WALL,
@@ -38,6 +40,7 @@ public:
     bool initGrid(const QString &installDir, int levelWidth, int levelHeight);
     ~GridEditor();
 private:
+    void connectSlots();
     void setStdTableSize();
     void initSelectableWidgets();
     void loadIconPictures(const QString &installDir);
@@ -60,15 +63,18 @@ private:
 private slots:
     void setElementSelected(LevelElement_e num, int currentSelect);
     void caseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);
+    void wallSelection(const QModelIndex &index);
+    void wallMouseReleaseSelection();
 private:
     Ui::GridEditor *ui;
     LevelDataManager m_levelDataManager;
-    TableModel *m_tableModel;
+    TableModel *m_tableModel = nullptr;
     int m_currentSelection;
     LevelElement_e m_currentElementType;
     std::array<QVector<QIcon>, static_cast<uint32_t>(LevelElement_e::TOTAL)> m_drawData;
     const int32_t CASE_SIZE_PX = 40, CASE_SPRITE_SIZE = (CASE_SIZE_PX * 4) / 5;
     bool m_elementSelected;
+    EventFilter *m_eventFilter;
 };
 
 QString getStringFromLevelElementEnum(LevelElement_e num);

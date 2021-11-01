@@ -13,6 +13,7 @@ QMAKE_CXXFLAGS_DEBUG += -Wall -Wextra -Wpedantic -Og
 
 SOURCES += \
     ConfNewLevelForm.cpp \
+    EventFilter.cpp \
     GridEditor.cpp \
     LevelDataManager.cpp \
     MainWindow.cpp \
@@ -22,6 +23,7 @@ SOURCES += \
 
 HEADERS += \
     ConfNewLevelForm.hpp \
+    EventFilter.hpp \
     GridEditor.hpp \
     LevelDataManager.hpp \
     MainWindow.hpp \

@@ -10,11 +10,13 @@
 #include <iostream>
 #include "TableModel.hpp"
 #include "SelectableLineLayout.hpp"
+#include "EventFilter.hpp"
 
 //======================================================================
 GridEditor::GridEditor(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::GridEditor)
+    ui(new Ui::GridEditor),
+    m_eventFilter(new EventFilter(this))
 {
     ui->setupUi(this);
     layout()->setSizeConstraint(QLayout::SetNoConstraint);
@@ -33,15 +35,30 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     initSelectableWidgets();
     QTableView *tableView = findChild<QTableView*>("tableView");
     assert(tableView);
-    m_tableModel = new TableModel(tableView);
+    if(!m_tableModel)
+    {
+        m_tableModel = new TableModel(tableView);
+    }
     m_tableModel->setLevelSize(levelWidth, levelHeight);
     tableView->setModel(m_tableModel);
-    assert(ui->tableView->selectionModel());
+    connectSlots();
+    setStdTableSize();
+    return true;
+}
+
+
+//======================================================================
+void GridEditor::connectSlots()
+{
     QObject::connect(ui->tableView->selectionModel(),
                      &QItemSelectionModel::currentChanged,
                      this, &GridEditor::caseSelectedChanged);
-    setStdTableSize();
-    return true;
+    ui->tableView->viewport()->installEventFilter(m_eventFilter);
+    QObject::connect(ui->tableView, &QAbstractItemView::pressed,
+                     this, &GridEditor::wallSelection);
+    QObject::connect(m_eventFilter, &EventFilter::mouseReleased,
+                     this, &GridEditor::wallMouseReleaseSelection);
+    //selectionChanged
 }
 
 //======================================================================
@@ -270,6 +287,18 @@ void GridEditor::caseSelectedChanged(const QModelIndex &current, const QModelInd
         return;
     }
     setCaseIcon(current.column(), current.row(), m_currentElementType == LevelElement_e::DELETE);
+}
+
+//======================================================================
+void GridEditor::wallSelection(const QModelIndex &index)
+{
+}
+
+//======================================================================
+void GridEditor::wallMouseReleaseSelection()
+{
+    assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
+    QModelIndex index = ui->tableView->selectionModel()->selection().indexes()[0];
 }
 
 //======================================================================
