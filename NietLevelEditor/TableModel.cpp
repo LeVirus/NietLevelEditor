@@ -50,11 +50,22 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
         {
             return false;
         }
-
         m_vectPic[index.row()][index.column()] = value.value<QPixmap>();
         return true;
     }
     return false;
+}
+
+//======================================================================
+bool TableModel::removeData(const QModelIndex &index)
+{
+    if (!checkIndex(index))
+    {
+        return false;
+    }
+    QPixmap pix;
+    m_vectPic[index.row()][index.column()].swap(pix);
+    return true;
 }
 
 //======================================================================

@@ -13,6 +13,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DecorationRole)const override;
     void setLevelSize(int tableWidth, int tableHeight);
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole)override;
+    bool removeData(const QModelIndex &index);
     inline int getTableWidth()const
     {
         return m_tableWidth;

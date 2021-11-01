@@ -38,7 +38,6 @@ public:
     bool initGrid(const QString &installDir, int levelWidth, int levelHeight);
     ~GridEditor();
 private:
-    void adjustTableSize();
     void setStdTableSize();
     void initSelectableWidgets();
     void loadIconPictures(const QString &installDir);
@@ -53,7 +52,7 @@ private:
     void loadBarrelsPictures(const QString &installDir);
     void loadExitsPictures(const QString &installDir);
     QPixmap getSprite(const ArrayFloat_t &spriteData, const QString &installDir);
-    void setCaseIcon(int x, int y);
+    void setCaseIcon(int x, int y, bool deleteMode = false);
     inline QIcon getCurrentSelectedIcon()const
     {
         return m_drawData[static_cast<uint32_t>(m_currentElementType)][m_currentSelection];

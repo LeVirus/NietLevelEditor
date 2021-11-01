@@ -33,24 +33,29 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     assert(tableView);
     m_tableModel = new TableModel(tableView);
     m_tableModel->setLevelSize(levelWidth, levelHeight);
-    adjustTableSize();
     tableView->setModel(m_tableModel);
     assert(ui->tableView->selectionModel());
     QObject::connect(ui->tableView->selectionModel(),
                      &QItemSelectionModel::selectionChanged,
                      this, &GridEditor::caseSelectedChanged);
-//    adjustTableSize();
     setStdTableSize();
     return true;
 }
 
 //======================================================================
-void GridEditor::setCaseIcon(int x, int y)
+void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
 {
     QModelIndex index = m_tableModel->index(x, y, QModelIndex());
     bool ok;
-    QIcon currentIcon = getCurrentSelectedIcon();
-    ok = m_tableModel->setData(index, QVariant(currentIcon.pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
+    if(!deleteMode)
+    {
+        QIcon currentIcon = getCurrentSelectedIcon();
+        ok = m_tableModel->setData(index, QVariant(currentIcon.pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
+    }
+    else
+    {
+        ok = m_tableModel->removeData(index);
+    }
     assert(ok);
 }
 
@@ -252,24 +257,17 @@ void GridEditor::setElementSelected(LevelElement_e num, int currentSelect)
 {
     m_currentElementType = num;
     m_currentSelection = currentSelect;
-    m_elementSelected = (num != LevelElement_e::DELETE);
+    m_elementSelected = true;
 }
 
 //======================================================================
 void GridEditor::caseSelectedChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
-    if(!m_elementSelected || selected.indexes().empty())
+    if((!m_elementSelected) || selected.indexes().empty())
     {
         return;
     }
-    setCaseIcon(selected.indexes()[0].column(), selected.indexes()[0].row());
-}
-
-//======================================================================
-void GridEditor::adjustTableSize()
-{
-    ui->tableView->resizeColumnsToContents();
-    ui->tableView->resizeRowsToContents();
+    setCaseIcon(selected.indexes()[0].column(), selected.indexes()[0].row(), m_currentElementType == LevelElement_e::DELETE);
 }
 
 //======================================================================
