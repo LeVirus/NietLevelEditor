@@ -59,7 +59,7 @@ private:
     }
 private slots:
     void setElementSelected(LevelElement_e num, int currentSelect);
-    void caseSelectedChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void caseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);
 private:
     Ui::GridEditor *ui;
     LevelDataManager m_levelDataManager;

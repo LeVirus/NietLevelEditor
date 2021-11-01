@@ -38,7 +38,7 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     tableView->setModel(m_tableModel);
     assert(ui->tableView->selectionModel());
     QObject::connect(ui->tableView->selectionModel(),
-                     &QItemSelectionModel::selectionChanged,
+                     &QItemSelectionModel::currentChanged,
                      this, &GridEditor::caseSelectedChanged);
     setStdTableSize();
     return true;
@@ -263,13 +263,13 @@ void GridEditor::setElementSelected(LevelElement_e num, int currentSelect)
 }
 
 //======================================================================
-void GridEditor::caseSelectedChanged(const QItemSelection &selected, const QItemSelection &deselected)
+void GridEditor::caseSelectedChanged(const QModelIndex &current, const QModelIndex &previous)
 {
-    if((!m_elementSelected) || selected.indexes().empty())
+    if(!m_elementSelected)
     {
         return;
     }
-    setCaseIcon(selected.indexes()[0].column(), selected.indexes()[0].row(), m_currentElementType == LevelElement_e::DELETE);
+    setCaseIcon(current.column(), current.row(), m_currentElementType == LevelElement_e::DELETE);
 }
 
 //======================================================================
