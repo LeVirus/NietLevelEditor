@@ -13,7 +13,7 @@ SelectableLineLayout::SelectableLineLayout(const QString &radioBoxTxt, LevelElem
     addWidget(m_comboBox);
     QObject::connect(m_radio, &QRadioButton::toggled, m_comboBox, &QComboBox::setEnabled);
     QObject::connect(m_radio, &QRadioButton::pressed, this, &SelectableLineLayout::selected);
-}
+    QObject::connect(m_comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(selectedIndex(int)));}
 
 //======================================================================
 void SelectableLineLayout::setIcons(const QVector<QIcon> &vectIcons)
@@ -25,7 +25,13 @@ void SelectableLineLayout::setIcons(const QVector<QIcon> &vectIcons)
 }
 
 //======================================================================
+void SelectableLineLayout::selectedIndex(int currentIndex)
+{
+    emit lineSelected(m_elementType, currentIndex);
+}
+
+//======================================================================
 void SelectableLineLayout::selected()
 {
-    emit lineSelected(m_elementType);
+    emit lineSelected(m_elementType, m_comboBox->currentIndex());
 }

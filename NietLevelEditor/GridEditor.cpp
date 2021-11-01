@@ -26,26 +26,32 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     {
         return false;
     }
+    m_elementSelected = false;
     loadIconPictures(installDir);
     initSelectableWidgets();
     QTableView *tableView = findChild<QTableView*>("tableView");
     assert(tableView);
     m_tableModel = new TableModel(tableView);
     m_tableModel->setLevelSize(levelWidth, levelHeight);
-
-    //TEST
-//    QPixmap pixmap = QPixmap(installDir + "/Ressources/Textures/walltest.jpg").copy(30, 30, 100, 100).scaled(CASE_SIZE_PX, CASE_SIZE_PX);
-//    QModelIndex index = m_tableModel->index(0, 0, QModelIndex());
-//    bool ok;
-//    ok = m_tableModel->setData(index, QVariant(pixmap));
-//    assert(ok);
-    //TEST
-
     adjustTableSize();
     tableView->setModel(m_tableModel);
+    assert(ui->tableView->selectionModel());
+    QObject::connect(ui->tableView->selectionModel(),
+                     &QItemSelectionModel::selectionChanged,
+                     this, &GridEditor::caseSelectedChanged);
 //    adjustTableSize();
     setStdTableSize();
     return true;
+}
+
+//======================================================================
+void GridEditor::setCaseIcon(int x, int y)
+{
+    QModelIndex index = m_tableModel->index(x, y, QModelIndex());
+    bool ok;
+    QIcon currentIcon = getCurrentSelectedIcon();
+    ok = m_tableModel->setData(index, QVariant(currentIcon.pixmap({40, 40})));
+    assert(ok);
 }
 
 //======================================================================
@@ -242,9 +248,21 @@ QPixmap GridEditor::getSprite(const ArrayFloat_t &spriteData, const QString &ins
 }
 
 //======================================================================
-void GridEditor::setElementSelected(LevelElement_e num)
+void GridEditor::setElementSelected(LevelElement_e num, int currentSelect)
 {
-    m_currentElement = num;
+    m_currentElementType = num;
+    m_currentSelection = currentSelect;
+    m_elementSelected = (num != LevelElement_e::DELETE);
+}
+
+//======================================================================
+void GridEditor::caseSelectedChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    if(!m_elementSelected || selected.indexes().empty())
+    {
+        return;
+    }
+    setCaseIcon(selected.indexes()[0].column(), selected.indexes()[0].row());
 }
 
 //======================================================================

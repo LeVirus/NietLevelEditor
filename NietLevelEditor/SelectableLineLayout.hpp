@@ -13,9 +13,10 @@ class SelectableLineLayout : public QHBoxLayout
 public:
     SelectableLineLayout(const QString &radioBoxTxt, LevelElement_e typeElement, GridEditor *parent);
     void setIcons(const QVector<QIcon> &vectIcons);
-    Q_SIGNAL void lineSelected(LevelElement_e);
+    Q_SIGNAL void lineSelected(LevelElement_e, int);
 private slots:
     void selected();
+    void selectedIndex(int currentIndex);
 private:
     QRadioButton *m_radio;
     QComboBox *m_comboBox;
