@@ -17,6 +17,8 @@ GridEditor::GridEditor(QWidget *parent) :
     ui(new Ui::GridEditor)
 {
     ui->setupUi(this);
+    layout()->setSizeConstraint(QLayout::SetNoConstraint);
+    ui->horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
 }
 
 //======================================================================
