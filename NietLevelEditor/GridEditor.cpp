@@ -50,7 +50,7 @@ void GridEditor::setCaseIcon(int x, int y)
     QModelIndex index = m_tableModel->index(x, y, QModelIndex());
     bool ok;
     QIcon currentIcon = getCurrentSelectedIcon();
-    ok = m_tableModel->setData(index, QVariant(currentIcon.pixmap({40, 40})));
+    ok = m_tableModel->setData(index, QVariant(currentIcon.pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
     assert(ok);
 }
 
@@ -244,7 +244,7 @@ QPixmap GridEditor::getSprite(const ArrayFloat_t &spriteData, const QString &ins
     QPixmap image(pathToCurrentTexture);
     QSize textureSize = image.size();
     return image.copy(spriteData[1] * textureSize.width(), spriteData[2] * textureSize.height(),
-            spriteData[3] * textureSize.width(), spriteData[4] * textureSize.height()).scaled(CASE_SIZE_PX, CASE_SIZE_PX);
+            spriteData[3] * textureSize.width(), spriteData[4] * textureSize.height()).scaled(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
 }
 
 //======================================================================

@@ -68,7 +68,7 @@ private:
     int m_currentSelection;
     LevelElement_e m_currentElementType;
     std::array<QVector<QIcon>, static_cast<uint32_t>(LevelElement_e::TOTAL)> m_drawData;
-    const int32_t CASE_SIZE_PX = 50, CASE_SPRITE_SIZE = CASE_SIZE_PX / 2;
+    const int32_t CASE_SIZE_PX = 40, CASE_SPRITE_SIZE = (CASE_SIZE_PX * 4) / 5;
     bool m_elementSelected;
 };
 
