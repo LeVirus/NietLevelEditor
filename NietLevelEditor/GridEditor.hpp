@@ -2,6 +2,7 @@
 
 #include <QIcon>
 #include <QDialog>
+#include <QModelIndex>
 #include <limits>
 #include "LevelDataManager.hpp"
 
@@ -24,6 +25,13 @@ enum class LevelElement_e
     EXIT,
     DELETE,
     TOTAL
+};
+
+enum class WallDrawMode_e
+{
+    LINE_AND_RECT,
+    DIAGONAL_LINE,
+    DIAGONAL_RECT
 };
 
 inline const float EPSILON_FLOAT = std::numeric_limits<float>::epsilon();
@@ -54,6 +62,7 @@ private:
     void loadStaticGroundElementPictures(const QString &installDir);
     void loadBarrelsPictures(const QString &installDir);
     void loadExitsPictures(const QString &installDir);
+    void setWallShape();
     QPixmap getSprite(const ArrayFloat_t &spriteData, const QString &installDir);
     void setCaseIcon(int x, int y, bool deleteMode = false);
     inline QIcon getCurrentSelectedIcon()const
@@ -62,19 +71,22 @@ private:
     }
 private slots:
     void setElementSelected(LevelElement_e num, int currentSelect);
-    void caseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);
+    void stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);
     void wallSelection(const QModelIndex &index);
     void wallMouseReleaseSelection();
+    void setWallDrawModeSelected(int wallDrawMode);
 private:
     Ui::GridEditor *ui;
     LevelDataManager m_levelDataManager;
     TableModel *m_tableModel = nullptr;
     int m_currentSelection;
     LevelElement_e m_currentElementType;
+    WallDrawMode_e m_wallDrawMode;
     std::array<QVector<QIcon>, static_cast<uint32_t>(LevelElement_e::TOTAL)> m_drawData;
     const int32_t CASE_SIZE_PX = 40, CASE_SPRITE_SIZE = (CASE_SIZE_PX * 4) / 5;
     bool m_elementSelected;
     EventFilter *m_eventFilter;
+    QModelIndex m_wallFirstCaseSelection, m_wallSecondCaseSelection;
 };
 
 QString getStringFromLevelElementEnum(LevelElement_e num);

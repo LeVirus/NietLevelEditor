@@ -30,6 +30,7 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     {
         return false;
     }
+    m_wallDrawMode = WallDrawMode_e::LINE_AND_RECT;
     m_elementSelected = false;
     loadIconPictures(installDir);
     initSelectableWidgets();
@@ -46,19 +47,17 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     return true;
 }
 
-
 //======================================================================
 void GridEditor::connectSlots()
 {
     QObject::connect(ui->tableView->selectionModel(),
                      &QItemSelectionModel::currentChanged,
-                     this, &GridEditor::caseSelectedChanged);
+                     this, &GridEditor::stdElementCaseSelectedChanged);
     ui->tableView->viewport()->installEventFilter(m_eventFilter);
     QObject::connect(ui->tableView, &QAbstractItemView::pressed,
                      this, &GridEditor::wallSelection);
     QObject::connect(m_eventFilter, &EventFilter::mouseReleased,
                      this, &GridEditor::wallMouseReleaseSelection);
-    //selectionChanged
 }
 
 //======================================================================
@@ -90,6 +89,10 @@ void GridEditor::initSelectableWidgets()
         SelectableLineLayout *selectLayout = new SelectableLineLayout(getStringFromLevelElementEnum(currentEnum), currentEnum, this);
         selectableLayout->addLayout(selectLayout);
         selectLayout->setIcons(m_drawData[i]);
+        if(currentEnum == LevelElement_e::WALL)
+        {
+            selectLayout->confWallSelectWidget(this);
+        }
         QObject::connect(selectLayout, &SelectableLineLayout::lineSelected, this, &GridEditor::setElementSelected);
     }
 }
@@ -261,6 +264,41 @@ void GridEditor::loadExitsPictures(const QString &installDir)
 }
 
 //======================================================================
+void GridEditor::setWallShape()
+{
+    int minX = std::min(m_wallFirstCaseSelection.column(), m_wallSecondCaseSelection.column()),
+            maxX = std::max(m_wallFirstCaseSelection.column(), m_wallSecondCaseSelection.column()),
+            minY = std::min(m_wallFirstCaseSelection.row(), m_wallSecondCaseSelection.row()),
+            maxY = std::max(m_wallFirstCaseSelection.row(), m_wallSecondCaseSelection.row());
+    switch (m_wallDrawMode)
+    {
+    case WallDrawMode_e::LINE_AND_RECT:
+    {
+        for(int i = minX; i < maxX + 1; ++i)
+        {
+            setCaseIcon(i, minY);
+            setCaseIcon(i, maxY);
+        }
+        for(int i = minY + 1; i < maxY; ++i)
+        {
+            setCaseIcon(minX, i);
+            setCaseIcon(maxX, i);
+        }
+    }
+        break;
+    case WallDrawMode_e::DIAGONAL_LINE:
+    {
+
+    }
+        break;
+    case WallDrawMode_e::DIAGONAL_RECT:
+        break;
+    }
+    //quick fix
+    emit ui->tableView->model()->dataChanged(QModelIndex(), QModelIndex());
+}
+
+//======================================================================
 QPixmap GridEditor::getSprite(const ArrayFloat_t &spriteData, const QString &installDir)
 {
     QString pathToCurrentTexture = installDir + "/Ressources/Textures/" +
@@ -280,9 +318,9 @@ void GridEditor::setElementSelected(LevelElement_e num, int currentSelect)
 }
 
 //======================================================================
-void GridEditor::caseSelectedChanged(const QModelIndex &current, const QModelIndex &previous)
+void GridEditor::stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous)
 {
-    if(!m_elementSelected)
+    if(!m_elementSelected || m_currentElementType == LevelElement_e::WALL)
     {
         return;
     }
@@ -292,13 +330,29 @@ void GridEditor::caseSelectedChanged(const QModelIndex &current, const QModelInd
 //======================================================================
 void GridEditor::wallSelection(const QModelIndex &index)
 {
+    if(m_currentElementType != LevelElement_e::WALL)
+    {
+        return;
+    }
+    m_wallFirstCaseSelection = index;
 }
 
 //======================================================================
 void GridEditor::wallMouseReleaseSelection()
 {
+    if(m_currentElementType != LevelElement_e::WALL)
+    {
+        return;
+    }
     assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
-    QModelIndex index = ui->tableView->selectionModel()->selection().indexes()[0];
+    m_wallSecondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
+    setWallShape();
+}
+
+//======================================================================
+void GridEditor::setWallDrawModeSelected(int wallDrawMode)
+{
+    m_wallDrawMode = static_cast<WallDrawMode_e>(wallDrawMode);
 }
 
 //======================================================================

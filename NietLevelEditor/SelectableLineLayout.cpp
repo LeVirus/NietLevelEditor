@@ -25,6 +25,17 @@ void SelectableLineLayout::setIcons(const QVector<QIcon> &vectIcons)
 }
 
 //======================================================================
+void SelectableLineLayout::confWallSelectWidget(GridEditor *parent)
+{
+    m_wallComboBox = new QComboBox(parent);
+    addWidget(m_wallComboBox);
+    m_wallComboBox->setEnabled(false);
+    QObject::connect(m_radio, &QRadioButton::toggled, m_wallComboBox, &QComboBox::setEnabled);
+    m_wallComboBox->addItems({"Rect/Line", "Diagonal Line", "Diagonal Rect"});
+    QObject::connect(m_wallComboBox, SIGNAL(currentIndexChanged(int)), parent, SLOT(setWallDrawModeSelected(int)));
+}
+
+//======================================================================
 void SelectableLineLayout::selectedIndex(int currentIndex)
 {
     emit lineSelected(m_elementType, currentIndex);
