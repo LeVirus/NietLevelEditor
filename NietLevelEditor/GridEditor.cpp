@@ -291,19 +291,49 @@ void GridEditor::setWallShape()
         int j = m_wallFirstCaseSelection.row(), modY, i = m_wallFirstCaseSelection.column();
         modY = (minY == m_wallFirstCaseSelection.row()) ? 1 : -1;
         int modX = (minX == m_wallFirstCaseSelection.column()) ? 1 : -1;
-        std::cerr << i << "  " << j << "\n";
-        std::cerr << modX << "  " << modY << " MOD\n";
-        std::cerr << minX << "  " << maxX << " XX\n";
-        std::cerr << minY << "  " << maxY << " YY\n";
         for(;((modY == 1 && j < maxY + 1) || (modY == -1 && j > minY - 1)) &&
             ((modX == 1 && i < maxX + 1) || (modX == -1 && i > minX - 1)); i += modX, j += modY)
         {
-            std::cerr << "DDA\n";
             setCaseIcon(i, j);
         }
     }
         break;
     case WallDrawMode_e::DIAGONAL_RECT:
+    {
+        int diffX = maxX - minX, diffY = maxY - minY;
+        if(diffX < 2 || diffY < 2)
+        {
+            return;
+        }
+        bool impairX = diffX % 2, impairY = diffY % 2;
+        if(impairX)
+        {
+            --diffX;
+            --maxX;
+        }
+        if(impairY)
+        {
+            --diffY;
+            --maxY;
+        }
+        int mainDiff = std::min(diffX, diffY);
+        maxX = minX + mainDiff;
+        maxY = minY + mainDiff;
+        int midX = minX + (mainDiff / 2), midY = minY + (mainDiff / 2);
+        int currentYA = midY, currentYB = midY;
+        for(int i = minX; i < midX + 1; ++i, ++currentYA, --currentYB)
+        {
+            setCaseIcon(i, currentYA);
+            setCaseIcon(i, currentYB);
+        }
+        --currentYA;
+        ++currentYB;
+        for(int i = midX ; i < maxX + 1; ++i, --currentYA, ++currentYB)
+        {
+            setCaseIcon(i, currentYA);
+            setCaseIcon(i, currentYB);
+        }
+    }
         break;
     }
     //quick fix
