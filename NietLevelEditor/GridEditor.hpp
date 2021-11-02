@@ -63,6 +63,12 @@ private:
     void loadBarrelsPictures(const QString &installDir);
     void loadExitsPictures(const QString &installDir);
     void setWallShape();
+    void setWallLineRectShape(const QPair<int, int> &topLeftIndex,
+                              const QPair<int, int> &bottomRightIndex);
+    void setWallDiagLineShape(const QPair<int, int> &topLeftIndex,
+                              const QPair<int, int> &bottomRightIndex);
+    void setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
+                              const QPair<int, int> &bottomRightIndex);
     QPixmap getSprite(const ArrayFloat_t &spriteData, const QString &installDir);
     void setCaseIcon(int x, int y, bool deleteMode = false);
     inline QIcon getCurrentSelectedIcon()const

@@ -274,70 +274,93 @@ void GridEditor::setWallShape()
     {
     case WallDrawMode_e::LINE_AND_RECT:
     {
-        for(int i = minX; i < maxX + 1; ++i)
-        {
-            setCaseIcon(i, minY);
-            setCaseIcon(i, maxY);
-        }
-        for(int i = minY + 1; i < maxY; ++i)
-        {
-            setCaseIcon(minX, i);
-            setCaseIcon(maxX, i);
-        }
+        setWallLineRectShape({minX, minY}, {maxX, maxY});
     }
         break;
     case WallDrawMode_e::DIAGONAL_LINE:
     {
-        int j = m_wallFirstCaseSelection.row(), modY, i = m_wallFirstCaseSelection.column();
-        modY = (minY == m_wallFirstCaseSelection.row()) ? 1 : -1;
-        int modX = (minX == m_wallFirstCaseSelection.column()) ? 1 : -1;
-        for(;((modY == 1 && j < maxY + 1) || (modY == -1 && j > minY - 1)) &&
-            ((modX == 1 && i < maxX + 1) || (modX == -1 && i > minX - 1)); i += modX, j += modY)
-        {
-            setCaseIcon(i, j);
-        }
+        setWallDiagLineShape({minX, minY}, {maxX, maxY});
     }
         break;
     case WallDrawMode_e::DIAGONAL_RECT:
     {
-        int diffX = maxX - minX, diffY = maxY - minY;
-        if(diffX < 2 || diffY < 2)
-        {
-            return;
-        }
-        bool impairX = diffX % 2, impairY = diffY % 2;
-        if(impairX)
-        {
-            --diffX;
-            --maxX;
-        }
-        if(impairY)
-        {
-            --diffY;
-            --maxY;
-        }
-        int mainDiff = std::min(diffX, diffY);
-        maxX = minX + mainDiff;
-        maxY = minY + mainDiff;
-        int midX = minX + (mainDiff / 2), midY = minY + (mainDiff / 2);
-        int currentYA = midY, currentYB = midY;
-        for(int i = minX; i < midX + 1; ++i, ++currentYA, --currentYB)
-        {
-            setCaseIcon(i, currentYA);
-            setCaseIcon(i, currentYB);
-        }
-        --currentYA;
-        ++currentYB;
-        for(int i = midX ; i < maxX + 1; ++i, --currentYA, ++currentYB)
-        {
-            setCaseIcon(i, currentYA);
-            setCaseIcon(i, currentYB);
-        }
+        setWallDiagRectShape({minX, minY}, {maxX, maxY});
     }
         break;
     }
     //quick fix
     emit ui->tableView->model()->dataChanged(QModelIndex(), QModelIndex());
+}
+
+//======================================================================
+void GridEditor::setWallLineRectShape(const QPair<int, int> &topLeftIndex,
+                                      const QPair<int, int> &bottomRightIndex)
+{
+    for(int i = topLeftIndex.first; i < bottomRightIndex.first + 1; ++i)
+    {
+        setCaseIcon(i, topLeftIndex.second);
+        setCaseIcon(i, bottomRightIndex.second);
+    }
+    for(int i = topLeftIndex.second + 1; i < bottomRightIndex.second; ++i)
+    {
+        setCaseIcon(topLeftIndex.first, i);
+        setCaseIcon(bottomRightIndex.first, i);
+    }
+}
+
+//======================================================================
+void GridEditor::setWallDiagLineShape(const QPair<int, int> &topLeftIndex,
+                                      const QPair<int, int> &bottomRightIndex)
+{
+    int j = m_wallFirstCaseSelection.row(), modY, i = m_wallFirstCaseSelection.column();
+    modY = (topLeftIndex.second == m_wallFirstCaseSelection.row()) ? 1 : -1;
+    int modX = (topLeftIndex.first == m_wallFirstCaseSelection.column()) ? 1 : -1;
+    for(;((modY == 1 && j < bottomRightIndex.second + 1) || (modY == -1 && j > topLeftIndex.second - 1)) &&
+        ((modX == 1 && i < bottomRightIndex.first + 1) || (modX == -1 && i > topLeftIndex.first - 1)); i += modX, j += modY)
+    {
+        setCaseIcon(i, j);
+    }
+}
+
+//======================================================================
+void GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
+                                      const QPair<int, int> &bottomRightIndex)
+{
+    QPair bottomRightIndexCpy = bottomRightIndex;
+    int diffX = bottomRightIndexCpy.first - topLeftIndex.first,
+            diffY = bottomRightIndexCpy.second - topLeftIndex.second;
+    if(diffX < 2 || diffY < 2)
+    {
+        return;
+    }
+    bool impairX = diffX % 2, impairY = diffY % 2;
+    if(impairX)
+    {
+        --diffX;
+        --bottomRightIndexCpy.first;
+    }
+    if(impairY)
+    {
+        --diffY;
+        --bottomRightIndexCpy.second;
+    }
+    int mainDiff = std::min(diffX, diffY);
+    bottomRightIndexCpy.first = topLeftIndex.first + mainDiff;
+    bottomRightIndexCpy.second = topLeftIndex.second + mainDiff;
+    int midX = topLeftIndex.first + (mainDiff / 2), midY = topLeftIndex.second + (mainDiff / 2);
+    int currentYA = midY, currentYB = midY;
+    for(int i = topLeftIndex.first; i < midX + 1; ++i, ++currentYA, --currentYB)
+    {
+        setCaseIcon(i, currentYA);
+        setCaseIcon(i, currentYB);
+    }
+    --currentYA;
+    ++currentYB;
+    for(int i = midX ; i < bottomRightIndexCpy.first + 1; ++i, --currentYA, ++currentYB)
+    {
+        setCaseIcon(i, currentYA);
+        setCaseIcon(i, currentYB);
+    }
 }
 
 //======================================================================
