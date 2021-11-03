@@ -44,6 +44,7 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     tableView->setModel(m_tableModel);
     connectSlots();
     setStdTableSize();
+    m_displayPreview = false;
     return true;
 }
 
@@ -264,27 +265,40 @@ void GridEditor::loadExitsPictures(const QString &installDir)
 }
 
 //======================================================================
-void GridEditor::setWallShape()
+void GridEditor::setWallShape(bool preview)
 {
+    if(preview)
+    {
+        if(!m_displayPreview ||
+                ui->tableView->selectionModel()->selection().indexes().empty())
+        {
+            return;
+        }
+        m_wallSecondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
+    }
     int minX = std::min(m_wallFirstCaseSelection.column(), m_wallSecondCaseSelection.column()),
             maxX = std::max(m_wallFirstCaseSelection.column(), m_wallSecondCaseSelection.column()),
             minY = std::min(m_wallFirstCaseSelection.row(), m_wallSecondCaseSelection.row()),
             maxY = std::max(m_wallFirstCaseSelection.row(), m_wallSecondCaseSelection.row());
+    if(preview)
+    {
+        m_tableModel->clearPreview();
+    }
     switch (m_wallDrawMode)
     {
     case WallDrawMode_e::LINE_AND_RECT:
     {
-        setWallLineRectShape({minX, minY}, {maxX, maxY});
+        setWallLineRectShape({minX, minY}, {maxX, maxY}, preview);
     }
         break;
     case WallDrawMode_e::DIAGONAL_LINE:
     {
-        setWallDiagLineShape({minX, minY}, {maxX, maxY});
+        setWallDiagLineShape({minX, minY}, {maxX, maxY}, preview);
     }
         break;
     case WallDrawMode_e::DIAGONAL_RECT:
     {
-        setWallDiagRectShape({minX, minY}, {maxX, maxY});
+        setWallDiagRectShape({minX, minY}, {maxX, maxY}, preview);
     }
         break;
     }
@@ -294,23 +308,41 @@ void GridEditor::setWallShape()
 
 //======================================================================
 void GridEditor::setWallLineRectShape(const QPair<int, int> &topLeftIndex,
-                                      const QPair<int, int> &bottomRightIndex)
+                                      const QPair<int, int> &bottomRightIndex,
+                                      bool preview)
 {
     for(int i = topLeftIndex.first; i < bottomRightIndex.first + 1; ++i)
     {
-        setCaseIcon(i, topLeftIndex.second);
-        setCaseIcon(i, bottomRightIndex.second);
+        if(preview)
+        {
+            m_tableModel->setPreviewCase(i, topLeftIndex.second);
+            m_tableModel->setPreviewCase(i, bottomRightIndex.second);
+        }
+        else
+        {
+            setCaseIcon(i, topLeftIndex.second);
+            setCaseIcon(i, bottomRightIndex.second);
+        }
     }
     for(int i = topLeftIndex.second + 1; i < bottomRightIndex.second; ++i)
     {
-        setCaseIcon(topLeftIndex.first, i);
-        setCaseIcon(bottomRightIndex.first, i);
+        if(preview)
+        {
+            m_tableModel->setPreviewCase(topLeftIndex.first, i);
+            m_tableModel->setPreviewCase(bottomRightIndex.first, i);
+        }
+        else
+        {
+            setCaseIcon(topLeftIndex.first, i);
+            setCaseIcon(bottomRightIndex.first, i);
+        }
     }
 }
 
 //======================================================================
 void GridEditor::setWallDiagLineShape(const QPair<int, int> &topLeftIndex,
-                                      const QPair<int, int> &bottomRightIndex)
+                                      const QPair<int, int> &bottomRightIndex,
+                                      bool preview)
 {
     int j = m_wallFirstCaseSelection.row(), modY, i = m_wallFirstCaseSelection.column();
     modY = (topLeftIndex.second == m_wallFirstCaseSelection.row()) ? 1 : -1;
@@ -318,13 +350,21 @@ void GridEditor::setWallDiagLineShape(const QPair<int, int> &topLeftIndex,
     for(;((modY == 1 && j < bottomRightIndex.second + 1) || (modY == -1 && j > topLeftIndex.second - 1)) &&
         ((modX == 1 && i < bottomRightIndex.first + 1) || (modX == -1 && i > topLeftIndex.first - 1)); i += modX, j += modY)
     {
-        setCaseIcon(i, j);
+        if(preview)
+        {
+            m_tableModel->setPreviewCase(i, j);
+        }
+        else
+        {
+            setCaseIcon(i, j);
+        }
     }
 }
 
 //======================================================================
 void GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
-                                      const QPair<int, int> &bottomRightIndex)
+                                      const QPair<int, int> &bottomRightIndex,
+                                      bool preview)
 {
     QPair bottomRightIndexCpy = bottomRightIndex;
     int diffX = bottomRightIndexCpy.first - topLeftIndex.first,
@@ -351,15 +391,31 @@ void GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
     int currentYA = midY, currentYB = midY;
     for(int i = topLeftIndex.first; i < midX + 1; ++i, ++currentYA, --currentYB)
     {
-        setCaseIcon(i, currentYA);
-        setCaseIcon(i, currentYB);
+        if(preview)
+        {
+            m_tableModel->setPreviewCase(i, currentYA);
+            m_tableModel->setPreviewCase(i, currentYB);
+        }
+        else
+        {
+            setCaseIcon(i, currentYA);
+            setCaseIcon(i, currentYB);
+        }
     }
     --currentYA;
     ++currentYB;
     for(int i = midX ; i < bottomRightIndexCpy.first + 1; ++i, --currentYA, ++currentYB)
     {
-        setCaseIcon(i, currentYA);
-        setCaseIcon(i, currentYB);
+        if(preview)
+        {
+            m_tableModel->setPreviewCase(i, currentYA);
+            m_tableModel->setPreviewCase(i, currentYB);
+        }
+        else
+        {
+            setCaseIcon(i, currentYA);
+            setCaseIcon(i, currentYB);
+        }
     }
 }
 
@@ -385,11 +441,17 @@ void GridEditor::setElementSelected(LevelElement_e num, int currentSelect)
 //======================================================================
 void GridEditor::stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous)
 {
-    if(!m_elementSelected || m_currentElementType == LevelElement_e::WALL)
+    if(!m_elementSelected)
     {
         return;
     }
-    setCaseIcon(current.column(), current.row(), m_currentElementType == LevelElement_e::DELETE);
+    if(m_currentElementType == LevelElement_e::WALL)
+    {
+        setWallShape(true);
+        return;
+    }
+    setCaseIcon(current.column(), current.row(),
+                m_currentElementType == LevelElement_e::DELETE);
 }
 
 //======================================================================
@@ -400,6 +462,8 @@ void GridEditor::wallSelection(const QModelIndex &index)
         return;
     }
     m_wallFirstCaseSelection = index;
+    m_wallSecondCaseSelection = index;
+    m_displayPreview = true;
 }
 
 //======================================================================
@@ -412,6 +476,8 @@ void GridEditor::wallMouseReleaseSelection()
     assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
     m_wallSecondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
     setWallShape();
+    m_tableModel->clearPreview();
+    m_displayPreview = false;
 }
 
 //======================================================================

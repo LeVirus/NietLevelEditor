@@ -3,6 +3,7 @@
 #include <QAbstractTableModel>
 #include <QString>
 #include <QVector>
+#include <QBitArray>
 
 class TableModel : public QAbstractTableModel
 {
@@ -14,6 +15,8 @@ public:
     void setLevelSize(int tableWidth, int tableHeight);
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole)override;
     bool removeData(const QModelIndex &index);
+    void clearPreview();
+    void setPreviewCase(int x, int y);
     inline int getTableWidth()const
     {
         return m_tableWidth;
@@ -25,6 +28,7 @@ public:
 private:
     int m_tableWidth, m_tableHeight;
     QVector<QVector<QPixmap>> m_vectPic;
+    QVector<QBitArray> m_vectPreview;
 signals:
     void editCompleted(const QString &str);
 };

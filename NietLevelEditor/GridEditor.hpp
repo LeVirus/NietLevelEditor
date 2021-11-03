@@ -62,13 +62,16 @@ private:
     void loadStaticGroundElementPictures(const QString &installDir);
     void loadBarrelsPictures(const QString &installDir);
     void loadExitsPictures(const QString &installDir);
-    void setWallShape();
+    void setWallShape(bool preview = false);
     void setWallLineRectShape(const QPair<int, int> &topLeftIndex,
-                              const QPair<int, int> &bottomRightIndex);
+                              const QPair<int, int> &bottomRightIndex,
+                              bool preview = false);
     void setWallDiagLineShape(const QPair<int, int> &topLeftIndex,
-                              const QPair<int, int> &bottomRightIndex);
+                              const QPair<int, int> &bottomRightIndex,
+                              bool preview = false);
     void setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
-                              const QPair<int, int> &bottomRightIndex);
+                              const QPair<int, int> &bottomRightIndex,
+                              bool preview = false);
     QPixmap getSprite(const ArrayFloat_t &spriteData, const QString &installDir);
     void setCaseIcon(int x, int y, bool deleteMode = false);
     inline QIcon getCurrentSelectedIcon()const
@@ -90,7 +93,7 @@ private:
     WallDrawMode_e m_wallDrawMode;
     std::array<QVector<QIcon>, static_cast<uint32_t>(LevelElement_e::TOTAL)> m_drawData;
     const int32_t CASE_SIZE_PX = 40, CASE_SPRITE_SIZE = (CASE_SIZE_PX * 4) / 5;
-    bool m_elementSelected;
+    bool m_elementSelected, m_displayPreview = false;
     EventFilter *m_eventFilter;
     QModelIndex m_wallFirstCaseSelection, m_wallSecondCaseSelection;
 };
