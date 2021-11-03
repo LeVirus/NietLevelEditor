@@ -366,6 +366,8 @@ void GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
                                       const QPair<int, int> &bottomRightIndex,
                                       bool preview)
 {
+    bool modX = (topLeftIndex.first != m_wallFirstCaseSelection.column()),
+            modY = (topLeftIndex.second != m_wallFirstCaseSelection.row());
     QPair bottomRightIndexCpy = bottomRightIndex;
     int diffX = bottomRightIndexCpy.first - topLeftIndex.first,
             diffY = bottomRightIndexCpy.second - topLeftIndex.second;
@@ -385,11 +387,38 @@ void GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
         --bottomRightIndexCpy.second;
     }
     int mainDiff = std::min(diffX, diffY);
-    bottomRightIndexCpy.first = topLeftIndex.first + mainDiff;
+    if(modX)
+    {
+        bottomRightIndexCpy.first = m_wallFirstCaseSelection.column();
+    }
+    else
+    {
+        bottomRightIndexCpy.first = topLeftIndex.first + mainDiff;
+    }
     bottomRightIndexCpy.second = topLeftIndex.second + mainDiff;
-    int midX = topLeftIndex.first + (mainDiff / 2), midY = topLeftIndex.second + (mainDiff / 2);
+
+    int midX, midY, i;
+    if(modX)
+    {
+        i = bottomRightIndex.first - mainDiff;
+        midX = bottomRightIndex.first - (mainDiff / 2);
+    }
+    else
+    {
+        i = topLeftIndex.first;
+        midX = topLeftIndex.first + (mainDiff / 2);
+    }
+    if(modY)
+    {
+        midY = bottomRightIndex.second - (mainDiff / 2);
+    }
+    else
+    {
+        midY = topLeftIndex.second + (mainDiff / 2);
+    }
+
     int currentYA = midY, currentYB = midY;
-    for(int i = topLeftIndex.first; i < midX + 1; ++i, ++currentYA, --currentYB)
+    for(; i < midX + 1; ++i, ++currentYA, --currentYB)
     {
         if(preview)
         {
@@ -404,7 +433,7 @@ void GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
     }
     --currentYA;
     ++currentYB;
-    for(int i = midX ; i < bottomRightIndexCpy.first + 1; ++i, --currentYA, ++currentYB)
+    for(i = midX ; i < bottomRightIndexCpy.first + 1; ++i, --currentYA, ++currentYB)
     {
         if(preview)
         {
@@ -462,7 +491,6 @@ void GridEditor::wallSelection(const QModelIndex &index)
         return;
     }
     m_wallFirstCaseSelection = index;
-    m_wallSecondCaseSelection = index;
     m_displayPreview = true;
 }
 
