@@ -1,6 +1,7 @@
 #include "SelectableLineLayout.hpp"
 #include <QRadioButton>
 #include <QComboBox>
+#include <QCheckBox>
 
 //======================================================================
 SelectableLineLayout::SelectableLineLayout(const QString &radioBoxTxt, LevelElement_e typeElement, GridEditor *parent) :
@@ -28,11 +29,16 @@ void SelectableLineLayout::setIcons(const QVector<QIcon> &vectIcons)
 void SelectableLineLayout::confWallSelectWidget(GridEditor *parent)
 {
     m_wallComboBox = new QComboBox(parent);
+    m_wallCheckBox = new QCheckBox(parent);
     addWidget(m_wallComboBox);
     m_wallComboBox->setEnabled(false);
     QObject::connect(m_radio, &QRadioButton::toggled, m_wallComboBox, &QComboBox::setEnabled);
+    QObject::connect(m_radio, &QRadioButton::toggled, m_wallCheckBox, &QComboBox::setEnabled);
     m_wallComboBox->addItems({"Rect/Line", "Diagonal Line", "Diagonal Rect"});
     QObject::connect(m_wallComboBox, SIGNAL(currentIndexChanged(int)), parent, SLOT(setWallDrawModeSelected(int)));
+    addWidget(m_wallCheckBox);
+    QObject::connect(m_wallCheckBox, SIGNAL(stateChanged(int)), parent, SLOT(setWallMoveableMode(int)));
+    m_wallCheckBox->setEnabled(false);
 }
 
 //======================================================================

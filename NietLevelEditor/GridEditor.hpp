@@ -85,6 +85,7 @@ private slots:
     void wallSelection(const QModelIndex &index);
     void wallMouseReleaseSelection();
     void setWallDrawModeSelected(int wallDrawMode);
+    void setWallMoveableMode(int moveableMode);
 private:
     Ui::GridEditor *ui;
     LevelDataManager m_levelDataManager;
@@ -92,6 +93,7 @@ private:
     int m_currentSelection;
     LevelElement_e m_currentElementType;
     WallDrawMode_e m_wallDrawMode;
+    bool m_wallMoveableMode;
     std::array<QVector<QIcon>, static_cast<uint32_t>(LevelElement_e::TOTAL)> m_drawData;
     const int32_t CASE_SIZE_PX = 40, CASE_SPRITE_SIZE = (CASE_SIZE_PX * 4) / 5;
     bool m_elementSelected, m_displayPreview = false;

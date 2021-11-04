@@ -31,6 +31,7 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     {
         return false;
     }
+    m_wallMoveableMode = false;
     m_wallDrawMode = WallDrawMode_e::LINE_AND_RECT;
     m_elementSelected = false;
     loadIconPictures(installDir);
@@ -527,6 +528,12 @@ void GridEditor::wallMouseReleaseSelection()
 void GridEditor::setWallDrawModeSelected(int wallDrawMode)
 {
     m_wallDrawMode = static_cast<WallDrawMode_e>(wallDrawMode);
+}
+
+//======================================================================
+void GridEditor::setWallMoveableMode(int moveableMode)
+{
+    m_wallMoveableMode = moveableMode;
 }
 
 //======================================================================

@@ -6,6 +6,7 @@
 class QRadioButton;
 class QComboBox;
 class GridEditor;
+class QCheckBox;
 
 class SelectableLineLayout : public QHBoxLayout
 {
@@ -23,5 +24,6 @@ private:
     QRadioButton *m_radio;
     QComboBox *m_comboBox;
     LevelElement_e m_elementType;
-    QComboBox* m_wallComboBox = nullptr;
+    QComboBox *m_wallComboBox = nullptr;
+    QCheckBox *m_wallCheckBox = nullptr;
 };
