@@ -14,10 +14,13 @@ Element to include :
 	Wall
 		Possibility to include several element from different geometric shape
 			Rectangle, line, point===========================OK
+	MoveableWall
+		Set move conf and trigger method
 	Door
 	Static element
 	Pick Object
 	Enemy
+	Trigger
 	Define background
 		Color
 		Simple texture
