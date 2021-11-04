@@ -11,6 +11,7 @@
 #include "TableModel.hpp"
 #include "SelectableLineLayout.hpp"
 #include "EventFilter.hpp"
+#include "TeleportForm.hpp"
 
 //======================================================================
 GridEditor::GridEditor(QWidget *parent) :
@@ -40,6 +41,11 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     {
         m_tableModel = new TableModel(tableView);
     }
+    if(!m_teleportForm)
+    {
+        m_teleportForm = new TeleportForm(this);
+    }
+    m_teleportForm->conf(levelWidth, levelHeight);
     m_tableModel->setLevelSize(levelWidth, levelHeight);
     tableView->setModel(m_tableModel);
     connectSlots();
@@ -68,6 +74,15 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
     bool ok;
     if(!deleteMode)
     {
+        if(m_currentElementType == LevelElement_e::TELEPORT)
+        {
+            m_teleportForm->init();
+            m_teleportForm->exec();
+            if(!m_teleportForm->valid())
+            {
+                return;
+            }
+        }
         QIcon currentIcon = getCurrentSelectedIcon();
         ok = m_tableModel->setData(index, QVariant(currentIcon.pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
     }

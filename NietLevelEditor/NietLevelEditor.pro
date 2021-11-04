@@ -19,6 +19,7 @@ SOURCES += \
     MainWindow.cpp \
     SelectableLineLayout.cpp \
     TableModel.cpp \
+    TeleportForm.cpp \
     main.cpp
 
 HEADERS += \
@@ -28,12 +29,14 @@ HEADERS += \
     LevelDataManager.hpp \
     MainWindow.hpp \
     SelectableLineLayout.hpp \
-    TableModel.hpp
+    TableModel.hpp \
+    TeleportForm.hpp
 
 FORMS += \
     ConfNewLevelForm.ui \
     GridEditor.ui \
-    MainWindow.ui
+    MainWindow.ui \
+    TeleportForm.ui
 
 CONFIG += ldebug
 CONFIG += embed_translations

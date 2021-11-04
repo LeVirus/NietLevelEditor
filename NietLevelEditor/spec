@@ -13,7 +13,7 @@ Functionalities :
 Element to include :
 	Wall
 		Possibility to include several element from different geometric shape
-			Rectangle, line, point
+			Rectangle, line, point===========================OK
 	Door
 	Static element
 	Pick Object

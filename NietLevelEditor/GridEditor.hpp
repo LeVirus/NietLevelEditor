@@ -10,6 +10,7 @@ class TableModel;
 class QGroupBox;
 class QItemSelection;
 class EventFilter;
+class TeleportForm;
 
 enum class LevelElement_e
 {
@@ -96,6 +97,7 @@ private:
     bool m_elementSelected, m_displayPreview = false;
     EventFilter *m_eventFilter;
     QModelIndex m_wallFirstCaseSelection, m_wallSecondCaseSelection;
+    TeleportForm *m_teleportForm = nullptr;
 };
 
 QString getStringFromLevelElementEnum(LevelElement_e num);
