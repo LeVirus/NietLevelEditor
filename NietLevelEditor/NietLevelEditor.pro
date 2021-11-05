@@ -16,6 +16,7 @@ SOURCES += \
     EventFilter.cpp \
     GridEditor.cpp \
     LevelDataManager.cpp \
+    LineWallMove.cpp \
     MainWindow.cpp \
     MoveableWallForm.cpp \
     SelectableLineLayout.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     EventFilter.hpp \
     GridEditor.hpp \
     LevelDataManager.hpp \
+    LineWallMove.hpp \
     MainWindow.hpp \
     MoveableWallForm.hpp \
     SelectableLineLayout.hpp \

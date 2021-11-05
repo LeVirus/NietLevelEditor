@@ -67,7 +67,7 @@ void GridEditor::connectSlots()
                      &QItemSelectionModel::currentChanged,
                      this, &GridEditor::stdElementCaseSelectedChanged);
     ui->tableView->viewport()->installEventFilter(m_eventFilter);
-    QObject::connect(ui->tableView, &QAbstractItemView::clicked,
+    QObject::connect(ui->tableView, &QAbstractItemView::pressed,
                      this, &GridEditor::wallSelection);
     QObject::connect(m_eventFilter, &EventFilter::mouseReleased,
                      this, &GridEditor::wallMouseReleaseSelection);

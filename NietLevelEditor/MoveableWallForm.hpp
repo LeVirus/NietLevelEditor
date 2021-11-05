@@ -51,6 +51,7 @@ private:
 private slots:
     void treatComboBoxTriggerBehaviour(int index);
     void setConfirmed();
+    void addMove();
 private:
     Ui::MoveableWallForm *ui;
     QVBoxLayout *m_scrollLayout;

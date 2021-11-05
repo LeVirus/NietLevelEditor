@@ -1,6 +1,7 @@
 #include "TableModel.hpp"
 #include <QFont>
 #include <QBrush>
+#include <iostream>
 
 //======================================================================
 TableModel::TableModel(QObject *parent) : QAbstractTableModel(parent)
@@ -50,6 +51,8 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
         {
             return false;
         }
+        assert(index.row() < m_vectPic.size());
+        assert(index.column() < m_vectPic[index.row()].size());
         m_vectPic[index.row()][index.column()] = value.value<QPixmap>();
         return true;
     }

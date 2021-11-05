@@ -1,4 +1,5 @@
 #include "MoveableWallForm.hpp"
+#include "LineWallMove.hpp"
 #include "ui_MoveableWallForm.h"
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -21,6 +22,7 @@ void MoveableWallForm::initUI()
                      SLOT(treatComboBoxTriggerBehaviour(int)));
     QObject::connect(ui->pushButtonCancel, &QPushButton::clicked, this, &MoveableWallForm::close);
     QObject::connect(ui->pushButtonOK, &QPushButton::clicked, this, &MoveableWallForm::setConfirmed);
+    QObject::connect(ui->pushButtonAddMove, &QPushButton::clicked, this, &MoveableWallForm::addMove);
 }
 
 //======================================================================
@@ -37,6 +39,15 @@ void MoveableWallForm::setConfirmed()
 //    if()
     m_confirmed = true;
     close();
+}
+
+//======================================================================
+void MoveableWallForm::addMove()
+{
+    LineWallMove *lineLayout = new LineWallMove();
+    lineLayout->setProperties(static_cast<Direction_e>(ui->comboBoxDirection->currentIndex()),
+                              ui->spinBoxMoveNumber->value());
+    m_scrollLayout->addLayout(lineLayout);
 }
 
 //======================================================================
