@@ -16,8 +16,11 @@ MoveableWallForm::MoveableWallForm(QWidget *parent) :
 //======================================================================
 void MoveableWallForm::initUI()
 {
-    m_scrollLayout = new QVBoxLayout(this);
-    ui->scrollArea->setLayout(m_scrollLayout);
+    //set scroll
+    m_scrollLayout = new QVBoxLayout(ui->scrollArea);
+    QWidget* wid = ui->scrollArea->findChild<QWidget*>("scrollAreaWidgetContents");
+    wid->setLayout(m_scrollLayout);
+
     QObject::connect(ui->comboBoxTriggerBehaviourType, SIGNAL(currentIndexChanged(int)), this,
                      SLOT(treatComboBoxTriggerBehaviour(int)));
     QObject::connect(ui->pushButtonCancel, &QPushButton::clicked, this, &MoveableWallForm::close);
