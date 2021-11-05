@@ -17,6 +17,7 @@ SOURCES += \
     GridEditor.cpp \
     LevelDataManager.cpp \
     MainWindow.cpp \
+    MoveableWallForm.cpp \
     SelectableLineLayout.cpp \
     TableModel.cpp \
     TeleportForm.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     GridEditor.hpp \
     LevelDataManager.hpp \
     MainWindow.hpp \
+    MoveableWallForm.hpp \
     SelectableLineLayout.hpp \
     TableModel.hpp \
     TeleportForm.hpp
@@ -36,6 +38,7 @@ FORMS += \
     ConfNewLevelForm.ui \
     GridEditor.ui \
     MainWindow.ui \
+    MoveableWallForm.ui \
     TeleportForm.ui
 
 CONFIG += ldebug

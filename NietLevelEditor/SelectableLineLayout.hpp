@@ -15,6 +15,7 @@ public:
     SelectableLineLayout(const QString &radioBoxTxt, LevelElement_e typeElement, GridEditor *parent);
     void setIcons(const QVector<QIcon> &vectIcons);
     void confWallSelectWidget(GridEditor *parent);
+    void uncheckMoveableWall();
     Q_SIGNAL
     void lineSelected(LevelElement_e, int);
 private slots:

@@ -2,6 +2,7 @@
 #include <QRadioButton>
 #include <QComboBox>
 #include <QCheckBox>
+#include <QLabel>
 
 //======================================================================
 SelectableLineLayout::SelectableLineLayout(const QString &radioBoxTxt, LevelElement_e typeElement, GridEditor *parent) :
@@ -13,7 +14,7 @@ SelectableLineLayout::SelectableLineLayout(const QString &radioBoxTxt, LevelElem
     m_comboBox->setEnabled(false);
     addWidget(m_comboBox);
     QObject::connect(m_radio, &QRadioButton::toggled, m_comboBox, &QComboBox::setEnabled);
-    QObject::connect(m_radio, &QRadioButton::pressed, this, &SelectableLineLayout::selected);
+    QObject::connect(m_radio, &QRadioButton::clicked, this, &SelectableLineLayout::selected);
     QObject::connect(m_comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(selectedIndex(int)));}
 
 //======================================================================
@@ -36,9 +37,16 @@ void SelectableLineLayout::confWallSelectWidget(GridEditor *parent)
     QObject::connect(m_radio, &QRadioButton::toggled, m_wallCheckBox, &QComboBox::setEnabled);
     m_wallComboBox->addItems({"Rect/Line", "Diagonal Line", "Diagonal Rect"});
     QObject::connect(m_wallComboBox, SIGNAL(currentIndexChanged(int)), parent, SLOT(setWallDrawModeSelected(int)));
+    addWidget(new QLabel("Moveable"));
     addWidget(m_wallCheckBox);
     QObject::connect(m_wallCheckBox, SIGNAL(stateChanged(int)), parent, SLOT(setWallMoveableMode(int)));
     m_wallCheckBox->setEnabled(false);
+}
+
+//======================================================================
+void SelectableLineLayout::uncheckMoveableWall()
+{
+    m_wallCheckBox->setCheckState(Qt::CheckState::Unchecked);
 }
 
 //======================================================================

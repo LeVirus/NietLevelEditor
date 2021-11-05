@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QComboBox>
 #include <iostream>
+#include <MoveableWallForm.hpp>
 #include "TableModel.hpp"
 #include "SelectableLineLayout.hpp"
 #include "EventFilter.hpp"
@@ -47,6 +48,10 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
         m_teleportForm = new TeleportForm(this);
     }
     m_teleportForm->conf(levelWidth, levelHeight);
+    if(!m_moveableWallForm)
+    {
+        m_moveableWallForm = new MoveableWallForm(this);
+    }
     m_tableModel->setLevelSize(levelWidth, levelHeight);
     tableView->setModel(m_tableModel);
     connectSlots();
@@ -62,7 +67,7 @@ void GridEditor::connectSlots()
                      &QItemSelectionModel::currentChanged,
                      this, &GridEditor::stdElementCaseSelectedChanged);
     ui->tableView->viewport()->installEventFilter(m_eventFilter);
-    QObject::connect(ui->tableView, &QAbstractItemView::pressed,
+    QObject::connect(ui->tableView, &QAbstractItemView::clicked,
                      this, &GridEditor::wallSelection);
     QObject::connect(m_eventFilter, &EventFilter::mouseReleased,
                      this, &GridEditor::wallMouseReleaseSelection);
@@ -108,6 +113,7 @@ void GridEditor::initSelectableWidgets()
         selectLayout->setIcons(m_drawData[i]);
         if(currentEnum == LevelElement_e::WALL)
         {
+            m_memWallSelectLayout = selectLayout;
             selectLayout->confWallSelectWidget(this);
         }
         QObject::connect(selectLayout, &SelectableLineLayout::lineSelected, this, &GridEditor::setElementSelected);
@@ -478,6 +484,8 @@ QPixmap GridEditor::getSprite(const ArrayFloat_t &spriteData, const QString &ins
 //======================================================================
 void GridEditor::setElementSelected(LevelElement_e num, int currentSelect)
 {
+    m_wallMoveableMode = false;
+    m_memWallSelectLayout->uncheckMoveableWall();
     m_currentElementType = num;
     m_currentSelection = currentSelect;
     m_elementSelected = true;
@@ -520,6 +528,10 @@ void GridEditor::wallMouseReleaseSelection()
     assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
     m_wallSecondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
     setWallShape();
+    if(m_wallMoveableMode)
+    {
+        m_memWallSelectLayout->uncheckMoveableWall();
+    }
     m_tableModel->clearPreview();
     m_displayPreview = false;
 }
@@ -534,6 +546,16 @@ void GridEditor::setWallDrawModeSelected(int wallDrawMode)
 void GridEditor::setWallMoveableMode(int moveableMode)
 {
     m_wallMoveableMode = moveableMode;
+    if(m_wallMoveableMode)
+    {
+        m_moveableWallForm->init();
+        m_moveableWallForm->exec();
+        if(!m_moveableWallForm->confirmed())
+        {
+            m_wallMoveableMode = false;
+            m_memWallSelectLayout->uncheckMoveableWall();
+        }
+    }
 }
 
 //======================================================================

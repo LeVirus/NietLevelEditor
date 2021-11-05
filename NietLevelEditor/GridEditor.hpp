@@ -11,6 +11,8 @@ class QGroupBox;
 class QItemSelection;
 class EventFilter;
 class TeleportForm;
+class MoveableWallForm;
+class SelectableLineLayout;
 
 enum class LevelElement_e
 {
@@ -100,6 +102,8 @@ private:
     EventFilter *m_eventFilter;
     QModelIndex m_wallFirstCaseSelection, m_wallSecondCaseSelection;
     TeleportForm *m_teleportForm = nullptr;
+    MoveableWallForm *m_moveableWallForm = nullptr;
+    SelectableLineLayout *m_memWallSelectLayout = nullptr;
 };
 
 QString getStringFromLevelElementEnum(LevelElement_e num);

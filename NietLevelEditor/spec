@@ -14,9 +14,11 @@ Element to include :
 	Wall
 		Possibility to include several element from different geometric shape
 			Rectangle, line, point===========================OK
+		MultiSprite case!!!!
 	MoveableWall
 		Set move conf and trigger method
 	Door
+		Treat vertical lateral!!!
 	Static element
 	Pick Object
 	Enemy
