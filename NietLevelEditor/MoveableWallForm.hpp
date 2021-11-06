@@ -45,10 +45,13 @@ public:
     inline void init()
     {
         m_confirmed = false;
+        clear();
     }
     ~MoveableWallForm();
 private:
     void initUI();
+    void updateMoveLine();
+    void clear();
 private slots:
     void treatComboBoxTriggerBehaviour(int index);
     void treatComboBoxTrigger(int index);

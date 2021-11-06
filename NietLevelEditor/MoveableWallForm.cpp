@@ -46,6 +46,35 @@ void MoveableWallForm::initUI()
 }
 
 //======================================================================
+void MoveableWallForm::updateMoveLine()
+{
+    for(int i = 0; i < m_scrollLayout->children().count(); ++i)
+    {
+        static_cast<LineWallMove*>(m_scrollLayout->children()[i])->setIndex(i);
+    }
+}
+
+//======================================================================
+void MoveableWallForm::clear()
+{
+    QLayoutItem* child;
+    do
+    {
+        child = m_scrollLayout->layout()->takeAt(0);
+        if(child)
+        {
+            m_scrollLayout->removeItem(child);
+            delete child;
+        }
+        else
+        {
+            break;
+        }
+    }
+    while(true);
+}
+
+//======================================================================
 void MoveableWallForm::treatComboBoxTriggerBehaviour(int index)
 {
     assert(index <= 3);
@@ -66,7 +95,6 @@ void MoveableWallForm::treatComboBoxTriggerBehaviour(int index)
 void MoveableWallForm::treatComboBoxTrigger(int index)
 {
     assert(index <= 3);
-//    bool enabled = ;
     ui->comboBoxTriggerAppearence->setEnabled(static_cast<TriggerType_e>(index) == TriggerType_e::DISTANT_SWITCH);
 }
 
@@ -88,7 +116,7 @@ void MoveableWallForm::setConfirmed()
 //======================================================================
 void MoveableWallForm::addMove()
 {
-    LineWallMove *lineLayout = new LineWallMove();
+    LineWallMove *lineLayout = new LineWallMove(m_scrollLayout->children().count());
     lineLayout->setProperties(static_cast<Direction_e>(ui->comboBoxDirection->currentIndex()),
                               ui->spinBoxMoveNumber->value());
     m_scrollLayout->addLayout(lineLayout);

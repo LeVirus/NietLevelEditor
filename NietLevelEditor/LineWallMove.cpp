@@ -3,9 +3,19 @@
 #include <QLabel>
 
 //======================================================================
-LineWallMove::LineWallMove()
+LineWallMove::LineWallMove(int index): m_index(index)
 {
     confBaseWidgets();
+    connectSlots();
+}
+
+//======================================================================
+LineWallMove::~LineWallMove()
+{
+    delete m_pushButtonMoveUp;
+    delete m_pushButtonDelete;
+    delete m_pushButtonMoveDown;
+    delete m_label;
 }
 
 
@@ -20,6 +30,32 @@ void LineWallMove::confBaseWidgets()
     addWidget(m_pushButtonMoveUp);
     addWidget(m_pushButtonMoveDown);
     addWidget(m_pushButtonDelete);
+}
+
+//======================================================================
+void LineWallMove::connectSlots()
+{
+    QObject::connect(m_pushButtonMoveUp, &QPushButton::clicked, this, &LineWallMove::moveUp);
+    QObject::connect(m_pushButtonMoveDown, &QPushButton::clicked, this, &LineWallMove::moveDown);
+    QObject::connect(m_pushButtonDelete, &QPushButton::clicked, this, &LineWallMove::remove);
+}
+
+//======================================================================
+void LineWallMove::moveUp()
+{
+
+}
+
+//======================================================================
+void LineWallMove::moveDown()
+{
+
+}
+
+//======================================================================
+void LineWallMove::remove()
+{
+
 }
 
 //======================================================================
@@ -44,4 +80,5 @@ QString getStringFromDir(Direction_e dir)
     case Direction_e::SOUTH:
         return "SOUTH";
     }
+    return "";
 }
