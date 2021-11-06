@@ -584,8 +584,6 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
         return "Static ground objects";
     case LevelElement_e::TELEPORT:
         return "Teleport";
-    case LevelElement_e::TRIGGER:
-        return "Trigger";
     case LevelElement_e::WALL:
         return "Wall";
     case LevelElement_e::DELETE:

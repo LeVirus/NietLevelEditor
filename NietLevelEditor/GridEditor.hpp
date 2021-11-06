@@ -18,7 +18,6 @@ enum class LevelElement_e
 {
     WALL,
     DOOR,
-    TRIGGER,
     TELEPORT,
     ENEMY,
     OBJECT,
