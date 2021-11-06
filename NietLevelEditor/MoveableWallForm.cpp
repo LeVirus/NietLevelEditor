@@ -1,5 +1,7 @@
 #include "MoveableWallForm.hpp"
 #include "LineWallMove.hpp"
+#include "LevelDataManager.hpp"
+#include "GridEditor.hpp"
 #include "ui_MoveableWallForm.h"
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -13,6 +15,20 @@ MoveableWallForm::MoveableWallForm(QWidget *parent) :
 {
     ui->setupUi(this);
     initUI();
+}
+
+//======================================================================
+void MoveableWallForm::loadTriggerDisplay(const LevelDataManager &levelDataManager,
+                                          const QString &installDir)
+{
+    const std::map<QString, QString> &triggersMap = levelDataManager.getTriggerData();
+    std::optional<ArrayFloat_t> spriteData;
+    for(std::map<QString, QString>::const_iterator it = triggersMap.begin(); it != triggersMap.end(); ++it)
+    {
+        spriteData = levelDataManager.getPictureData(it->second);
+        assert(spriteData);
+        ui->comboBoxTriggerAppearence->addItem(getSprite(*spriteData, levelDataManager, installDir), "");
+    }
 }
 
 //======================================================================

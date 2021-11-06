@@ -3,6 +3,7 @@
 #include <QDialog>
 
 class QVBoxLayout;
+class LevelDataManager;
 
 namespace Ui {
 class MoveableWallForm;
@@ -34,9 +35,9 @@ enum class TriggerType_e
 class MoveableWallForm : public QDialog
 {
     Q_OBJECT
-
 public:
     explicit MoveableWallForm(QWidget *parent = nullptr);
+    void loadTriggerDisplay(const LevelDataManager &levelDataManager, const QString &installDir);
     inline bool confirmed()const
     {
         return m_confirmed;

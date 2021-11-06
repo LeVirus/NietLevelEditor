@@ -51,6 +51,7 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     if(!m_moveableWallForm)
     {
         m_moveableWallForm = new MoveableWallForm(this);
+        m_moveableWallForm->loadTriggerDisplay(m_levelDataManager, installDir);
     }
     m_tableModel->setLevelSize(levelWidth, levelHeight);
     tableView->setModel(m_tableModel);
@@ -126,7 +127,6 @@ void GridEditor::loadIconPictures(const QString &installDir)
 {
     loadWallsPictures(installDir);
     loadDoorsPictures(installDir);
-    loadTriggersPictures(installDir);
     loadTeleportsPictures(installDir);
     loadEnemiesPictures(installDir);
     loadObjectsPictures(installDir);
@@ -147,7 +147,7 @@ void GridEditor::loadWallsPictures(const QString &installDir)
     {
         spriteData = m_levelDataManager.getPictureData(it->second[0]);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
     }
 }
 
@@ -162,22 +162,7 @@ void GridEditor::loadDoorsPictures(const QString &installDir)
     {
         spriteData = m_levelDataManager.getPictureData(it->second.m_sprite);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
-    }
-}
-
-//======================================================================
-void GridEditor::loadTriggersPictures(const QString &installDir)
-{
-    const std::map<QString, QString> &triggersMap = m_levelDataManager.getTriggerData();
-    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::TRIGGER);
-    m_drawData[currentIndex].reserve(triggersMap.size());
-    std::optional<ArrayFloat_t> spriteData;
-    for(std::map<QString, QString>::const_iterator it = triggersMap.begin(); it != triggersMap.end(); ++it)
-    {
-        spriteData = m_levelDataManager.getPictureData(it->second);
-        assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
     }
 }
 
@@ -192,7 +177,7 @@ void GridEditor::loadTeleportsPictures(const QString &installDir)
     {
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
     }
 }
 
@@ -207,7 +192,7 @@ void GridEditor::loadEnemiesPictures(const QString &installDir)
     {
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
     }
 }
 
@@ -222,7 +207,7 @@ void GridEditor::loadObjectsPictures(const QString &installDir)
     {
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
     }
 }
 
@@ -237,7 +222,7 @@ void GridEditor::loadStaticCeilingElementPictures(const QString &installDir)
     {
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
     }
 }
 
@@ -252,7 +237,7 @@ void GridEditor::loadStaticGroundElementPictures(const QString &installDir)
     {
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
     }
 }
 
@@ -267,7 +252,7 @@ void GridEditor::loadBarrelsPictures(const QString &installDir)
     {
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
     }
 }
 
@@ -282,7 +267,7 @@ void GridEditor::loadExitsPictures(const QString &installDir)
     {
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, installDir));
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
     }
 }
 
@@ -471,10 +456,11 @@ void GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
 }
 
 //======================================================================
-QPixmap GridEditor::getSprite(const ArrayFloat_t &spriteData, const QString &installDir)
+QPixmap getSprite(const ArrayFloat_t &spriteData, const LevelDataManager &levelDataManager,
+                  const QString &installDir)
 {
     QString pathToCurrentTexture = installDir + "/Ressources/Textures/" +
-            m_levelDataManager.getTexturePaths()[static_cast<uint32_t>(spriteData[0])];
+            levelDataManager.getTexturePaths()[static_cast<uint32_t>(spriteData[0])];
     QPixmap image(pathToCurrentTexture);
     QSize textureSize = image.size();
     return image.copy(spriteData[1] * textureSize.width(), spriteData[2] * textureSize.height(),

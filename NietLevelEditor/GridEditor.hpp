@@ -57,7 +57,6 @@ private:
     void loadIconPictures(const QString &installDir);
     void loadWallsPictures(const QString &installDir);
     void loadDoorsPictures(const QString &installDir);
-    void loadTriggersPictures(const QString &installDir);
     void loadTeleportsPictures(const QString &installDir);
     void loadEnemiesPictures(const QString &installDir);
     void loadObjectsPictures(const QString &installDir);
@@ -75,7 +74,6 @@ private:
     void setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
                               const QPair<int, int> &bottomRightIndex,
                               bool preview = false);
-    QPixmap getSprite(const ArrayFloat_t &spriteData, const QString &installDir);
     void setCaseIcon(int x, int y, bool deleteMode = false);
     inline QIcon getCurrentSelectedIcon()const
     {
@@ -97,7 +95,6 @@ private:
     WallDrawMode_e m_wallDrawMode;
     bool m_wallMoveableMode;
     std::array<QVector<QIcon>, static_cast<uint32_t>(LevelElement_e::TOTAL)> m_drawData;
-    const int32_t CASE_SIZE_PX = 40, CASE_SPRITE_SIZE = (CASE_SIZE_PX * 4) / 5;
     bool m_elementSelected, m_displayPreview = false;
     EventFilter *m_eventFilter;
     QModelIndex m_wallFirstCaseSelection, m_wallSecondCaseSelection;
@@ -105,5 +102,7 @@ private:
     MoveableWallForm *m_moveableWallForm = nullptr;
     SelectableLineLayout *m_memWallSelectLayout = nullptr;
 };
+const int32_t CASE_SIZE_PX = 40, CASE_SPRITE_SIZE = (CASE_SIZE_PX * 4) / 5;
 
+QPixmap getSprite(const ArrayFloat_t &spriteData, const LevelDataManager &levelDataManager, const QString &installDir);
 QString getStringFromLevelElementEnum(LevelElement_e num);
