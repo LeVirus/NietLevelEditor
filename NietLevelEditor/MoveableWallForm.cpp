@@ -75,6 +75,29 @@ void MoveableWallForm::clear()
 }
 
 //======================================================================
+void MoveableWallForm::removeItemAt(int index)
+{
+    QLayoutItem* child = m_scrollLayout->layout()->takeAt(index);
+    if(child)
+    {
+        m_scrollLayout->removeItem(child);
+        delete child;
+    }
+}
+
+//======================================================================
+void MoveableWallForm::moveItemUp(int index)
+{
+
+}
+
+//======================================================================
+void MoveableWallForm::moveItemDown(int index)
+{
+
+}
+
+//======================================================================
 void MoveableWallForm::treatComboBoxTriggerBehaviour(int index)
 {
     assert(index <= 3);
@@ -120,6 +143,8 @@ void MoveableWallForm::addMove()
     lineLayout->setProperties(static_cast<Direction_e>(ui->comboBoxDirection->currentIndex()),
                               ui->spinBoxMoveNumber->value());
     m_scrollLayout->addLayout(lineLayout);
+    QObject::connect(lineLayout, SIGNAL(sigRemove(int)),
+                     this, SLOT(removeItemAt(int)));
 }
 
 //======================================================================

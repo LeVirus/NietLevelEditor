@@ -43,19 +43,19 @@ void LineWallMove::connectSlots()
 //======================================================================
 void LineWallMove::moveUp()
 {
-
+    emit sigMoveUp(m_index);
 }
 
 //======================================================================
 void LineWallMove::moveDown()
 {
-
+    emit sigMoveDown(m_index);
 }
 
 //======================================================================
 void LineWallMove::remove()
 {
-
+    emit sigRemove(m_index);
 }
 
 //======================================================================

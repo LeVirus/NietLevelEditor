@@ -22,7 +22,7 @@ private:
     void connectSlots();
 Q_SIGNALS:
     void sigMoveUp(int index);
-    void sigDown(int index);
+    void sigMoveDown(int index);
     void sigRemove(int index);
 private slots:
     void moveUp();

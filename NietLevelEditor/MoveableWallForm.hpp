@@ -53,6 +53,9 @@ private:
     void updateMoveLine();
     void clear();
 private slots:
+    void removeItemAt(int index);
+    void moveItemUp(int index);
+    void moveItemDown(int index);
     void treatComboBoxTriggerBehaviour(int index);
     void treatComboBoxTrigger(int index);
     void setConfirmed();
