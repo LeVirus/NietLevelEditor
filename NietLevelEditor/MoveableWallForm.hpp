@@ -50,6 +50,7 @@ private:
     void initUI();
 private slots:
     void treatComboBoxTriggerBehaviour(int index);
+    void treatComboBoxTrigger(int index);
     void setConfirmed();
     void addMove();
 private:

@@ -191,9 +191,9 @@
   <widget class="QComboBox" name="comboBoxTriggerBehaviourType">
    <property name="geometry">
     <rect>
-     <x>200</x>
+     <x>170</x>
      <y>220</y>
-     <width>79</width>
+     <width>121</width>
      <height>24</height>
     </rect>
    </property>
@@ -217,6 +217,19 @@
      <string>AUTO</string>
     </property>
    </item>
+  </widget>
+  <widget class="QComboBox" name="comboBoxTriggerAppearence">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>260</y>
+     <width>79</width>
+     <height>24</height>
+    </rect>
+   </property>
   </widget>
  </widget>
  <resources/>
