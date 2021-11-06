@@ -1,6 +1,5 @@
 #include "LineWallMove.hpp"
 #include <QPushButton>
-#include <QLabel>
 
 //======================================================================
 LineWallMove::LineWallMove(int index): m_index(index)

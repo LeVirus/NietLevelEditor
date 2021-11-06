@@ -78,23 +78,38 @@ void MoveableWallForm::clear()
 void MoveableWallForm::removeItemAt(int index)
 {
     QLayoutItem* child = m_scrollLayout->layout()->takeAt(index);
-    if(child)
-    {
-        m_scrollLayout->removeItem(child);
-        delete child;
-    }
+    assert(child);
+    m_scrollLayout->removeItem(child);
+    delete child;
+    updateMoveLine();
 }
 
 //======================================================================
 void MoveableWallForm::moveItemUp(int index)
 {
-
+    if(index == 0)
+    {
+        return;
+    }
+    LineWallMove* childA = static_cast<LineWallMove*>(m_scrollLayout->layout()->itemAt(index));
+    assert(childA);
+    LineWallMove* childB = static_cast<LineWallMove*>(m_scrollLayout->layout()->itemAt(index - 1));
+    assert(childB);
+    swapContent(childA, childB);
 }
 
 //======================================================================
 void MoveableWallForm::moveItemDown(int index)
 {
-
+    if(index == m_scrollLayout->layout()->count() - 1)
+    {
+        return;
+    }
+    LineWallMove* childA = static_cast<LineWallMove*>(m_scrollLayout->layout()->itemAt(index));
+    assert(childA);
+    LineWallMove* childB = static_cast<LineWallMove*>(m_scrollLayout->layout()->itemAt(index + 1));
+    assert(childB);
+    swapContent(childA, childB);
 }
 
 //======================================================================
@@ -143,8 +158,9 @@ void MoveableWallForm::addMove()
     lineLayout->setProperties(static_cast<Direction_e>(ui->comboBoxDirection->currentIndex()),
                               ui->spinBoxMoveNumber->value());
     m_scrollLayout->addLayout(lineLayout);
-    QObject::connect(lineLayout, SIGNAL(sigRemove(int)),
-                     this, SLOT(removeItemAt(int)));
+    QObject::connect(lineLayout, SIGNAL(sigRemove(int)), this, SLOT(removeItemAt(int)));
+    QObject::connect(lineLayout, SIGNAL(sigMoveDown(int)), this, SLOT(moveItemDown(int)));
+    QObject::connect(lineLayout, SIGNAL(sigMoveUp(int)), this, SLOT(moveItemUp(int)));
 }
 
 //======================================================================
@@ -153,3 +169,12 @@ MoveableWallForm::~MoveableWallForm()
     delete ui;
 }
 
+//======================================================================
+void swapContent(LineWallMove *lineWallA, LineWallMove *lineWallB)
+{
+    assert(lineWallA);
+    assert(lineWallB);
+    QString str = lineWallA->getQString();
+    lineWallA->setQString(lineWallB->getQString());
+    lineWallB->setQString(str);
+}

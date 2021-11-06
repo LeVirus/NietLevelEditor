@@ -4,6 +4,7 @@
 
 class QVBoxLayout;
 class LevelDataManager;
+class LineWallMove;
 
 namespace Ui {
 class MoveableWallForm;
@@ -65,3 +66,5 @@ private:
     QVBoxLayout *m_scrollLayout;
     bool m_confirmed;
 };
+
+void swapContent(LineWallMove *lineWallA, LineWallMove *lineWallB);

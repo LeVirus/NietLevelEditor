@@ -1,9 +1,9 @@
 #pragma once
 
-class QLabel;
 class QPushButton;
 
 #include <QHBoxLayout>
+#include <QLabel>
 #include "MoveableWallForm.hpp"
 
 class LineWallMove : public QHBoxLayout
@@ -16,6 +16,18 @@ public:
     inline void setIndex(int index)
     {
         m_index = index;
+    }
+    inline int getIndex()const
+    {
+        return m_index;
+    }
+    inline void setQString(const QString &str)
+    {
+        m_label->setText(str);
+    }
+    inline QString getQString()const
+    {
+        return m_label->text();
     }
 private:
     void confBaseWidgets();
