@@ -64,14 +64,14 @@ private:
     void loadStaticGroundElementPictures(const QString &installDir);
     void loadBarrelsPictures(const QString &installDir);
     void loadExitsPictures(const QString &installDir);
-    void setWallShape(bool preview = false);
+    bool setWallShape(bool preview = false);
     void setWallLineRectShape(const QPair<int, int> &topLeftIndex,
                               const QPair<int, int> &bottomRightIndex,
                               bool preview = false);
     void setWallDiagLineShape(const QPair<int, int> &topLeftIndex,
                               const QPair<int, int> &bottomRightIndex,
                               bool preview = false);
-    void setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
+    bool setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
                               const QPair<int, int> &bottomRightIndex,
                               bool preview = false);
     void setCaseIcon(int x, int y, bool deleteMode = false);
