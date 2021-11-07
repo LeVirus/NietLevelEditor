@@ -18,6 +18,7 @@ public:
     void uncheckMoveableWall();
     Q_SIGNAL
     void lineSelected(LevelElement_e, int);
+    std::optional<int> getSelected();
 private slots:
     void selected();
     void selectedIndex(int currentIndex);

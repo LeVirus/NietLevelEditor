@@ -51,7 +51,7 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     if(!m_moveableWallForm)
     {
         m_moveableWallForm = new MoveableWallForm(this);
-        m_moveableWallForm->loadTriggerDisplay(m_levelDataManager, installDir);
+        m_moveableWallForm->setTriggerIcons(m_drawData[static_cast<int>(LevelElement_e::TRIGGER)]);
     }
     m_tableModel->setLevelSize(levelWidth, levelHeight);
     tableView->setModel(m_tableModel);
@@ -101,6 +101,15 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
 }
 
 //======================================================================
+QIcon GridEditor::getCurrentSelectedIcon() const
+{
+    uint32_t index = static_cast<uint32_t>(m_currentElementType);
+    assert(index < m_drawData.size());
+    assert(m_currentSelection < m_drawData[index].size());
+    return m_drawData[index][m_currentSelection];
+}
+
+//======================================================================
 void GridEditor::initSelectableWidgets()
 {
     QVBoxLayout *selectableLayout = findChild<QVBoxLayout*>("SelectableLayout");
@@ -130,10 +139,26 @@ void GridEditor::loadIconPictures(const QString &installDir)
     loadTeleportsPictures(installDir);
     loadEnemiesPictures(installDir);
     loadObjectsPictures(installDir);
+    loadTriggerDisplay(installDir);
     loadStaticCeilingElementPictures(installDir);
     loadStaticGroundElementPictures(installDir);
     loadBarrelsPictures(installDir);
     loadExitsPictures(installDir);
+}
+
+//======================================================================
+void GridEditor::loadTriggerDisplay(const QString &installDir)
+{
+    const std::map<QString, QString> &triggersMap = m_levelDataManager.getTriggerData();
+    std::optional<ArrayFloat_t> spriteData;
+    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::TRIGGER);
+    m_drawData[currentIndex].reserve(triggersMap.size());
+    for(std::map<QString, QString>::const_iterator it = triggersMap.begin(); it != triggersMap.end(); ++it)
+    {
+        spriteData = m_levelDataManager.getPictureData(it->second);
+        assert(spriteData);
+        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
+    }
 }
 
 //======================================================================
@@ -507,6 +532,13 @@ void GridEditor::wallSelection(const QModelIndex &index)
 //======================================================================
 void GridEditor::wallMouseReleaseSelection()
 {
+    if(m_currentElementType == LevelElement_e::TRIGGER)
+    {
+        std::optional<int> index = m_memWallSelectLayout->getSelected();
+        assert(index);
+        setElementSelected(LevelElement_e::WALL, *index);
+        return;
+    }
     if(m_currentElementType != LevelElement_e::WALL)
     {
         return;
@@ -517,6 +549,12 @@ void GridEditor::wallMouseReleaseSelection()
     if(m_wallMoveableMode)
     {
         m_memWallSelectLayout->uncheckMoveableWall();
+        if(m_moveableWallForm->isDistantTriggerMode())
+        {
+            m_currentElementType = LevelElement_e::TRIGGER;
+            m_currentSelection = m_moveableWallForm->getCurrentTriggerAppearence();
+            m_wallMoveableMode = false;
+        }
     }
     m_tableModel->clearPreview();
     m_displayPreview = false;
@@ -586,6 +624,8 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
         return "Teleport";
     case LevelElement_e::WALL:
         return "Wall";
+    case LevelElement_e::TRIGGER:
+        return "Trigger";
     case LevelElement_e::DELETE:
         return "Delete";
     case LevelElement_e::TOTAL:

@@ -18,17 +18,26 @@ MoveableWallForm::MoveableWallForm(QWidget *parent) :
 }
 
 //======================================================================
-void MoveableWallForm::loadTriggerDisplay(const LevelDataManager &levelDataManager,
-                                          const QString &installDir)
+int MoveableWallForm::getCurrentTriggerAppearence()
 {
-    const std::map<QString, QString> &triggersMap = levelDataManager.getTriggerData();
-    std::optional<ArrayFloat_t> spriteData;
-    for(std::map<QString, QString>::const_iterator it = triggersMap.begin(); it != triggersMap.end(); ++it)
+    return ui->comboBoxTriggerAppearence->currentIndex();
+}
+
+//======================================================================
+void MoveableWallForm::setTriggerIcons(const QVector<QIcon> &vectIcon)
+{
+    for(int i = 0; i < vectIcon.size(); ++i)
     {
-        spriteData = levelDataManager.getPictureData(it->second);
-        assert(spriteData);
-        ui->comboBoxTriggerAppearence->addItem(getSprite(*spriteData, levelDataManager, installDir), "");
+        ui->comboBoxTriggerAppearence->addItem(vectIcon[i], "");
     }
+}
+
+//======================================================================
+void MoveableWallForm::init()
+{
+    m_distantTriggerMode = false;
+    m_confirmed = false;
+    clear();
 }
 
 //======================================================================
@@ -142,6 +151,8 @@ void MoveableWallForm::setConfirmed()
     if(!m_scrollLayout->isEmpty())
     {
         m_confirmed = true;
+        m_distantTriggerMode = (static_cast<TriggerType_e>(ui->comboBoxTriggerType->currentIndex()) ==
+                                TriggerType_e::DISTANT_SWITCH);
     }
     else
     {

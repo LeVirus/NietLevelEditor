@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <QDialog>
 
@@ -38,16 +38,17 @@ class MoveableWallForm : public QDialog
     Q_OBJECT
 public:
     explicit MoveableWallForm(QWidget *parent = nullptr);
-    void loadTriggerDisplay(const LevelDataManager &levelDataManager, const QString &installDir);
     inline bool confirmed()const
     {
         return m_confirmed;
     }
-    inline void init()
+    inline bool isDistantTriggerMode()
     {
-        m_confirmed = false;
-        clear();
+        return m_distantTriggerMode;
     }
+    int getCurrentTriggerAppearence();
+    void setTriggerIcons(const QVector<QIcon> &vectIcon);
+    void init();
     ~MoveableWallForm();
 private:
     void initUI();
@@ -65,6 +66,7 @@ private:
     Ui::MoveableWallForm *ui;
     QVBoxLayout *m_scrollLayout;
     bool m_confirmed;
+    bool m_distantTriggerMode;
 };
 
 void swapContent(LineWallMove *lineWallA, LineWallMove *lineWallB);

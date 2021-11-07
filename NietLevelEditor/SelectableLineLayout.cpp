@@ -50,6 +50,16 @@ void SelectableLineLayout::uncheckMoveableWall()
 }
 
 //======================================================================
+std::optional<int> SelectableLineLayout::getSelected()
+{
+    if(!m_comboBox)
+    {
+        return {};
+    }
+    return m_comboBox->currentIndex();
+}
+
+//======================================================================
 void SelectableLineLayout::selectedIndex(int currentIndex)
 {
     emit lineSelected(m_elementType, currentIndex);

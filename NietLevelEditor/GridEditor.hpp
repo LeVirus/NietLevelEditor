@@ -25,6 +25,7 @@ enum class LevelElement_e
     STATIC_GROUND,
     BARREL,
     EXIT,
+    TRIGGER,
     DELETE,
     TOTAL
 };
@@ -74,10 +75,7 @@ private:
                               const QPair<int, int> &bottomRightIndex,
                               bool preview = false);
     void setCaseIcon(int x, int y, bool deleteMode = false);
-    inline QIcon getCurrentSelectedIcon()const
-    {
-        return m_drawData[static_cast<uint32_t>(m_currentElementType)][m_currentSelection];
-    }
+    QIcon getCurrentSelectedIcon()const;
 private slots:
     void setElementSelected(LevelElement_e num, int currentSelect);
     void stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);
@@ -85,6 +83,7 @@ private slots:
     void wallMouseReleaseSelection();
     void setWallDrawModeSelected(int wallDrawMode);
     void setWallMoveableMode(int moveableMode);
+    void loadTriggerDisplay(const QString &installDir);
 private:
     Ui::GridEditor *ui;
     LevelDataManager m_levelDataManager;
