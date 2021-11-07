@@ -60,6 +60,12 @@ std::optional<int> SelectableLineLayout::getSelected()
 }
 
 //======================================================================
+void SelectableLineLayout::setRadioButtonEnabled(bool enable)
+{
+    m_radio->setEnabled(enable);
+}
+
+//======================================================================
 void SelectableLineLayout::selectedIndex(int currentIndex)
 {
     emit lineSelected(m_elementType, currentIndex);

@@ -77,6 +77,7 @@ private:
     void setCaseIcon(int x, int y, bool deleteMode = false);
     QIcon getCurrentSelectedIcon()const;
     void updateGridView();
+    void setLineSelectableEnabled(bool enable);
 private slots:
     void setElementSelected(LevelElement_e num, int currentSelect);
     void stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);

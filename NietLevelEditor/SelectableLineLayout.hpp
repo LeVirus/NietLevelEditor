@@ -19,6 +19,7 @@ public:
     Q_SIGNAL
     void lineSelected(LevelElement_e, int);
     std::optional<int> getSelected();
+    void setRadioButtonEnabled(bool enable);
 private slots:
     void selected();
     void selectedIndex(int currentIndex);

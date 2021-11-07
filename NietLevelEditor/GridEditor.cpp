@@ -116,6 +116,16 @@ void GridEditor::updateGridView()
 }
 
 //======================================================================
+void GridEditor::setLineSelectableEnabled(bool enable)
+{
+    const QObjectList &children = ui->SelectableLayout->children();
+    for(int i = 0; i < children.size(); ++i)
+    {
+        static_cast<SelectableLineLayout*>(children[i])->setRadioButtonEnabled(enable);
+    }
+}
+
+//======================================================================
 void GridEditor::initSelectableWidgets()
 {
     QVBoxLayout *selectableLayout = findChild<QVBoxLayout*>("SelectableLayout");
@@ -548,6 +558,7 @@ void GridEditor::wallMouseReleaseSelection()
         std::optional<int> index = m_memWallSelectLayout->getSelected();
         assert(index);
         setElementSelected(LevelElement_e::WALL, *index);
+        setLineSelectableEnabled(true);
         updateGridView();
         return;
     }
@@ -566,6 +577,7 @@ void GridEditor::wallMouseReleaseSelection()
             if(m_moveableWallForm->isDistantTriggerMode())
             {
                 m_currentElementType = LevelElement_e::TRIGGER;
+                setLineSelectableEnabled(false);
                 m_currentSelection = m_moveableWallForm->getCurrentTriggerAppearence();
                 m_wallMoveableMode = false;
             }
