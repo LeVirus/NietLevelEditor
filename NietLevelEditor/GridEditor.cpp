@@ -110,6 +110,12 @@ QIcon GridEditor::getCurrentSelectedIcon() const
 }
 
 //======================================================================
+void GridEditor::updateGridView()
+{
+    emit ui->tableView->model()->dataChanged(QModelIndex(), QModelIndex());
+}
+
+//======================================================================
 void GridEditor::initSelectableWidgets()
 {
     QVBoxLayout *selectableLayout = findChild<QVBoxLayout*>("SelectableLayout");
@@ -335,7 +341,7 @@ void GridEditor::setWallShape(bool preview)
         break;
     }
     //quick fix
-    emit ui->tableView->model()->dataChanged(QModelIndex(), QModelIndex());
+    updateGridView();
 }
 
 //======================================================================
@@ -505,7 +511,7 @@ void GridEditor::setElementSelected(LevelElement_e num, int currentSelect)
 //======================================================================
 void GridEditor::stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous)
 {
-    if(!m_elementSelected)
+    if(!m_elementSelected || m_currentElementType == LevelElement_e::TRIGGER)
     {
         return;
     }
@@ -534,9 +540,12 @@ void GridEditor::wallMouseReleaseSelection()
 {
     if(m_currentElementType == LevelElement_e::TRIGGER)
     {
+        QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
+        setCaseIcon(caseIndex.column(), caseIndex.row());
         std::optional<int> index = m_memWallSelectLayout->getSelected();
         assert(index);
         setElementSelected(LevelElement_e::WALL, *index);
+        updateGridView();
         return;
     }
     if(m_currentElementType != LevelElement_e::WALL)
