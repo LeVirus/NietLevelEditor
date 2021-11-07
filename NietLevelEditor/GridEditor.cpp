@@ -135,6 +135,10 @@ void GridEditor::initSelectableWidgets()
     for(uint32_t i = 0; i < static_cast<uint32_t>(LevelElement_e::TOTAL); ++i)
     {
         currentEnum = static_cast<LevelElement_e>(i);
+        if(currentEnum == LevelElement_e::TRIGGER)
+        {
+            continue;
+        }
         SelectableLineLayout *selectLayout = new SelectableLineLayout(getStringFromLevelElementEnum(currentEnum), currentEnum, this);
         selectableLayout->addLayout(selectLayout);
         selectLayout->setIcons(m_drawData[i]);
