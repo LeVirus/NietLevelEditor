@@ -16,10 +16,10 @@ public:
     void setIcons(const QVector<QIcon> &vectIcons);
     void confWallSelectWidget(GridEditor *parent);
     void uncheckMoveableWall();
-    Q_SIGNAL
-    void lineSelected(LevelElement_e, int);
+    void setWallWidgetsEnabled(bool enable);
     std::optional<int> getSelected();
     void setRadioButtonEnabled(bool enable);
+    Q_SIGNAL void lineSelected(LevelElement_e, int);
 private slots:
     void selected();
     void selectedIndex(int currentIndex);

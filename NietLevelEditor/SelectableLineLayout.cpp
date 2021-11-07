@@ -22,7 +22,7 @@ void SelectableLineLayout::setIcons(const QVector<QIcon> &vectIcons)
 {
     for(int32_t i = 0; i < vectIcons.size(); ++i)
     {
-        m_comboBox->addItem(vectIcons[i], "D");
+        m_comboBox->addItem(vectIcons[i], "");
     }
 }
 
@@ -47,6 +47,20 @@ void SelectableLineLayout::confWallSelectWidget(GridEditor *parent)
 void SelectableLineLayout::uncheckMoveableWall()
 {
     m_wallCheckBox->setCheckState(Qt::CheckState::Unchecked);
+}
+
+//======================================================================
+void SelectableLineLayout::setWallWidgetsEnabled(bool enable)
+{
+    m_comboBox->setEnabled(enable);
+    if(m_wallCheckBox)
+    {
+        m_wallCheckBox->setEnabled(enable);
+    }
+    if(m_wallComboBox)
+    {
+        m_wallComboBox->setEnabled(enable);
+    }
 }
 
 //======================================================================

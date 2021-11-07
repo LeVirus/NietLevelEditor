@@ -119,6 +119,7 @@ void GridEditor::updateGridView()
 void GridEditor::setLineSelectableEnabled(bool enable)
 {
     const QObjectList &children = ui->SelectableLayout->children();
+    m_memWallSelectLayout->setWallWidgetsEnabled(enable);
     for(int i = 0; i < children.size(); ++i)
     {
         static_cast<SelectableLineLayout*>(children[i])->setRadioButtonEnabled(enable);
@@ -514,8 +515,11 @@ QPixmap getSprite(const ArrayFloat_t &spriteData, const LevelDataManager &levelD
 //======================================================================
 void GridEditor::setElementSelected(LevelElement_e num, int currentSelect)
 {
-    m_wallMoveableMode = false;
-    m_memWallSelectLayout->uncheckMoveableWall();
+    if(num != LevelElement_e::WALL)
+    {
+        m_wallMoveableMode = false;
+        m_memWallSelectLayout->uncheckMoveableWall();
+    }
     m_currentElementType = num;
     m_currentSelection = currentSelect;
     m_elementSelected = true;
