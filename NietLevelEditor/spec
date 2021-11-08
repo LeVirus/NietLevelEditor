@@ -19,6 +19,8 @@ Element to include :
 		Set move conf and trigger method========================OK
 	Door
 		Treat vertical lateral!!!==============================OK
+	Teleport
+		Set Visual teleport case
 	Static element
 	Pick Object
 	Enemy
@@ -29,6 +31,7 @@ Element to include :
 		Textured ground ceiling
 	Define Player departure
 	Define Music
-
+	
+Fix memory leak
 The software have to take a standard ini conf file as input to identify existing element (graphic and physic)
 

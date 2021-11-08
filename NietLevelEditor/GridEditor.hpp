@@ -27,6 +27,7 @@ enum class LevelElement_e
     EXIT,
     TRIGGER,
     DELETE,
+    PLAYER_DEPARTURE,
     TOTAL
 };
 
@@ -54,6 +55,7 @@ private:
     void connectSlots();
     void setStdTableSize();
     void initSelectableWidgets();
+    void initButtons();
     void loadIconPictures(const QString &installDir);
     void loadWallsPictures(const QString &installDir);
     void loadDoorsPictures(const QString &installDir);
@@ -75,6 +77,7 @@ private:
                               const QPair<int, int> &bottomRightIndex,
                               bool preview = false);
     void setCaseIcon(int x, int y, bool deleteMode = false);
+    void setPlayerDeparture(int x, int y);
     QIcon getCurrentSelectedIcon()const;
     void updateGridView();
     void setLineSelectableEnabled(bool enable);

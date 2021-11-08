@@ -5,17 +5,21 @@
 #include <QLabel>
 
 //======================================================================
-SelectableLineLayout::SelectableLineLayout(const QString &radioBoxTxt, LevelElement_e typeElement, GridEditor *parent) :
+SelectableLineLayout::SelectableLineLayout(const QString &radioBoxTxt,
+                                           LevelElement_e typeElement, GridEditor *parent) :
     m_radio(new QRadioButton(radioBoxTxt, parent)),
     m_comboBox(new QComboBox(parent)),
     m_elementType(typeElement)
 {
     addWidget(m_radio);
-    m_comboBox->setEnabled(false);
-    addWidget(m_comboBox);
     QObject::connect(m_radio, &QRadioButton::toggled, m_comboBox, &QComboBox::setEnabled);
     QObject::connect(m_radio, &QRadioButton::clicked, this, &SelectableLineLayout::selected);
-    QObject::connect(m_comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(selectedIndex(int)));}
+    if(m_elementType != LevelElement_e::DELETE && m_elementType != LevelElement_e::PLAYER_DEPARTURE)
+    {
+        m_comboBox->setEnabled(false);
+        addWidget(m_comboBox);
+        QObject::connect(m_comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(selectedIndex(int)));}
+    }
 
 //======================================================================
 void SelectableLineLayout::setIcons(const QVector<QIcon> &vectIcons)

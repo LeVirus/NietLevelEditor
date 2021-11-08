@@ -37,6 +37,7 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     m_elementSelected = false;
     loadIconPictures(installDir);
     initSelectableWidgets();
+    initButtons();
     QTableView *tableView = findChild<QTableView*>("tableView");
     assert(tableView);
     if(!m_tableModel)
@@ -101,6 +102,16 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
 }
 
 //======================================================================
+void GridEditor::setPlayerDeparture(int x, int y)
+{
+    QModelIndex index = m_tableModel->index(x, y, QModelIndex());
+    QPixmap pix(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
+    pix.fill(Qt::darkBlue);
+    m_tableModel->setData(index, QVariant(pix));
+    updateGridView();
+}
+
+//======================================================================
 QIcon GridEditor::getCurrentSelectedIcon() const
 {
     uint32_t index = static_cast<uint32_t>(m_currentElementType);
@@ -129,8 +140,6 @@ void GridEditor::setLineSelectableEnabled(bool enable)
 //======================================================================
 void GridEditor::initSelectableWidgets()
 {
-    QVBoxLayout *selectableLayout = findChild<QVBoxLayout*>("SelectableLayout");
-    assert(selectableLayout);
     LevelElement_e currentEnum;
     for(uint32_t i = 0; i < static_cast<uint32_t>(LevelElement_e::TOTAL); ++i)
     {
@@ -140,7 +149,7 @@ void GridEditor::initSelectableWidgets()
             continue;
         }
         SelectableLineLayout *selectLayout = new SelectableLineLayout(getStringFromLevelElementEnum(currentEnum), currentEnum, this);
-        selectableLayout->addLayout(selectLayout);
+        ui->SelectableLayout->addLayout(selectLayout);
         selectLayout->setIcons(m_drawData[i]);
         if(currentEnum == LevelElement_e::WALL)
         {
@@ -151,6 +160,13 @@ void GridEditor::initSelectableWidgets()
     }
 }
 
+//======================================================================
+void GridEditor::initButtons()
+{
+//    QPushButton *button = new QPushButton("Player Departure", this);
+//    QObject::connect(button, &QPushButton::clicked, this, &GridEditor::setElementSelected);
+//    ui->SelectableLayout->addWidget(button);
+}
 
 //======================================================================
 void GridEditor::loadIconPictures(const QString &installDir)
@@ -569,8 +585,12 @@ void GridEditor::stdElementCaseSelectedChanged(const QModelIndex &current, const
         setWallShape(true);
         return;
     }
-    setCaseIcon(current.column(), current.row(),
-                m_currentElementType == LevelElement_e::DELETE);
+    if(m_currentElementType == LevelElement_e::PLAYER_DEPARTURE)
+    {
+        setPlayerDeparture(current.column(), current.row());
+        return;
+    }
+    setCaseIcon(current.column(), current.row(), m_currentElementType == LevelElement_e::DELETE);
 }
 
 //======================================================================
@@ -691,6 +711,8 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
         return "Trigger";
     case LevelElement_e::DELETE:
         return "Delete";
+    case LevelElement_e::PLAYER_DEPARTURE:
+        return "Player Departure";
     case LevelElement_e::TOTAL:
         assert(false);
     }
