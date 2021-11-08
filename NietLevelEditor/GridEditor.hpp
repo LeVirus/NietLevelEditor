@@ -103,6 +103,7 @@ private:
     SelectableLineLayout *m_memWallSelectLayout = nullptr;
 };
 const int32_t CASE_SIZE_PX = 40, CASE_SPRITE_SIZE = (CASE_SIZE_PX * 4) / 5;
-
-QPixmap getSprite(const ArrayFloat_t &spriteData, const LevelDataManager &levelDataManager, const QString &installDir);
+QPixmap getSprite(const ArrayFloat_t &spriteData, const LevelDataManager &levelDataManager,
+                  const QString &installDir);
 QString getStringFromLevelElementEnum(LevelElement_e num);
+

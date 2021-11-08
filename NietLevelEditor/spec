@@ -16,7 +16,7 @@ Element to include :
 			Rectangle, line, point===========================OK
 		MultiSprite case!!!!
 	MoveableWall
-		Set move conf and trigger method
+		Set move conf and trigger method========================OK
 	Door
 		Treat vertical lateral!!!
 	Static element

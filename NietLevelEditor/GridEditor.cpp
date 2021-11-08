@@ -204,11 +204,24 @@ void GridEditor::loadDoorsPictures(const QString &installDir)
     uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::DOOR);
     m_drawData[currentIndex].reserve(doorsMap.size());
     std::optional<ArrayFloat_t> spriteData;
+    QPair<int32_t, int32_t> pairScaled;
+    bool vertical;
     for(std::map<QString, DoorData>::const_iterator it = doorsMap.begin(); it != doorsMap.end(); ++it)
     {
+        vertical = it->second.m_vertical;
+        pairScaled = vertical ? QPair<int32_t, int32_t>{CASE_SPRITE_SIZE / 5, CASE_SPRITE_SIZE} :
+        QPair<int32_t, int32_t>{CASE_SPRITE_SIZE, CASE_SPRITE_SIZE / 5};
         spriteData = m_levelDataManager.getPictureData(it->second.m_sprite);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
+        QPixmap pixmap = getSprite(*spriteData, m_levelDataManager, installDir);
+        if(vertical)
+        {
+            QTransform rotate_disc;
+            rotate_disc.rotate(90.0);
+            pixmap = pixmap.transformed(rotate_disc);
+        }
+        pixmap = pixmap.scaled(pairScaled.first, pairScaled.second);
+        m_drawData[currentIndex].push_back(pixmap);
     }
 }
 
@@ -513,7 +526,8 @@ QPixmap getSprite(const ArrayFloat_t &spriteData, const LevelDataManager &levelD
     QPixmap image(pathToCurrentTexture);
     QSize textureSize = image.size();
     return image.copy(spriteData[1] * textureSize.width(), spriteData[2] * textureSize.height(),
-            spriteData[3] * textureSize.width(), spriteData[4] * textureSize.height()).scaled(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
+            spriteData[3] * textureSize.width(), spriteData[4] *
+            textureSize.height()).scaled(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
 }
 
 //======================================================================
