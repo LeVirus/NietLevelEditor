@@ -204,24 +204,38 @@ void GridEditor::loadDoorsPictures(const QString &installDir)
     uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::DOOR);
     m_drawData[currentIndex].reserve(doorsMap.size());
     std::optional<ArrayFloat_t> spriteData;
-    QPair<int32_t, int32_t> pairScaled;
     bool vertical;
+    const int DOOR_POS = (CASE_SPRITE_SIZE / 2 - CASE_SPRITE_SIZE / 10),
+            DOOR_WIDTH = CASE_SPRITE_SIZE / 5;
     for(std::map<QString, DoorData>::const_iterator it = doorsMap.begin(); it != doorsMap.end(); ++it)
     {
+        QPixmap final(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
+        final.fill(Qt::transparent);
+        QPainter paint(&final);
         vertical = it->second.m_vertical;
-        pairScaled = vertical ? QPair<int32_t, int32_t>{CASE_SPRITE_SIZE / 5, CASE_SPRITE_SIZE} :
-        QPair<int32_t, int32_t>{CASE_SPRITE_SIZE, CASE_SPRITE_SIZE / 5};
         spriteData = m_levelDataManager.getPictureData(it->second.m_sprite);
         assert(spriteData);
-        QPixmap pixmap = getSprite(*spriteData, m_levelDataManager, installDir);
+        QPixmap baseDoorSprite = getSprite(*spriteData, m_levelDataManager, installDir);
         if(vertical)
         {
             QTransform rotate_disc;
             rotate_disc.rotate(90.0);
-            pixmap = pixmap.transformed(rotate_disc);
+            baseDoorSprite  = baseDoorSprite .transformed(rotate_disc);
+            paint.drawPixmap(DOOR_POS, 0, DOOR_WIDTH, CASE_SPRITE_SIZE, baseDoorSprite);
         }
-        pixmap = pixmap.scaled(pairScaled.first, pairScaled.second);
-        m_drawData[currentIndex].push_back(pixmap);
+        else
+        {
+            paint.drawPixmap(0, DOOR_POS, CASE_SPRITE_SIZE , DOOR_WIDTH, baseDoorSprite);
+        }
+        if(it->second.m_cardID)
+        {
+            std::optional<ArrayFloat_t> cardSpriteData = m_levelDataManager.getPictureData(*it->second.m_cardID);
+            assert(cardSpriteData);
+            QPixmap cardSprite = getSprite(*cardSpriteData, m_levelDataManager, installDir);
+            paint.drawPixmap(CASE_SPRITE_SIZE / 5 * 4, CASE_SPRITE_SIZE / 10,
+                             CASE_SPRITE_SIZE / 4, CASE_SPRITE_SIZE / 3, cardSprite);
+        }
+        m_drawData[currentIndex].push_back(final);
     }
 }
 

@@ -166,7 +166,7 @@ bool LevelDataManager::loadDoorData(const QString &key)
     QString cardID = m_INIFile->value(key + "/CardID", "").toString();
     if(!cardID.isEmpty())
     {
-        m_doorElement[key].m_cardID = cardID;
+        m_doorElement[key].m_cardID = m_INIFile->value(cardID + "/Sprite", "").toString();
     }
     return true;
 }

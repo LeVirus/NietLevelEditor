@@ -18,7 +18,7 @@ Element to include :
 	MoveableWall
 		Set move conf and trigger method========================OK
 	Door
-		Treat vertical lateral!!!
+		Treat vertical lateral!!!==============================OK
 	Static element
 	Pick Object
 	Enemy
