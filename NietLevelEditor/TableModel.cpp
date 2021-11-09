@@ -28,7 +28,7 @@ QVariant TableModel::data(const QModelIndex &index, int role)const
     {
     case Qt::DecorationRole:
     {
-        return m_vectPic[index.column()][index.row()];
+        return m_vectPic[index.column()][index.row()].first;
     }
     case Qt::BackgroundRole:
     {
@@ -47,16 +47,37 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
 {
     if (role == Qt::EditRole)
     {
-        if (!checkIndex(index))
+        if(!checkIndex(index))
         {
             return false;
         }
         assert(index.row() < m_vectPic.size());
         assert(index.column() < m_vectPic[index.row()].size());
-        m_vectPic[index.row()][index.column()] = value.value<QPixmap>();
+        m_vectPic[index.row()][index.column()].first = value.value<QPixmap>();
         return true;
     }
     return false;
+}
+
+//======================================================================
+bool TableModel::setIdData(const QModelIndex &index, const CaseData &value)
+{
+    if(!checkIndex(index))
+    {
+        return false;
+    }
+    assert(index.row() < m_vectPic.size());
+    assert(index.column() < m_vectPic[index.row()].size());
+    m_vectPic[index.row()][index.column()].second = value;
+    if(value.m_type == LevelElement_e::PLAYER_DEPARTURE)
+    {
+        if(m_departurePlayer)
+        {
+            removeData(this->index(m_departurePlayer->first, m_departurePlayer->second, QModelIndex()));
+        }
+        m_departurePlayer = {index.row(), index.column()};
+    }
+    return true;
 }
 
 //======================================================================
@@ -67,7 +88,12 @@ bool TableModel::removeData(const QModelIndex &index)
         return false;
     }
     QPixmap pix;
-    m_vectPic[index.row()][index.column()].swap(pix);
+    m_vectPic[index.row()][index.column()].first.swap(pix);
+    if(m_vectPic[index.row()][index.column()].second->m_type == LevelElement_e::PLAYER_DEPARTURE)
+    {
+        m_departurePlayer = {};
+    }
+    m_vectPic[index.row()][index.column()].second = {};
     return true;
 }
 

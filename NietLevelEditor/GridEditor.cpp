@@ -108,6 +108,7 @@ void GridEditor::setPlayerDeparture(int x, int y)
     QPixmap pix(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
     pix.fill(Qt::darkBlue);
     m_tableModel->setData(index, QVariant(pix));
+    m_tableModel->setIdData(index, CaseData{LevelElement_e::PLAYER_DEPARTURE, ""});
     updateGridView();
 }
 

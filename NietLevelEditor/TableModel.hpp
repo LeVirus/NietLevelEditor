@@ -4,6 +4,13 @@
 #include <QString>
 #include <QVector>
 #include <QBitArray>
+#include "GridEditor.hpp"
+
+struct CaseData
+{
+    LevelElement_e m_type;
+    QString m_id;
+};
 
 class TableModel : public QAbstractTableModel
 {
@@ -14,6 +21,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DecorationRole)const override;
     void setLevelSize(int tableWidth, int tableHeight);
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole)override;
+    bool setIdData(const QModelIndex &index, const CaseData &value);
     bool removeData(const QModelIndex &index);
     void clearPreview();
     void setPreviewCase(int x, int y);
@@ -27,8 +35,9 @@ public:
     }
 private:
     int m_tableWidth, m_tableHeight;
-    QVector<QVector<QPixmap>> m_vectPic;
+    QVector<QVector<QPair<QPixmap, std::optional<CaseData>>>> m_vectPic;
     QVector<QBitArray> m_vectPreview;
+    std::optional<QPair<int, int>> m_departurePlayer;
 signals:
     void editCompleted(const QString &str);
 };
