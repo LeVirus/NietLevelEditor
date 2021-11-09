@@ -3,6 +3,7 @@ Create a level editor for Nietsneflow.
 Graphic tool for edit level in Nietsneflow:
 Main purpose :
 	Write level elements emplacement in a grid and generate a ini conf file.
+The software have to take a standard ini conf file as input to identify existing element (graphic and physic)
 
 
 Functionalities :
@@ -21,17 +22,16 @@ Element to include :
 		Treat vertical lateral!!!==============================OK
 	Teleport
 		Set Visual teleport case
-	Static element
-	Pick Object
-	Enemy
-	Trigger
+	Static element=====================================OK
+	Pick Object=====================================OK
+	Enemy=====================================OK
+	Trigger=====================================OK
 	Define background
 		Color
 		Simple texture
 		Textured ground ceiling
-	Define Player departure
+	Define Player departure=====================================OK
 	Define Music
 	
 Fix memory leak
-The software have to take a standard ini conf file as input to identify existing element (graphic and physic)
 

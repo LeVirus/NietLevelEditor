@@ -72,7 +72,7 @@ void GridEditor::connectSlots()
     QObject::connect(ui->tableView, &QAbstractItemView::pressed,
                      this, &GridEditor::wallSelection);
     QObject::connect(m_eventFilter, &EventFilter::mouseReleased,
-                     this, &GridEditor::wallMouseReleaseSelection);
+                     this, &GridEditor::mouseReleaseSelection);
 }
 
 //======================================================================
@@ -577,21 +577,15 @@ void GridEditor::setElementSelected(LevelElement_e num, int currentSelect)
 //======================================================================
 void GridEditor::stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous)
 {
-    if(!m_elementSelected || m_currentElementType == LevelElement_e::TRIGGER)
-    {
-        return;
-    }
+//    if(!m_elementSelected || m_currentElementType == LevelElement_e::TRIGGER)
+//    {
+//        return;
+//    }
     if(m_currentElementType == LevelElement_e::WALL)
     {
         setWallShape(true);
         return;
     }
-    if(m_currentElementType == LevelElement_e::PLAYER_DEPARTURE)
-    {
-        setPlayerDeparture(current.column(), current.row());
-        return;
-    }
-    setCaseIcon(current.column(), current.row(), m_currentElementType == LevelElement_e::DELETE);
 }
 
 //======================================================================
@@ -606,42 +600,49 @@ void GridEditor::wallSelection(const QModelIndex &index)
 }
 
 //======================================================================
-void GridEditor::wallMouseReleaseSelection()
+void GridEditor::mouseReleaseSelection()
 {
+    QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
     if(m_currentElementType == LevelElement_e::TRIGGER)
     {
-        QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
         setCaseIcon(caseIndex.column(), caseIndex.row());
         std::optional<int> index = m_memWallSelectLayout->getSelected();
         assert(index);
         setElementSelected(LevelElement_e::WALL, *index);
         setLineSelectableEnabled(true);
-        updateGridView();
-        return;
     }
-    if(m_currentElementType != LevelElement_e::WALL)
+    else if(m_currentElementType == LevelElement_e::WALL)
     {
-        return;
-    }
-    assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
-    m_wallSecondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
-    bool draw = setWallShape();
-    if(m_wallMoveableMode)
-    {
-        if(draw)
+        assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
+        m_wallSecondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
+        bool draw = setWallShape();
+        if(m_wallMoveableMode)
         {
-            m_memWallSelectLayout->uncheckMoveableWall();
-            if(m_moveableWallForm->isDistantTriggerMode())
+            if(draw)
             {
-                m_currentElementType = LevelElement_e::TRIGGER;
-                setLineSelectableEnabled(false);
-                m_currentSelection = m_moveableWallForm->getCurrentTriggerAppearence();
-                m_wallMoveableMode = false;
+                m_memWallSelectLayout->uncheckMoveableWall();
+                if(m_moveableWallForm->isDistantTriggerMode())
+                {
+                    m_currentElementType = LevelElement_e::TRIGGER;
+                    setLineSelectableEnabled(false);
+                    m_currentSelection = m_moveableWallForm->getCurrentTriggerAppearence();
+                    m_wallMoveableMode = false;
+                }
             }
         }
+        m_tableModel->clearPreview();
+        m_displayPreview = false;
     }
-    m_tableModel->clearPreview();
-    m_displayPreview = false;
+    else
+    {
+        if(m_currentElementType == LevelElement_e::PLAYER_DEPARTURE)
+        {
+            setPlayerDeparture(caseIndex.column(), caseIndex.row());
+            return;
+        }
+        setCaseIcon(caseIndex.column(), caseIndex.row(), m_currentElementType == LevelElement_e::DELETE);
+    }
+    updateGridView();
 }
 
 //======================================================================

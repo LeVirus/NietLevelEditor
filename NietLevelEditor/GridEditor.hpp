@@ -85,7 +85,7 @@ private slots:
     void setElementSelected(LevelElement_e num, int currentSelect);
     void stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);
     void wallSelection(const QModelIndex &index);
-    void wallMouseReleaseSelection();
+    void mouseReleaseSelection();
     void setWallDrawModeSelected(int wallDrawMode);
     void setWallMoveableMode(int moveableMode);
     void loadTriggerDisplay(const QString &installDir);
