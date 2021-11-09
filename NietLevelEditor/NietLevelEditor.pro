@@ -21,7 +21,6 @@ SOURCES += \
     MoveableWallForm.cpp \
     SelectableLineLayout.cpp \
     TableModel.cpp \
-    TeleportForm.cpp \
     main.cpp
 
 HEADERS += \
@@ -33,8 +32,7 @@ HEADERS += \
     MainWindow.hpp \
     MoveableWallForm.hpp \
     SelectableLineLayout.hpp \
-    TableModel.hpp \
-    TeleportForm.hpp
+    TableModel.hpp
 
 FORMS += \
     ConfNewLevelForm.ui \

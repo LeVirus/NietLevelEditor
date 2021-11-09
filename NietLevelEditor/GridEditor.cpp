@@ -12,7 +12,6 @@
 #include "TableModel.hpp"
 #include "SelectableLineLayout.hpp"
 #include "EventFilter.hpp"
-#include "TeleportForm.hpp"
 
 //======================================================================
 GridEditor::GridEditor(QWidget *parent) :
@@ -44,11 +43,6 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     {
         m_tableModel = new TableModel(tableView);
     }
-    if(!m_teleportForm)
-    {
-        m_teleportForm = new TeleportForm(this);
-    }
-    m_teleportForm->conf(levelWidth, levelHeight);
     if(!m_moveableWallForm)
     {
         m_moveableWallForm = new MoveableWallForm(this);
@@ -80,23 +74,29 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
 {
     QModelIndex index = m_tableModel->index(x, y, QModelIndex());
     bool ok;
-    if(!deleteMode)
+    if(deleteMode)
     {
-        if(m_currentElementType == LevelElement_e::TELEPORT)
-        {
-            m_teleportForm->init();
-            m_teleportForm->exec();
-            if(!m_teleportForm->valid())
-            {
-                return;
-            }
-        }
-        QIcon currentIcon = getCurrentSelectedIcon();
-        ok = m_tableModel->setData(index, QVariant(currentIcon.pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
+        ok = m_tableModel->removeData(index);
     }
     else
     {
-        ok = m_tableModel->removeData(index);
+        QIcon currentIcon;
+        if(m_currentElementType == LevelElement_e::TELEPORT)
+        {
+            currentIcon = getCurrentSelectedIcon();
+            setLineSelectableEnabled(false);
+            m_currentElementType = LevelElement_e::TARGET_TELEPORT;
+        }
+        else if(m_currentElementType == LevelElement_e::TARGET_TELEPORT)
+        {
+            m_currentElementType = LevelElement_e::TELEPORT;
+            setLineSelectableEnabled(true);
+        }
+        else
+        {
+            currentIcon = getCurrentSelectedIcon();
+        }
+        ok = m_tableModel->setData(index, QVariant(currentIcon.pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
     }
     assert(ok);
 }
@@ -145,7 +145,7 @@ void GridEditor::initSelectableWidgets()
     for(uint32_t i = 0; i < static_cast<uint32_t>(LevelElement_e::TOTAL); ++i)
     {
         currentEnum = static_cast<LevelElement_e>(i);
-        if(currentEnum == LevelElement_e::TRIGGER)
+        if(currentEnum == LevelElement_e::TRIGGER || currentEnum == LevelElement_e::TARGET_TELEPORT)
         {
             continue;
         }
@@ -261,6 +261,7 @@ void GridEditor::loadTeleportsPictures(const QString &installDir)
 {
     const std::map<QString, QString> &teleportsMap = m_levelDataManager.getTeleportData();
     uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::TELEPORT);
+    assert(!teleportsMap.empty());
     m_drawData[currentIndex].reserve(teleportsMap.size());
     std::optional<ArrayFloat_t> spriteData;
     for(std::map<QString, QString>::const_iterator it = teleportsMap.begin(); it != teleportsMap.end(); ++it)
@@ -577,14 +578,9 @@ void GridEditor::setElementSelected(LevelElement_e num, int currentSelect)
 //======================================================================
 void GridEditor::stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous)
 {
-//    if(!m_elementSelected || m_currentElementType == LevelElement_e::TRIGGER)
-//    {
-//        return;
-//    }
     if(m_currentElementType == LevelElement_e::WALL)
     {
         setWallShape(true);
-        return;
     }
 }
 
@@ -707,6 +703,8 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
         return "Static ground objects";
     case LevelElement_e::TELEPORT:
         return "Teleport";
+    case LevelElement_e::TARGET_TELEPORT:
+        return "Target teleport";
     case LevelElement_e::WALL:
         return "Wall";
     case LevelElement_e::TRIGGER:

@@ -19,6 +19,7 @@ enum class LevelElement_e
     WALL,
     DOOR,
     TELEPORT,
+    TARGET_TELEPORT,
     ENEMY,
     OBJECT,
     STATIC_CEILING,
