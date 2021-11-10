@@ -82,6 +82,8 @@ private:
     QIcon getCurrentSelectedIcon()const;
     void updateGridView();
     void setLineSelectableEnabled(bool enable);
+    void treatWallDrawing();
+    void treatElementsDrawing();
 private slots:
     void setElementSelected(LevelElement_e num, int currentSelect);
     void stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);

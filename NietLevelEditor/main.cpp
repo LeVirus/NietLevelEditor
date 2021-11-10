@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
     //TEST
     GridEditor grid;
-    grid.initGrid("/home/cyril/Progg/Nietsneflow/Nietsneflow3d", 150, 300);
+    grid.initGrid("/home/cyril/Programmation/Nietsneflow/Nietsneflow3d", 150, 300);
     return grid.exec();
     //TEST
     MainWindow w;

@@ -80,23 +80,8 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
     }
     else
     {
-        QIcon currentIcon;
-        if(m_currentElementType == LevelElement_e::TELEPORT)
-        {
-            currentIcon = getCurrentSelectedIcon();
-            setLineSelectableEnabled(false);
-            m_currentElementType = LevelElement_e::TARGET_TELEPORT;
-        }
-        else if(m_currentElementType == LevelElement_e::TARGET_TELEPORT)
-        {
-            m_currentElementType = LevelElement_e::TELEPORT;
-            setLineSelectableEnabled(true);
-        }
-        else
-        {
-            currentIcon = getCurrentSelectedIcon();
-        }
-        ok = m_tableModel->setData(index, QVariant(currentIcon.pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
+        ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
+                                                   pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
     }
     assert(ok);
 }
@@ -598,47 +583,73 @@ void GridEditor::wallSelection(const QModelIndex &index)
 //======================================================================
 void GridEditor::mouseReleaseSelection()
 {
-    QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
-    if(m_currentElementType == LevelElement_e::TRIGGER)
+    if(!m_elementSelected)
     {
-        setCaseIcon(caseIndex.column(), caseIndex.row());
+        return;
+    }
+    if(m_currentElementType == LevelElement_e::WALL)
+    {
+        treatWallDrawing();
+    }
+    else
+    {
+        treatElementsDrawing();
+    }
+    updateGridView();
+}
+
+//======================================================================
+void GridEditor::treatWallDrawing()
+{
+    assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
+    m_wallSecondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
+    bool draw = setWallShape();
+    if(m_wallMoveableMode)
+    {
+        if(draw)
+        {
+            m_memWallSelectLayout->uncheckMoveableWall();
+            if(m_moveableWallForm->isDistantTriggerMode())
+            {
+                m_currentElementType = LevelElement_e::TRIGGER;
+                setLineSelectableEnabled(false);
+                m_currentSelection = m_moveableWallForm->getCurrentTriggerAppearence();
+                m_wallMoveableMode = false;
+            }
+        }
+    }
+    m_tableModel->clearPreview();
+    m_displayPreview = false;
+}
+
+//======================================================================
+void GridEditor::treatElementsDrawing()
+{
+    QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
+    if(m_currentElementType == LevelElement_e::PLAYER_DEPARTURE)
+    {
+        setPlayerDeparture(caseIndex.column(), caseIndex.row());
+        return;
+    }
+    if(m_currentElementType == LevelElement_e::TARGET_TELEPORT)
+    {
+        m_currentElementType = LevelElement_e::TELEPORT;
+        setLineSelectableEnabled(true);
+        return;
+    }
+    setCaseIcon(caseIndex.column(), caseIndex.row(), m_currentElementType == LevelElement_e::DELETE);
+    if(m_currentElementType == LevelElement_e::TELEPORT)
+    {
+        setLineSelectableEnabled(false);
+        m_currentElementType = LevelElement_e::TARGET_TELEPORT;
+    }
+    else if(m_currentElementType == LevelElement_e::TRIGGER)
+    {
         std::optional<int> index = m_memWallSelectLayout->getSelected();
         assert(index);
         setElementSelected(LevelElement_e::WALL, *index);
         setLineSelectableEnabled(true);
     }
-    else if(m_currentElementType == LevelElement_e::WALL)
-    {
-        assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
-        m_wallSecondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
-        bool draw = setWallShape();
-        if(m_wallMoveableMode)
-        {
-            if(draw)
-            {
-                m_memWallSelectLayout->uncheckMoveableWall();
-                if(m_moveableWallForm->isDistantTriggerMode())
-                {
-                    m_currentElementType = LevelElement_e::TRIGGER;
-                    setLineSelectableEnabled(false);
-                    m_currentSelection = m_moveableWallForm->getCurrentTriggerAppearence();
-                    m_wallMoveableMode = false;
-                }
-            }
-        }
-        m_tableModel->clearPreview();
-        m_displayPreview = false;
-    }
-    else
-    {
-        if(m_currentElementType == LevelElement_e::PLAYER_DEPARTURE)
-        {
-            setPlayerDeparture(caseIndex.column(), caseIndex.row());
-            return;
-        }
-        setCaseIcon(caseIndex.column(), caseIndex.row(), m_currentElementType == LevelElement_e::DELETE);
-    }
-    updateGridView();
 }
 
 //======================================================================
