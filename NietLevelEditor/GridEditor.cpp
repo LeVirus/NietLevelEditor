@@ -82,6 +82,7 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
     {
         ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
                                                    pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
+//        m_tableModel->setIdData(index, CaseData{m_currentElementType, , {}});
     }
     assert(ok);
 }
@@ -93,7 +94,7 @@ void GridEditor::setPlayerDeparture(int x, int y)
     QPixmap pix(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
     pix.fill(Qt::darkBlue);
     m_tableModel->setData(index, QVariant(pix));
-    m_tableModel->setIdData(index, CaseData{LevelElement_e::PLAYER_DEPARTURE, ""});
+    m_tableModel->setIdData(index, CaseData{LevelElement_e::PLAYER_DEPARTURE, "", {}});
     updateGridView();
 }
 
@@ -157,6 +158,7 @@ void GridEditor::initButtons()
 //======================================================================
 void GridEditor::loadIconPictures(const QString &installDir)
 {
+    m_mapElementID.clear();
     loadWallsPictures(installDir);
     loadDoorsPictures(installDir);
     loadTeleportsPictures(installDir);
@@ -176,8 +178,11 @@ void GridEditor::loadTriggerDisplay(const QString &installDir)
     std::optional<ArrayFloat_t> spriteData;
     uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::TRIGGER);
     m_drawData[currentIndex].reserve(triggersMap.size());
+    m_mapElementID.insert({LevelElement_e::TRIGGER, QVector<QString>()});
+    m_mapElementID[LevelElement_e::TRIGGER].reserve(triggersMap.size());
     for(std::map<QString, QString>::const_iterator it = triggersMap.begin(); it != triggersMap.end(); ++it)
     {
+        m_mapElementID[LevelElement_e::TRIGGER].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
         m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
@@ -192,8 +197,11 @@ void GridEditor::loadWallsPictures(const QString &installDir)
     m_drawData[currentIndex].reserve(wallMap.size());
     std::optional<ArrayFloat_t> spriteData;
     int vectSpriteSize, multiSpriteSectionSize;
+    m_mapElementID.insert({LevelElement_e::WALL, QVector<QString>()});
+    m_mapElementID[LevelElement_e::WALL].reserve(wallMap.size());
     for(std::map<QString, QStringList>::const_iterator it = wallMap.begin(); it != wallMap.end(); ++it)
     {
+        m_mapElementID[LevelElement_e::WALL].push_back(it->first);
         vectSpriteSize = it->second.size();
         if(vectSpriteSize == 1)
         {
@@ -230,8 +238,11 @@ void GridEditor::loadDoorsPictures(const QString &installDir)
     bool vertical;
     const int DOOR_POS = (CASE_SPRITE_SIZE / 2 - CASE_SPRITE_SIZE / 10),
             DOOR_WIDTH = CASE_SPRITE_SIZE / 5;
+    m_mapElementID.insert({LevelElement_e::DOOR, QVector<QString>()});
+    m_mapElementID[LevelElement_e::DOOR].reserve(doorsMap.size());
     for(std::map<QString, DoorData>::const_iterator it = doorsMap.begin(); it != doorsMap.end(); ++it)
     {
+        m_mapElementID[LevelElement_e::DOOR].push_back(it->first);
         QPixmap final(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
         final.fill(Qt::transparent);
         QPainter paint(&final);
@@ -270,8 +281,11 @@ void GridEditor::loadTeleportsPictures(const QString &installDir)
     assert(!teleportsMap.empty());
     m_drawData[currentIndex].reserve(teleportsMap.size());
     std::optional<ArrayFloat_t> spriteData;
+    m_mapElementID.insert({LevelElement_e::TELEPORT, QVector<QString>()});
+    m_mapElementID[LevelElement_e::TELEPORT].reserve(teleportsMap.size());
     for(std::map<QString, QString>::const_iterator it = teleportsMap.begin(); it != teleportsMap.end(); ++it)
     {
+        m_mapElementID[LevelElement_e::TELEPORT].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
         m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
@@ -285,8 +299,11 @@ void GridEditor::loadEnemiesPictures(const QString &installDir)
     uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::ENEMY);
     m_drawData[currentIndex].reserve(enemiesMap.size());
     std::optional<ArrayFloat_t> spriteData;
+    m_mapElementID.insert({LevelElement_e::ENEMY, QVector<QString>()});
+    m_mapElementID[LevelElement_e::ENEMY].reserve(enemiesMap.size());
     for(std::map<QString, QString>::const_iterator it = enemiesMap.begin(); it != enemiesMap.end(); ++it)
     {
+        m_mapElementID[LevelElement_e::ENEMY].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
         m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
@@ -300,8 +317,11 @@ void GridEditor::loadObjectsPictures(const QString &installDir)
     uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::OBJECT);
     m_drawData[currentIndex].reserve(objectsMap.size());
     std::optional<ArrayFloat_t> spriteData;
+    m_mapElementID.insert({LevelElement_e::OBJECT, QVector<QString>()});
+    m_mapElementID[LevelElement_e::OBJECT].reserve(objectsMap.size());
     for(std::map<QString, QString>::const_iterator it = objectsMap.begin(); it != objectsMap.end(); ++it)
     {
+        m_mapElementID[LevelElement_e::OBJECT].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
         m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
@@ -315,8 +335,11 @@ void GridEditor::loadStaticCeilingElementPictures(const QString &installDir)
     uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::STATIC_CEILING);
     m_drawData[currentIndex].reserve(staticCeilingElementsMap.size());
     std::optional<ArrayFloat_t> spriteData;
+    m_mapElementID.insert({LevelElement_e::STATIC_CEILING, QVector<QString>()});
+    m_mapElementID[LevelElement_e::STATIC_CEILING].reserve(staticCeilingElementsMap.size());
     for(std::map<QString, QString>::const_iterator it = staticCeilingElementsMap.begin(); it != staticCeilingElementsMap.end(); ++it)
     {
+        m_mapElementID[LevelElement_e::STATIC_CEILING].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
         m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
@@ -330,8 +353,11 @@ void GridEditor::loadStaticGroundElementPictures(const QString &installDir)
     uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::STATIC_GROUND);
     m_drawData[currentIndex].reserve(staticGroundElementsMap.size());
     std::optional<ArrayFloat_t> spriteData;
+    m_mapElementID.insert({LevelElement_e::STATIC_GROUND, QVector<QString>()});
+    m_mapElementID[LevelElement_e::STATIC_GROUND].reserve(staticGroundElementsMap.size());
     for(std::map<QString, QString>::const_iterator it = staticGroundElementsMap.begin(); it != staticGroundElementsMap.end(); ++it)
     {
+        m_mapElementID[LevelElement_e::STATIC_GROUND].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
         m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
@@ -345,8 +371,11 @@ void GridEditor::loadBarrelsPictures(const QString &installDir)
     uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::BARREL);
     m_drawData[currentIndex].reserve(barrelsMap.size());
     std::optional<ArrayFloat_t> spriteData;
+    m_mapElementID.insert({LevelElement_e::BARREL, QVector<QString>()});
+    m_mapElementID[LevelElement_e::BARREL].reserve(barrelsMap.size());
     for(std::map<QString, QString>::const_iterator it = barrelsMap.begin(); it != barrelsMap.end(); ++it)
     {
+        m_mapElementID[LevelElement_e::BARREL].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
         m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
@@ -360,8 +389,11 @@ void GridEditor::loadExitsPictures(const QString &installDir)
     uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::EXIT);
     m_drawData[currentIndex].reserve(exitsMap.size());
     std::optional<ArrayFloat_t> spriteData;
+    m_mapElementID.insert({LevelElement_e::EXIT, QVector<QString>()});
+    m_mapElementID[LevelElement_e::EXIT].reserve(exitsMap.size());
     for(std::map<QString, QString>::const_iterator it = exitsMap.begin(); it != exitsMap.end(); ++it)
     {
+        m_mapElementID[LevelElement_e::EXIT].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
         m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
@@ -666,7 +698,12 @@ void GridEditor::treatElementsDrawing()
         {
             if(var->m_type == LevelElement_e::TELEPORT)
             {
+                assert(var->m_targetTeleport);
                 m_tableModel->setPreviewCase(var->m_targetTeleport->first, var->m_targetTeleport->second);
+            }
+            else if(var->m_type == LevelElement_e::WALL)
+            {
+
             }
         }
         return;

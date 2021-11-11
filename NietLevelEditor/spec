@@ -12,19 +12,19 @@ Functionalities :
 	Edit level
 
 Element to include :
-	Add simple select case
+	Add simple select case==============================OK
 	Wall
 		Possibility to include several element from different geometric shape
 			Rectangle, line, point===========================OK
 		MultiSprite case!!!!===================================OK
-	MoveableWall
+	MoveableWall==============================OK
 		Set move conf and trigger method========================OK
 		Add display movement when selected
-	Door
+	Door==============================OK
 		Treat vertical lateral!!!==============================OK
-	Teleport
+	Teleport==============================OK
 		Set Visual teleport case=========================OK
-		Add display target teleport when selected
+		Add display target teleport when selected======================OK
 	Static element=====================================OK
 	Pick Object=====================================OK
 	Enemy=====================================OK

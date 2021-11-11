@@ -109,6 +109,7 @@ private:
     TeleportForm *m_teleportForm = nullptr;
     MoveableWallForm *m_moveableWallForm = nullptr;
     SelectableLineLayout *m_memWallSelectLayout = nullptr;
+    std::map<LevelElement_e, QVector<QString>> m_mapElementID;
 };
 const int32_t CASE_SIZE_PX = 40, CASE_SPRITE_SIZE = (CASE_SIZE_PX * 4) / 5;
 QPixmap getSprite(const ArrayFloat_t &spriteData, const LevelDataManager &levelDataManager,
