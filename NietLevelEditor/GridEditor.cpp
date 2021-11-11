@@ -191,11 +191,32 @@ void GridEditor::loadWallsPictures(const QString &installDir)
     uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::WALL);
     m_drawData[currentIndex].reserve(wallMap.size());
     std::optional<ArrayFloat_t> spriteData;
+    int vectSpriteSize, multiSpriteSectionSize;
     for(std::map<QString, QStringList>::const_iterator it = wallMap.begin(); it != wallMap.end(); ++it)
     {
-        spriteData = m_levelDataManager.getPictureData(it->second[0]);
-        assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
+        vectSpriteSize = it->second.size();
+        if(vectSpriteSize == 1)
+        {
+            spriteData = m_levelDataManager.getPictureData(it->second[0]);
+            assert(spriteData);
+            m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
+        }
+        else
+        {
+            multiSpriteSectionSize = CASE_SPRITE_SIZE / vectSpriteSize;
+            QPixmap final(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
+            final.fill(Qt::transparent);
+            QPainter paint(&final);
+            int currentPos = 0;
+            for(int32_t i = 0; i < vectSpriteSize; ++i, currentPos += multiSpriteSectionSize)
+            {
+                spriteData = m_levelDataManager.getPictureData(it->second[i]);
+                QPixmap wallSprite = getSprite(*spriteData, m_levelDataManager, installDir);
+                paint.drawPixmap(currentPos, 0, multiSpriteSectionSize,
+                                 CASE_SPRITE_SIZE, wallSprite);
+            }
+            m_drawData[currentIndex].push_back(final);
+        }
     }
 }
 
