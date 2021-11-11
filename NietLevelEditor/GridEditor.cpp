@@ -604,6 +604,7 @@ void GridEditor::wallSelection(const QModelIndex &index)
 //======================================================================
 void GridEditor::mouseReleaseSelection()
 {
+    m_tableModel->clearPreview();
     if(!m_elementSelected)
     {
         return;
@@ -639,7 +640,6 @@ void GridEditor::treatWallDrawing()
             }
         }
     }
-    m_tableModel->clearPreview();
     m_displayPreview = false;
 }
 
@@ -652,11 +652,23 @@ void GridEditor::treatElementsDrawing()
         setPlayerDeparture(caseIndex.column(), caseIndex.row());
         return;
     }
-    if(m_currentElementType == LevelElement_e::TARGET_TELEPORT)
+    else if(m_currentElementType == LevelElement_e::TARGET_TELEPORT)
     {
         m_tableModel->setTargetTeleport(m_lastPositionAdded, caseIndex);
         m_currentElementType = LevelElement_e::TELEPORT;
         setLineSelectableEnabled(true);
+        return;
+    }
+    else if(m_currentElementType == LevelElement_e::SELECTION)
+    {
+        std::optional<CaseData> var = m_tableModel->getDataElementCase(caseIndex);
+        if(var)
+        {
+            if(var->m_type == LevelElement_e::TELEPORT)
+            {
+                m_tableModel->setPreviewCase(var->m_targetTeleport->first, var->m_targetTeleport->second);
+            }
+        }
         return;
     }
     setCaseIcon(caseIndex.column(), caseIndex.row(), m_currentElementType == LevelElement_e::DELETE);
@@ -747,6 +759,8 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
         return "Delete";
     case LevelElement_e::PLAYER_DEPARTURE:
         return "Player Departure";
+    case LevelElement_e::SELECTION:
+        return "Selection";
     case LevelElement_e::TOTAL:
         assert(false);
     }

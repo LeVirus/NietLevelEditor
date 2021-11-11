@@ -126,6 +126,7 @@ void TableModel::setTargetTeleport(const QPair<int, int> &teleporterPosition,
     {
         caseData = CaseData();
     }
+    caseData->m_type = LevelElement_e::TELEPORT;
     caseData->m_targetTeleport = {targetPos.column(), targetPos.row()};
 }
 

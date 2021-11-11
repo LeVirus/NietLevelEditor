@@ -24,6 +24,10 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole)override;
     bool setIdData(const QModelIndex &index, const CaseData &value);
     bool removeData(const QModelIndex &index);
+    inline std::optional<CaseData> getDataElementCase(const QModelIndex &index)const
+    {
+        return m_vectPic[index.column()][index.row()].second;
+    }
     void clearPreview();
     void setPreviewCase(int x, int y);
     void setTargetTeleport(const QPair<int, int> &teleporterPosition,

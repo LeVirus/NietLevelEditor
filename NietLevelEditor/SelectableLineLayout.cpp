@@ -14,7 +14,8 @@ SelectableLineLayout::SelectableLineLayout(const QString &radioBoxTxt,
     addWidget(m_radio);
     QObject::connect(m_radio, &QRadioButton::toggled, m_comboBox, &QComboBox::setEnabled);
     QObject::connect(m_radio, &QRadioButton::clicked, this, &SelectableLineLayout::selected);
-    if(m_elementType != LevelElement_e::DELETE && m_elementType != LevelElement_e::PLAYER_DEPARTURE)
+    if(m_elementType != LevelElement_e::DELETE && m_elementType != LevelElement_e::PLAYER_DEPARTURE &&
+            m_elementType != LevelElement_e::SELECTION)
     {
         m_comboBox->setEnabled(false);
         addWidget(m_comboBox);

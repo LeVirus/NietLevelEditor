@@ -29,6 +29,7 @@ enum class LevelElement_e
     TRIGGER,
     DELETE,
     PLAYER_DEPARTURE,
+    SELECTION,
     TOTAL
 };
 
