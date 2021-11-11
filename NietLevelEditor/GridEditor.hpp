@@ -94,6 +94,7 @@ private slots:
     void loadTriggerDisplay(const QString &installDir);
 private:
     Ui::GridEditor *ui;
+    QPair<int, int> m_lastPositionAdded;
     LevelDataManager m_levelDataManager;
     TableModel *m_tableModel = nullptr;
     int m_currentSelection;

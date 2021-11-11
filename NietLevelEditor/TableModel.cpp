@@ -117,6 +117,19 @@ void TableModel::setPreviewCase(int x, int y)
 }
 
 //======================================================================
+void TableModel::setTargetTeleport(const QPair<int, int> &teleporterPosition,
+                                   const QModelIndex &targetPos)
+{
+    std::optional<CaseData> &caseData =
+            m_vectPic[teleporterPosition.first][teleporterPosition.second].second;
+    if(!caseData)
+    {
+        caseData = CaseData();
+    }
+    caseData->m_targetTeleport = {targetPos.column(), targetPos.row()};
+}
+
+//======================================================================
 void TableModel::setLevelSize(int tableWidth, int tableHeight)
 {
     m_tableWidth = tableWidth;

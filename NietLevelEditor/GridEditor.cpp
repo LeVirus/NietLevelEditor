@@ -633,6 +633,7 @@ void GridEditor::treatElementsDrawing()
     }
     if(m_currentElementType == LevelElement_e::TARGET_TELEPORT)
     {
+        m_tableModel->setTargetTeleport(m_lastPositionAdded, caseIndex);
         m_currentElementType = LevelElement_e::TELEPORT;
         setLineSelectableEnabled(true);
         return;
@@ -640,6 +641,7 @@ void GridEditor::treatElementsDrawing()
     setCaseIcon(caseIndex.column(), caseIndex.row(), m_currentElementType == LevelElement_e::DELETE);
     if(m_currentElementType == LevelElement_e::TELEPORT)
     {
+        m_lastPositionAdded = {caseIndex.column(), caseIndex.row()};
         setLineSelectableEnabled(false);
         m_currentElementType = LevelElement_e::TARGET_TELEPORT;
     }
