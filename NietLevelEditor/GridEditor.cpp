@@ -12,6 +12,7 @@
 #include "TableModel.hpp"
 #include "SelectableLineLayout.hpp"
 #include "EventFilter.hpp"
+#include "LineWallMove.hpp"
 
 //======================================================================
 GridEditor::GridEditor(QWidget *parent) :
@@ -82,9 +83,57 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
     {
         ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
                                                    pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
-//        m_tableModel->setIdData(index, CaseData{m_currentElementType, , {}});
+        m_tableModel->setIdData(index, CaseData{m_currentElementType,
+                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}});
+        if(m_currentElementType == LevelElement_e::WALL && m_wallMoveableMode)
+        {
+            memWallMove(index);
+        }
     }
     assert(ok);
+}
+
+//======================================================================
+void GridEditor::memWallMove(const QModelIndex &index)
+{
+    const QObjectList &moveList = m_moveableWallForm->getWallMove();
+    QString currentMove;
+    QStringList subStr;
+    std::optional<CaseData> caseData = m_tableModel->getDataElementCase(index);
+    assert(caseData);
+    caseData->m_moveWallData = QVector<QPair<int, int>>();
+    QPair<int, int> currentPos = {index.column(), index.row()};
+    Direction_e currentDir;
+    int moveNumber;
+    for(int i = 0; i < moveList.count(); ++i)
+    {
+        currentMove = static_cast<LineWallMove*>(moveList[i])->getQString();
+        subStr = currentMove.split(' ');
+        assert(subStr.size() >= 2);
+        currentDir = getDirEnumFromQString(subStr[0]);
+        moveNumber = subStr[1].toInt();
+        for(int j = 0; j < moveNumber; ++j)
+        {
+            if(currentDir == Direction_e::NORTH)
+            {
+                --currentPos.second;
+            }
+            else if(currentDir == Direction_e::SOUTH)
+            {
+                ++currentPos.second;
+            }
+            else if(currentDir == Direction_e::EAST)
+            {
+                ++currentPos.first;
+            }
+            else if(currentDir == Direction_e::WEST)
+            {
+                --currentPos.first;
+            }
+            caseData->m_moveWallData->push_back(currentPos);
+        }
+    }
+
 }
 
 //======================================================================
@@ -94,7 +143,7 @@ void GridEditor::setPlayerDeparture(int x, int y)
     QPixmap pix(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
     pix.fill(Qt::darkBlue);
     m_tableModel->setData(index, QVariant(pix));
-    m_tableModel->setIdData(index, CaseData{LevelElement_e::PLAYER_DEPARTURE, "", {}});
+    m_tableModel->setIdData(index, CaseData{LevelElement_e::PLAYER_DEPARTURE, "", {}, {}});
     updateGridView();
 }
 
@@ -703,7 +752,14 @@ void GridEditor::treatElementsDrawing()
             }
             else if(var->m_type == LevelElement_e::WALL)
             {
-
+                if(var->m_moveWallData)
+                {
+                    std::cerr << "GFDSg";
+                    for(int32_t i = 0; i < var->m_moveWallData->size(); ++i)
+                    {
+                        m_tableModel->setPreviewCase(var->m_moveWallData->operator[](i));
+                    }
+                }
             }
         }
         return;
@@ -802,4 +858,27 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
         assert(false);
     }
     return "";
+}
+
+//======================================================================
+Direction_e getDirEnumFromQString(const QString &str)
+{
+    Direction_e dir = Direction_e::EAST;
+    if(str == "NORTH")
+    {
+        dir = Direction_e::NORTH;
+    }
+    else if(str == "SOUTH")
+    {
+        dir = Direction_e::SOUTH;
+    }
+    else if(str == "EAST")
+    {
+        dir = Direction_e::EAST;
+    }
+    else if(str == "WEST")
+    {
+        dir = Direction_e::WEST;
+    }
+    return dir;
 }

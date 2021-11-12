@@ -49,6 +49,7 @@ public:
     int getCurrentTriggerAppearence();
     void setTriggerIcons(const QVector<QIcon> &vectIcon);
     void init();
+    const QObjectList &getWallMove()const;
     ~MoveableWallForm();
 private:
     void initUI();

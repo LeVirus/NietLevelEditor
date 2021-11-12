@@ -11,6 +11,7 @@ struct CaseData
     LevelElement_e m_type;
     QString m_id;
     std::optional<QPair<int, int>> m_targetTeleport;
+    std::optional<QVector<QPair<int, int>>> m_moveWallData;
 };
 
 class TableModel : public QAbstractTableModel
@@ -30,6 +31,7 @@ public:
     }
     void clearPreview();
     void setPreviewCase(int x, int y);
+    void setPreviewCase(const QPair<int, int> &pos);
     void setTargetTeleport(const QPair<int, int> &teleporterPosition,
                            const QModelIndex &targetPos);
     inline int getTableWidth()const

@@ -14,6 +14,8 @@ class TeleportForm;
 class MoveableWallForm;
 class SelectableLineLayout;
 
+enum class Direction_e;
+
 enum class LevelElement_e
 {
     WALL,
@@ -79,6 +81,7 @@ private:
                               const QPair<int, int> &bottomRightIndex,
                               bool preview = false);
     void setCaseIcon(int x, int y, bool deleteMode = false);
+    void memWallMove(const QModelIndex &index);
     void setPlayerDeparture(int x, int y);
     QIcon getCurrentSelectedIcon()const;
     void updateGridView();
@@ -111,6 +114,8 @@ private:
     SelectableLineLayout *m_memWallSelectLayout = nullptr;
     std::map<LevelElement_e, QVector<QString>> m_mapElementID;
 };
+
+Direction_e getDirEnumFromQString(const QString &str);
 const int32_t CASE_SIZE_PX = 40, CASE_SPRITE_SIZE = (CASE_SIZE_PX * 4) / 5;
 QPixmap getSprite(const ArrayFloat_t &spriteData, const LevelDataManager &levelDataManager,
                   const QString &installDir);

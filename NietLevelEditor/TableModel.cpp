@@ -117,6 +117,12 @@ void TableModel::setPreviewCase(int x, int y)
 }
 
 //======================================================================
+void TableModel::setPreviewCase(const QPair<int, int> &pos)
+{
+    setPreviewCase(pos.first, pos.second);
+}
+
+//======================================================================
 void TableModel::setTargetTeleport(const QPair<int, int> &teleporterPosition,
                                    const QModelIndex &targetPos)
 {
@@ -125,8 +131,8 @@ void TableModel::setTargetTeleport(const QPair<int, int> &teleporterPosition,
     if(!caseData)
     {
         caseData = CaseData();
+        caseData->m_type = LevelElement_e::TELEPORT;
     }
-    caseData->m_type = LevelElement_e::TELEPORT;
     caseData->m_targetTeleport = {targetPos.column(), targetPos.row()};
 }
 

@@ -41,6 +41,12 @@ void MoveableWallForm::init()
 }
 
 //======================================================================
+const QObjectList &MoveableWallForm::getWallMove()const
+{
+    return m_scrollLayout->children();
+}
+
+//======================================================================
 void MoveableWallForm::initUI()
 {
     //set scroll

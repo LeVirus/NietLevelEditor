@@ -20,6 +20,7 @@ Element to include :
 	MoveableWall==============================OK
 		Set move conf and trigger method========================OK
 		Add display movement when selected
+		Possibility to modify move
 	Door==============================OK
 		Treat vertical lateral!!!==============================OK
 	Teleport==============================OK
