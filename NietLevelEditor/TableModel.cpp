@@ -51,9 +51,9 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
         {
             return false;
         }
-        assert(index.row() < m_vectPic.size());
-        assert(index.column() < m_vectPic[index.row()].size());
-        m_vectPic[index.row()][index.column()].first = value.value<QPixmap>();
+        assert(index.column() < m_vectPic.size());
+        assert(index.row() < m_vectPic[index.column()].size());
+        m_vectPic[index.column()][index.row()].first = value.value<QPixmap>();
         return true;
     }
     return false;
@@ -66,16 +66,16 @@ bool TableModel::setIdData(const QModelIndex &index, const CaseData &value)
     {
         return false;
     }
-    assert(index.row() < m_vectPic.size());
-    assert(index.column() < m_vectPic[index.row()].size());
-    m_vectPic[index.row()][index.column()].second = value;
+    assert(index.column() < m_vectPic.size());
+    assert(index.row() < m_vectPic[index.column()].size());
+    m_vectPic[index.column()][index.row()].second = value;
     if(value.m_type == LevelElement_e::PLAYER_DEPARTURE)
     {
         if(m_departurePlayer)
         {
-            removeData(this->index(m_departurePlayer->first, m_departurePlayer->second, QModelIndex()));
+            removeData(this->index(m_departurePlayer->second, m_departurePlayer->first, QModelIndex()));
         }
-        m_departurePlayer = {index.row(), index.column()};
+        m_departurePlayer = {index.column(), index.row()};
     }
     return true;
 }
@@ -88,12 +88,12 @@ bool TableModel::removeData(const QModelIndex &index)
         return false;
     }
     QPixmap pix;
-    m_vectPic[index.row()][index.column()].first.swap(pix);
-    if(m_vectPic[index.row()][index.column()].second->m_type == LevelElement_e::PLAYER_DEPARTURE)
+    m_vectPic[index.column()][index.row()].first.swap(pix);
+    if(m_vectPic[index.column()][index.row()].second->m_type == LevelElement_e::PLAYER_DEPARTURE)
     {
         m_departurePlayer = {};
     }
-    m_vectPic[index.row()][index.column()].second = {};
+    m_vectPic[index.column()][index.row()].second = {};
     return true;
 }
 

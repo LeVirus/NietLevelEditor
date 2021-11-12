@@ -73,7 +73,7 @@ void GridEditor::connectSlots()
 //======================================================================
 void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
 {
-    QModelIndex index = m_tableModel->index(x, y, QModelIndex());
+    QModelIndex index = m_tableModel->index(y, x, QModelIndex());
     bool ok;
     if(deleteMode)
     {
@@ -139,7 +139,7 @@ void GridEditor::memWallMove(const QModelIndex &index)
 //======================================================================
 void GridEditor::setPlayerDeparture(int x, int y)
 {
-    QModelIndex index = m_tableModel->index(x, y, QModelIndex());
+    QModelIndex index = m_tableModel->index(y, x, QModelIndex());
     QPixmap pix(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
     pix.fill(Qt::darkBlue);
     m_tableModel->setData(index, QVariant(pix));
@@ -686,6 +686,7 @@ void GridEditor::wallSelection(const QModelIndex &index)
 void GridEditor::mouseReleaseSelection()
 {
     m_tableModel->clearPreview();
+    QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
     if(!m_elementSelected)
     {
         return;
@@ -754,7 +755,6 @@ void GridEditor::treatElementsDrawing()
             {
                 if(var->m_moveWallData)
                 {
-                    std::cerr << "GFDSg";
                     for(int32_t i = 0; i < var->m_moveWallData->size(); ++i)
                     {
                         m_tableModel->setPreviewCase(var->m_moveWallData->operator[](i));
