@@ -99,9 +99,13 @@ void GridEditor::memWallMove(const QModelIndex &index)
     const QObjectList &moveList = m_moveableWallForm->getWallMove();
     QString currentMove;
     QStringList subStr;
-    std::optional<CaseData> caseData = m_tableModel->getDataElementCase(index);
+    std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
+    if(!caseData->m_moveWallData)
+    {
+        caseData->m_moveWallData = QVector<QPair<int, int>>();
+    }
+    caseData->m_moveWallData->clear();
     assert(caseData);
-    caseData->m_moveWallData = QVector<QPair<int, int>>();
     QPair<int, int> currentPos = {index.column(), index.row()};
     Direction_e currentDir;
     int moveNumber;
@@ -111,29 +115,45 @@ void GridEditor::memWallMove(const QModelIndex &index)
         subStr = currentMove.split(' ');
         assert(subStr.size() >= 2);
         currentDir = getDirEnumFromQString(subStr[0]);
-        moveNumber = subStr[1].toInt();
+        moveNumber = subStr[2].toInt();
         for(int j = 0; j < moveNumber; ++j)
         {
+            QPair<int, int> tableSize = m_tableModel->getTableSize();
             if(currentDir == Direction_e::NORTH)
             {
+                if(currentPos.second < 1)
+                {
+                    return;
+                }
                 --currentPos.second;
             }
             else if(currentDir == Direction_e::SOUTH)
             {
+                if(currentPos.second > tableSize.second - 2)
+                {
+                    return;
+                }
                 ++currentPos.second;
             }
             else if(currentDir == Direction_e::EAST)
             {
+                if(currentPos.first > tableSize.first - 2)
+                {
+                    return;
+                }
                 ++currentPos.first;
             }
             else if(currentDir == Direction_e::WEST)
             {
+                if(currentPos.first < 1)
+                {
+                    return;
+                }
                 --currentPos.first;
             }
             caseData->m_moveWallData->push_back(currentPos);
         }
     }
-
 }
 
 //======================================================================
@@ -469,12 +489,18 @@ bool GridEditor::setWallShape(bool preview)
     {
         m_tableModel->clearPreview();
     }
+    QPair<int, int> topLeftPos = {minX, minY}, bottomRight = {maxX, maxY};
+    if(!preview && topLeftPos == bottomRight)
+    {
+        setCaseIcon(minX, minY);
+        return true;
+    }
     bool ret = true;
     switch (m_wallDrawMode)
     {
     case WallDrawMode_e::LINE_AND_RECT:
     {
-        setWallLineRectShape({minX, minY}, {maxX, maxY}, preview);
+        setWallLineRectShape(topLeftPos, bottomRight, preview);
     }
         break;
     case WallDrawMode_e::DIAGONAL_LINE:
@@ -686,7 +712,6 @@ void GridEditor::wallSelection(const QModelIndex &index)
 void GridEditor::mouseReleaseSelection()
 {
     m_tableModel->clearPreview();
-    QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
     if(!m_elementSelected)
     {
         return;
@@ -753,12 +778,9 @@ void GridEditor::treatElementsDrawing()
             }
             else if(var->m_type == LevelElement_e::WALL)
             {
-                if(var->m_moveWallData)
+                for(int32_t i = 0; i < var->m_moveWallData->size(); ++i)
                 {
-                    for(int32_t i = 0; i < var->m_moveWallData->size(); ++i)
-                    {
-                        m_tableModel->setPreviewCase(var->m_moveWallData->operator[](i));
-                    }
+                    m_tableModel->setPreviewCase(var->m_moveWallData->operator[](i));
                 }
             }
         }
@@ -805,11 +827,12 @@ void GridEditor::setWallMoveableMode(int moveableMode)
 //======================================================================
 void GridEditor::setStdTableSize()
 {
-    for(int32_t i = 0; i < m_tableModel->getTableWidth(); ++i)
+    QPair<int, int> sizeTable = m_tableModel->getTableSize();
+    for(int32_t i = 0; i < sizeTable.first; ++i)
     {
         ui->tableView->setColumnWidth(i, CASE_SIZE_PX);
     }
-    for(int32_t i = 0; i < m_tableModel->getTableHeight(); ++i)
+    for(int32_t i = 0; i < sizeTable.second; ++i)
     {
         ui->tableView->setRowHeight(i, CASE_SIZE_PX);
     }

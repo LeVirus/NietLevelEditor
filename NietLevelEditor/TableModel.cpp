@@ -12,13 +12,13 @@ TableModel::TableModel(QObject *parent) : QAbstractTableModel(parent)
 //======================================================================
 int TableModel::rowCount(const QModelIndex &parent)const
 {
-    return m_tableHeight;
+    return m_tableSize.second;
 }
 
 //======================================================================
 int TableModel::columnCount(const QModelIndex &parent)const
 {
-    return m_tableWidth;
+    return m_tableSize.first;
 }
 
 //======================================================================
@@ -139,8 +139,7 @@ void TableModel::setTargetTeleport(const QPair<int, int> &teleporterPosition,
 //======================================================================
 void TableModel::setLevelSize(int tableWidth, int tableHeight)
 {
-    m_tableWidth = tableWidth;
-    m_tableHeight = tableHeight;
+    m_tableSize = {tableWidth, tableHeight};
     m_vectPic.resize(tableWidth);
     m_vectPreview.resize(tableWidth);
     for(int i = 0; i < m_vectPic.size(); ++i)
