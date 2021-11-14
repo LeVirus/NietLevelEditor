@@ -95,9 +95,6 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
 //======================================================================
 void GridEditor::memWallMove(const QModelIndex &index)
 {
-    const QObjectList &moveList = m_moveableWallForm->getWallMove();
-    QString currentMove;
-    QStringList subStr;
     std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
     if(!caseData->m_moveWallData)
     {
@@ -106,20 +103,11 @@ void GridEditor::memWallMove(const QModelIndex &index)
     caseData->m_moveWallData->clear();
     assert(caseData);
     QPair<int, int> currentPos = {index.column(), index.row()};
-    Direction_e currentDir;
-    int moveNumber;
-    caseData->m_moveWallData->m_velocity = m_moveableWallForm->getVelocity();
-    caseData->m_moveWallData->m_triggerType = m_moveableWallForm->getTriggerType();
-    caseData->m_moveWallData->m_triggerBehaviour = m_moveableWallForm->getTriggerBehaviour();
-    for(int i = 0; i < moveList.count(); ++i)
+    caseData->m_moveWallData = *m_memcurrentMoveWallData;
+    for(int i = 0; i < m_memcurrentMoveWallData->m_memMoveWallData.size(); ++i)
     {
-        currentMove = static_cast<LineWallMove*>(moveList[i])->getQString();
-        subStr = currentMove.split(' ');
-        assert(subStr.size() >= 2);
-        currentDir = getDirEnumFromQString(subStr[0]);
-        moveNumber = subStr[2].toInt();
-        caseData->m_moveWallData->m_memMoveWallData.push_back({currentDir, moveNumber});
-        for(int j = 0; j < moveNumber; ++j)
+        Direction_e currentDir = caseData->m_moveWallData->m_memMoveWallData[i].first;
+        for(int j = 0; j < caseData->m_moveWallData->m_memMoveWallData[i].second; ++j)
         {
             QPair<int, int> tableSize = m_tableModel->getTableSize();
             if(currentDir == Direction_e::NORTH)
@@ -484,6 +472,7 @@ bool GridEditor::setWallShape(bool preview)
     {
         m_tableModel->clearPreview();
     }
+    memStdWallMove();
     QPair<int, int> topLeftPos = {minX, minY}, bottomRight = {maxX, maxY};
     if(!preview && topLeftPos == bottomRight)
     {
@@ -512,6 +501,33 @@ bool GridEditor::setWallShape(bool preview)
     //quick fix
     updateGridView();
     return ret;
+}
+
+//======================================================================
+void GridEditor::memStdWallMove()
+{
+    if(!m_memcurrentMoveWallData)
+    {
+        m_memcurrentMoveWallData = std::make_unique<MoveWallData>();
+    }
+    const QObjectList &moveList = m_moveableWallForm->getWallMove();
+    m_memcurrentMoveWallData->clear();
+    m_memcurrentMoveWallData->m_velocity = m_moveableWallForm->getVelocity();
+    m_memcurrentMoveWallData->m_triggerType = m_moveableWallForm->getTriggerType();
+    m_memcurrentMoveWallData->m_triggerBehaviour = m_moveableWallForm->getTriggerBehaviour();
+    QString currentMove;
+    QStringList subStr;
+    Direction_e currentDir;
+    int moveNumber;
+    for(int i = 0; i < moveList.count(); ++i)
+    {
+        currentMove = static_cast<LineWallMove*>(moveList[i])->getQString();
+        subStr = currentMove.split(' ');
+        assert(subStr.size() >= 2);
+        currentDir = getDirEnumFromQString(subStr[0]);
+        moveNumber = subStr[2].toInt();
+        m_memcurrentMoveWallData->m_memMoveWallData.push_back({currentDir, moveNumber});
+    }
 }
 
 //======================================================================
@@ -763,26 +779,7 @@ void GridEditor::treatElementsDrawing()
     }
     else if(m_currentElementType == LevelElement_e::SELECTION)
     {
-        std::optional<CaseData> var = m_tableModel->getDataElementCase(caseIndex);
-        if(var)
-        {
-            if(var->m_type == LevelElement_e::TELEPORT)
-            {
-                assert(var->m_targetTeleport);
-                m_tableModel->setPreviewCase(var->m_targetTeleport->first, var->m_targetTeleport->second);
-            }
-            else if(var->m_type == LevelElement_e::WALL)
-            {
-                for(int32_t i = 0; i < var->m_moveWallData->m_memMoveWallCases.size(); ++i)
-                {
-                    m_tableModel->setPreviewCase(var->m_moveWallData->m_memMoveWallCases.operator[](i));
-                }
-            }
-            else if(var->m_type == LevelElement_e::TRIGGER)
-            {
-
-            }
-        }
+        treatSelection(caseIndex);
         return;
     }
     setCaseIcon(caseIndex.column(), caseIndex.row(), m_currentElementType == LevelElement_e::DELETE);
@@ -798,6 +795,31 @@ void GridEditor::treatElementsDrawing()
         assert(index);
         setElementSelected(LevelElement_e::WALL, *index);
         setLineSelectableEnabled(true);
+    }
+}
+
+//======================================================================
+void GridEditor::treatSelection(const QModelIndex &caseIndex)
+{
+    std::optional<CaseData> var = m_tableModel->getDataElementCase(caseIndex);
+    if(var)
+    {
+        if(var->m_type == LevelElement_e::TELEPORT)
+        {
+            assert(var->m_targetTeleport);
+            m_tableModel->setPreviewCase(var->m_targetTeleport->first, var->m_targetTeleport->second);
+        }
+        else if(var->m_type == LevelElement_e::WALL)
+        {
+            for(int32_t i = 0; i < var->m_moveWallData->m_memMoveWallCases.size(); ++i)
+            {
+                m_tableModel->setPreviewCase(var->m_moveWallData->m_memMoveWallCases.operator[](i));
+            }
+        }
+        else if(var->m_type == LevelElement_e::TRIGGER)
+        {
+
+        }
     }
 }
 

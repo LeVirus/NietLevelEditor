@@ -13,6 +13,7 @@ class EventFilter;
 class TeleportForm;
 class MoveableWallForm;
 class SelectableLineLayout;
+struct MoveWallData;
 
 enum class Direction_e;
 
@@ -70,6 +71,7 @@ private:
     void loadBarrelsPictures(const QString &installDir);
     void loadExitsPictures(const QString &installDir);
     bool setWallShape(bool preview = false);
+    void memStdWallMove();
     void setWallLineRectShape(const QPair<int, int> &topLeftIndex,
                               const QPair<int, int> &bottomRightIndex,
                               bool preview = false);
@@ -92,6 +94,7 @@ private slots:
     void stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);
     void wallSelection(const QModelIndex &index);
     void mouseReleaseSelection();
+    void treatSelection(const QModelIndex &caseIndex);
     void setWallDrawModeSelected(int wallDrawMode);
     void setWallMoveableMode(int moveableMode);
     void loadTriggerDisplay(const QString &installDir);
@@ -112,6 +115,7 @@ private:
     MoveableWallForm *m_moveableWallForm = nullptr;
     SelectableLineLayout *m_memWallSelectLayout = nullptr;
     std::map<LevelElement_e, QVector<QString>> m_mapElementID;
+    std::unique_ptr<MoveWallData> m_memcurrentMoveWallData;
 };
 
 Direction_e getDirEnumFromQString(const QString &str);
