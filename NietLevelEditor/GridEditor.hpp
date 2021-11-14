@@ -59,7 +59,6 @@ private:
     void connectSlots();
     void setStdTableSize();
     void initSelectableWidgets();
-    void initButtons();
     void loadIconPictures(const QString &installDir);
     void loadWallsPictures(const QString &installDir);
     void loadDoorsPictures(const QString &installDir);

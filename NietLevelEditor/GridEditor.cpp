@@ -37,7 +37,6 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     m_elementSelected = false;
     loadIconPictures(installDir);
     initSelectableWidgets();
-    initButtons();
     QTableView *tableView = findChild<QTableView*>("tableView");
     assert(tableView);
     if(!m_tableModel)
@@ -208,7 +207,7 @@ void GridEditor::initSelectableWidgets()
         {
             continue;
         }
-        SelectableLineLayout *selectLayout = new SelectableLineLayout(getStringFromLevelElementEnum(currentEnum), currentEnum, this);
+        SelectableLineLayout *selectLayout = new SelectableLineLayout(getStringFromLevelElementEnum(currentEnum), currentEnum);
         ui->SelectableLayout->addLayout(selectLayout);
         selectLayout->setIcons(m_drawData[i]);
         if(currentEnum == LevelElement_e::WALL)
@@ -218,14 +217,6 @@ void GridEditor::initSelectableWidgets()
         }
         QObject::connect(selectLayout, &SelectableLineLayout::lineSelected, this, &GridEditor::setElementSelected);
     }
-}
-
-//======================================================================
-void GridEditor::initButtons()
-{
-//    QPushButton *button = new QPushButton("Player Departure", this);
-//    QObject::connect(button, &QPushButton::clicked, this, &GridEditor::setElementSelected);
-//    ui->SelectableLayout->addWidget(button);
 }
 
 //======================================================================
