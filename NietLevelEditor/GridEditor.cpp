@@ -102,7 +102,7 @@ void GridEditor::memWallMove(const QModelIndex &index)
     std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
     if(!caseData->m_moveWallData)
     {
-        caseData->m_moveWallData = QVector<QPair<int, int>>();
+        caseData->m_moveWallData = MoveWallData();
     }
     caseData->m_moveWallData->clear();
     assert(caseData);
@@ -116,6 +116,7 @@ void GridEditor::memWallMove(const QModelIndex &index)
         assert(subStr.size() >= 2);
         currentDir = getDirEnumFromQString(subStr[0]);
         moveNumber = subStr[2].toInt();
+        caseData->m_moveWallData->m_memMoveWallData.push_back({currentDir, moveNumber});
         for(int j = 0; j < moveNumber; ++j)
         {
             QPair<int, int> tableSize = m_tableModel->getTableSize();
@@ -151,7 +152,7 @@ void GridEditor::memWallMove(const QModelIndex &index)
                 }
                 --currentPos.first;
             }
-            caseData->m_moveWallData->push_back(currentPos);
+            caseData->m_moveWallData->m_memMoveWallCases.push_back(currentPos);
         }
     }
 }
@@ -778,10 +779,14 @@ void GridEditor::treatElementsDrawing()
             }
             else if(var->m_type == LevelElement_e::WALL)
             {
-                for(int32_t i = 0; i < var->m_moveWallData->size(); ++i)
+                for(int32_t i = 0; i < var->m_moveWallData->m_memMoveWallCases.size(); ++i)
                 {
-                    m_tableModel->setPreviewCase(var->m_moveWallData->operator[](i));
+                    m_tableModel->setPreviewCase(var->m_moveWallData->m_memMoveWallCases.operator[](i));
                 }
+            }
+            else if(var->m_type == LevelElement_e::TRIGGER)
+            {
+
             }
         }
         return;

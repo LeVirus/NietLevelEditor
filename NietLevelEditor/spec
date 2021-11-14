@@ -14,27 +14,28 @@ Functionalities :
 Element to include :
 	Add simple select case==============================OK
 	Wall
-		Possibility to include several element from different geometric shape
-			Rectangle, line, point===========================OK
-		MultiSprite case!!!!===================================OK
-	MoveableWall==============================OK
-		Set move conf and trigger method========================OK
-		Add display movement when selected
+		Possibility to include several element from different geometric shape===========================OK
+			Rectangle, line, point==================================================================OK
+		MultiSprite case!!!!============================================================================OK
+	MoveableWall============================================================================================OK
+		Set move conf and trigger method================================================================OK
+		Add display movement when selected==============================================================OK
 		Possibility to modify move
-	Door==============================OK
-		Treat vertical lateral!!!==============================OK
-	Teleport==============================OK
-		Set Visual teleport case=========================OK
-		Add display target teleport when selected======================OK
-	Static element=====================================OK
-	Pick Object=====================================OK
-	Enemy=====================================OK
-	Trigger=====================================OK
+		Display trigger wall target
+	Door====================================================================================================OK
+		Treat vertical lateral!!!=======================================================================OK
+	Teleport================================================================================================OK
+		Set Visual teleport case========================================================================OK
+		Add display target teleport when selected=======================================================OK
+	Static element==========================================================================================OK
+	Pick Object=============================================================================================OK
+	Enemy===================================================================================================OK
+	Trigger=================================================================================================OK
 	Define background
 		Color
 		Simple texture
 		Textured ground ceiling
-	Define Player departure=====================================OK
+	Define Player departure=================================================================================OK
 	Define Music
 	
 Fix memory leak

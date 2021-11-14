@@ -5,13 +5,28 @@
 #include <QVector>
 #include <QBitArray>
 #include "GridEditor.hpp"
+#include "MoveableWallForm.hpp"
+
+struct MoveWallData
+{
+    QVector<QPair<int, int>> m_memMoveWallCases;
+    QVector<QPair<Direction_e, int>> m_memMoveWallData;
+    int m_velocity;
+    TriggerType_e m_triggerType;
+    TriggerBehaviourType_e m_triggerBehaviour;
+    void clear()
+    {
+        m_memMoveWallCases.clear();
+        m_memMoveWallData.clear();
+    }
+};
 
 struct CaseData
 {
     LevelElement_e m_type;
     QString m_id;
     std::optional<QPair<int, int>> m_targetTeleport;
-    std::optional<QVector<QPair<int, int>>> m_moveWallData;
+    std::optional<MoveWallData> m_moveWallData;
 };
 
 class TableModel : public QAbstractTableModel
