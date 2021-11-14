@@ -46,6 +46,18 @@ public:
     {
         return m_distantTriggerMode;
     }
+    inline int getVelocity()
+    {
+        return m_velocity;
+    }
+    inline TriggerType_e getTriggerType()
+    {
+        return m_triggerType;
+    }
+    inline TriggerBehaviourType_e getTriggerBehaviour()
+    {
+        return m_triggerBehaviour;
+    }
     int getCurrentTriggerAppearence();
     void setTriggerIcons(const QVector<QIcon> &vectIcon);
     void init();
@@ -61,6 +73,7 @@ private slots:
     void moveItemDown(int index);
     void treatComboBoxTriggerBehaviour(int index);
     void treatComboBoxTrigger(int index);
+    void modifyVelocity(int value);
     void setConfirmed();
     void addMove();
 private:
@@ -68,6 +81,9 @@ private:
     QVBoxLayout *m_scrollLayout;
     bool m_confirmed;
     bool m_distantTriggerMode;
+    TriggerType_e m_triggerType;
+    TriggerBehaviourType_e m_triggerBehaviour;
+    int m_velocity = 1;
 };
 
 void swapContent(LineWallMove *lineWallA, LineWallMove *lineWallB);

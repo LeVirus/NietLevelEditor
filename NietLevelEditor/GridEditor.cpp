@@ -109,6 +109,9 @@ void GridEditor::memWallMove(const QModelIndex &index)
     QPair<int, int> currentPos = {index.column(), index.row()};
     Direction_e currentDir;
     int moveNumber;
+    caseData->m_moveWallData->m_velocity = m_moveableWallForm->getVelocity();
+    caseData->m_moveWallData->m_triggerType = m_moveableWallForm->getTriggerType();
+    caseData->m_moveWallData->m_triggerBehaviour = m_moveableWallForm->getTriggerBehaviour();
     for(int i = 0; i < moveList.count(); ++i)
     {
         currentMove = static_cast<LineWallMove*>(moveList[i])->getQString();

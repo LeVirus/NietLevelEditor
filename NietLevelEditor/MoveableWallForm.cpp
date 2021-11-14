@@ -58,6 +58,7 @@ void MoveableWallForm::initUI()
     QObject::connect(ui->pushButtonCancel, &QPushButton::clicked, this, &MoveableWallForm::close);
     QObject::connect(ui->pushButtonOK, &QPushButton::clicked, this, &MoveableWallForm::setConfirmed);
     QObject::connect(ui->pushButtonAddMove, &QPushButton::clicked, this, &MoveableWallForm::addMove);
+    QObject::connect(ui->spinBoxVelocity, SIGNAL(valueChanged(int)), this, SLOT(modifyVelocity(int)));
 }
 
 //======================================================================
@@ -131,7 +132,8 @@ void MoveableWallForm::moveItemDown(int index)
 void MoveableWallForm::treatComboBoxTriggerBehaviour(int index)
 {
     assert(index <= 3);
-    bool enabled = static_cast<TriggerBehaviourType_e>(index) != TriggerBehaviourType_e::AUTO;
+    m_triggerBehaviour = static_cast<TriggerBehaviourType_e>(index);
+    bool enabled = m_triggerBehaviour != TriggerBehaviourType_e::AUTO;
     ui->comboBoxTriggerType->setEnabled(enabled);
     if(!enabled)
     {
@@ -148,7 +150,14 @@ void MoveableWallForm::treatComboBoxTriggerBehaviour(int index)
 void MoveableWallForm::treatComboBoxTrigger(int index)
 {
     assert(index <= 3);
-    ui->comboBoxTriggerAppearence->setEnabled(static_cast<TriggerType_e>(index) == TriggerType_e::DISTANT_SWITCH);
+    m_triggerType = static_cast<TriggerType_e>(index);
+    ui->comboBoxTriggerAppearence->setEnabled(m_triggerType == TriggerType_e::DISTANT_SWITCH);
+}
+
+//======================================================================
+void MoveableWallForm::modifyVelocity(int value)
+{
+    m_velocity = value;
 }
 
 //======================================================================
