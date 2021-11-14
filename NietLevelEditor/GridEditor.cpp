@@ -83,9 +83,13 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
         ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
                                                    pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
         m_tableModel->setIdData(index, CaseData{m_currentElementType,
-                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}});
+                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}});
         if(m_currentElementType == LevelElement_e::WALL && m_wallMoveableMode)
         {
+            if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH)
+            {
+                m_memCurrentLinkTriggerWall.push_back({x, y});
+            }
             memWallMove(index);
         }
     }
@@ -743,6 +747,7 @@ void GridEditor::treatWallDrawing()
 {
     assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
     m_wallSecondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
+    m_memCurrentLinkTriggerWall.clear();
     bool draw = setWallShape();
     if(m_wallMoveableMode)
     {
@@ -791,6 +796,9 @@ void GridEditor::treatElementsDrawing()
     }
     else if(m_currentElementType == LevelElement_e::TRIGGER)
     {
+        std::optional<CaseData> &triggerData = m_tableModel->getDataElementCase(caseIndex);
+        assert(triggerData);
+        triggerData->m_triggerLinkWall = m_memCurrentLinkTriggerWall;
         std::optional<int> index = m_memWallSelectLayout->getSelected();
         assert(index);
         setElementSelected(LevelElement_e::WALL, *index);
@@ -818,7 +826,11 @@ void GridEditor::treatSelection(const QModelIndex &caseIndex)
         }
         else if(var->m_type == LevelElement_e::TRIGGER)
         {
-
+            assert(var->m_triggerLinkWall);
+            for(int32_t i = 0; i < var->m_triggerLinkWall->size(); ++i)
+            {
+                m_tableModel->setPreviewCase(var->m_triggerLinkWall->operator[](i));
+            }
         }
     }
 }

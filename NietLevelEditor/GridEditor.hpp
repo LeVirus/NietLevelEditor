@@ -116,6 +116,7 @@ private:
     SelectableLineLayout *m_memWallSelectLayout = nullptr;
     std::map<LevelElement_e, QVector<QString>> m_mapElementID;
     std::unique_ptr<MoveWallData> m_memcurrentMoveWallData;
+    QVector<QPair<int, int>> m_memCurrentLinkTriggerWall;
 };
 
 Direction_e getDirEnumFromQString(const QString &str);
