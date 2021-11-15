@@ -80,10 +80,14 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
     }
     else
     {
+        std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
         ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
                                                    pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
-        m_tableModel->setIdData(index, CaseData{m_currentElementType,
-                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}});
+        if(!caseData || caseData->m_type != LevelElement_e::TRIGGER)
+        {
+            m_tableModel->setIdData(index, CaseData{m_currentElementType,
+                                                    m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}});
+        }
         if(m_currentElementType == LevelElement_e::WALL && m_wallMoveableMode)
         {
             if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH)
@@ -158,7 +162,7 @@ void GridEditor::setPlayerDeparture(int x, int y)
     QPixmap pix(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
     pix.fill(Qt::darkBlue);
     m_tableModel->setData(index, QVariant(pix));
-    m_tableModel->setIdData(index, CaseData{LevelElement_e::PLAYER_DEPARTURE, "", {}, {}});
+    m_tableModel->setIdData(index, CaseData{LevelElement_e::PLAYER_DEPARTURE, "", {}, {}, {}});
     updateGridView();
 }
 
@@ -813,23 +817,33 @@ void GridEditor::treatElementsDrawing()
     }
     else if(m_currentElementType == LevelElement_e::TRIGGER)
     {
-        std::optional<CaseData> &triggerData = m_tableModel->getDataElementCase(caseIndex);
-        assert(triggerData);
-        triggerData->m_triggerLinkWall = m_memCurrentLinkTriggerWall;
-        std::optional<int> index = m_memWallSelectLayout->getSelected();
-        assert(index);
-        setElementSelected(LevelElement_e::WALL, *index);
-        setLineSelectableEnabled(true);
-        QModelIndex wallIndex;
-        //mem trigger pos for wall
-        for(QSet<QPair<int, int>>::iterator it = m_memCurrentLinkTriggerWall.begin(); it != m_memCurrentLinkTriggerWall.end(); ++it)
+        confNewTriggerData(caseIndex);
+    }
+}
+
+//======================================================================
+void GridEditor::confNewTriggerData(const QModelIndex &caseIndex)
+{
+    std::optional<CaseData> &triggerData = m_tableModel->getDataElementCase(caseIndex);
+    assert(triggerData);
+    std::optional<int> index = m_memWallSelectLayout->getSelected();
+    assert(index);
+    if(!triggerData->m_triggerLinkWall)
+    {
+        triggerData->m_triggerLinkWall = QSet<QPair<int, int>>();
+    }
+    setElementSelected(LevelElement_e::WALL, *index);
+    setLineSelectableEnabled(true);
+    QModelIndex wallIndex;
+    //mem trigger pos for wall
+    for(QSet<QPair<int, int>>::iterator it = m_memCurrentLinkTriggerWall.begin(); it != m_memCurrentLinkTriggerWall.end(); ++it)
+    {
+        triggerData->m_triggerLinkWall->insert(*it);
+        wallIndex = m_tableModel->index(it->second, it->first);
+        assert(m_tableModel->getDataElementCase(wallIndex));
+        if(m_tableModel->getDataElementCase(wallIndex)->m_moveWallData)
         {
-            wallIndex = m_tableModel->index(it->second, it->first);
-            assert(m_tableModel->getDataElementCase(wallIndex));
-            if(m_tableModel->getDataElementCase(wallIndex)->m_moveWallData)
-            {
-                m_tableModel->getDataElementCase(wallIndex)->m_moveWallData->m_triggerPos = {caseIndex.column(), caseIndex.row()};
-            }
+            m_tableModel->getDataElementCase(wallIndex)->m_moveWallData->m_triggerPos = {caseIndex.column(), caseIndex.row()};
         }
     }
 }
