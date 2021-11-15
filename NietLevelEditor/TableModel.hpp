@@ -4,6 +4,7 @@
 #include <QString>
 #include <QVector>
 #include <QBitArray>
+#include <QSet>
 #include "GridEditor.hpp"
 #include "MoveableWallForm.hpp"
 
@@ -18,7 +19,9 @@ struct MoveWallData
     {
         m_memMoveWallCases.clear();
         m_memMoveWallData.clear();
+        m_triggerPos = {};
     }
+    std::optional<QPair<int, int>> m_triggerPos;
 };
 
 struct CaseData

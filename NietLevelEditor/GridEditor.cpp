@@ -769,6 +769,7 @@ void GridEditor::treatWallDrawing()
 //======================================================================
 void GridEditor::treatElementsDrawing()
 {
+    bool deleteMode = m_currentElementType == LevelElement_e::DELETE;
     QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
     if(m_currentElementType == LevelElement_e::PLAYER_DEPARTURE)
     {
@@ -787,7 +788,25 @@ void GridEditor::treatElementsDrawing()
         treatSelection(caseIndex);
         return;
     }
-    setCaseIcon(caseIndex.column(), caseIndex.row(), m_currentElementType == LevelElement_e::DELETE);
+    else if(deleteMode)
+    {
+        std::optional<CaseData> &wallData = m_tableModel->getDataElementCase(caseIndex);
+        if(wallData && wallData->m_type == LevelElement_e::WALL && wallData->m_moveWallData->m_triggerPos)
+        {
+            QModelIndex triggerIndex = m_tableModel->index(wallData->m_moveWallData->m_triggerPos->second,
+                                                           wallData->m_moveWallData->m_triggerPos->first);
+            std::optional<CaseData> &triggerData = m_tableModel->getDataElementCase(triggerIndex);
+            if(triggerData)
+            {
+                QVector<QPair<int, int>>::iterator it = triggerData->m_triggerLinkWall->begin() +
+                        triggerData->m_triggerLinkWall->indexOf({caseIndex.column(), caseIndex.row()});
+                assert(it != triggerData->m_triggerLinkWall->end());
+                std::cerr << triggerData->m_triggerLinkWall->size() << "  " <<  it->first << "  " << it->second << " ERR\n";
+                triggerData->m_triggerLinkWall->erase(it);
+            }
+        }
+    }
+    setCaseIcon(caseIndex.column(), caseIndex.row(), deleteMode);
     if(m_currentElementType == LevelElement_e::TELEPORT)
     {
         m_lastPositionAdded = {caseIndex.column(), caseIndex.row()};
@@ -803,6 +822,17 @@ void GridEditor::treatElementsDrawing()
         assert(index);
         setElementSelected(LevelElement_e::WALL, *index);
         setLineSelectableEnabled(true);
+        QModelIndex wallIndex;
+        //mem trigger pos for wall
+        for(int i = 0; i < m_memCurrentLinkTriggerWall.size(); ++i)
+        {
+            wallIndex = m_tableModel->index(m_memCurrentLinkTriggerWall[i].second, m_memCurrentLinkTriggerWall[i].first);
+            assert(m_tableModel->getDataElementCase(wallIndex));
+            if(m_tableModel->getDataElementCase(wallIndex)->m_moveWallData)
+            {
+                m_tableModel->getDataElementCase(wallIndex)->m_moveWallData->m_triggerPos = {caseIndex.column(), caseIndex.row()};
+            }
+        }
     }
 }
 
