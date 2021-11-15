@@ -88,7 +88,7 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
         {
             if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH)
             {
-                m_memCurrentLinkTriggerWall.push_back({x, y});
+                m_memCurrentLinkTriggerWall.insert({x, y});
             }
             memWallMove(index);
         }
@@ -798,10 +798,8 @@ void GridEditor::treatElementsDrawing()
             std::optional<CaseData> &triggerData = m_tableModel->getDataElementCase(triggerIndex);
             if(triggerData)
             {
-                QVector<QPair<int, int>>::iterator it = triggerData->m_triggerLinkWall->begin() +
-                        triggerData->m_triggerLinkWall->indexOf({caseIndex.column(), caseIndex.row()});
+                QSet<QPair<int, int>>::iterator it = triggerData->m_triggerLinkWall->find({caseIndex.column(), caseIndex.row()});
                 assert(it != triggerData->m_triggerLinkWall->end());
-                std::cerr << triggerData->m_triggerLinkWall->size() << "  " <<  it->first << "  " << it->second << " ERR\n";
                 triggerData->m_triggerLinkWall->erase(it);
             }
         }
@@ -824,9 +822,9 @@ void GridEditor::treatElementsDrawing()
         setLineSelectableEnabled(true);
         QModelIndex wallIndex;
         //mem trigger pos for wall
-        for(int i = 0; i < m_memCurrentLinkTriggerWall.size(); ++i)
+        for(QSet<QPair<int, int>>::iterator it = m_memCurrentLinkTriggerWall.begin(); it != m_memCurrentLinkTriggerWall.end(); ++it)
         {
-            wallIndex = m_tableModel->index(m_memCurrentLinkTriggerWall[i].second, m_memCurrentLinkTriggerWall[i].first);
+            wallIndex = m_tableModel->index(it->second, it->first);
             assert(m_tableModel->getDataElementCase(wallIndex));
             if(m_tableModel->getDataElementCase(wallIndex)->m_moveWallData)
             {
@@ -857,9 +855,9 @@ void GridEditor::treatSelection(const QModelIndex &caseIndex)
         else if(var->m_type == LevelElement_e::TRIGGER)
         {
             assert(var->m_triggerLinkWall);
-            for(int32_t i = 0; i < var->m_triggerLinkWall->size(); ++i)
+            for(QSet<QPair<int, int>>::iterator it = var->m_triggerLinkWall->begin(); it != var->m_triggerLinkWall->end(); ++it)
             {
-                m_tableModel->setPreviewCase(var->m_triggerLinkWall->operator[](i));
+                m_tableModel->setPreviewCase(*it);
             }
         }
     }

@@ -30,7 +30,7 @@ struct CaseData
     QString m_id;
     std::optional<QPair<int, int>> m_targetTeleport;
     std::optional<MoveWallData> m_moveWallData;
-    std::optional<QVector<QPair<int, int>>> m_triggerLinkWall;
+    std::optional<QSet<QPair<int, int>>> m_triggerLinkWall;
 };
 
 class TableModel : public QAbstractTableModel
