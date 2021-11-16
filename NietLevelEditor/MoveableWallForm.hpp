@@ -1,10 +1,12 @@
 ﻿#pragma once
 
 #include <QDialog>
+#include <optional>
 
 class QVBoxLayout;
 class LevelDataManager;
 class LineWallMove;
+struct CaseData;
 
 namespace Ui {
 class MoveableWallForm;
@@ -59,6 +61,7 @@ public:
         return m_triggerBehaviour;
     }
     int getCurrentTriggerAppearence();
+    void setData(const CaseData &data);
     void setTriggerIcons(const QVector<QIcon> &vectIcon);
     void init();
     const QObjectList &getWallMove()const;
@@ -84,6 +87,7 @@ private:
     TriggerType_e m_triggerType;
     TriggerBehaviourType_e m_triggerBehaviour;
     int m_velocity = 1;
+    std::optional<QPair<Direction_e, int>> m_memMove;
 };
 
 void swapContent(LineWallMove *lineWallA, LineWallMove *lineWallB);

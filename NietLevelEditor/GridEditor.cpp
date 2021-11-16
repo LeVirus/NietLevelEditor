@@ -756,6 +756,11 @@ void GridEditor::treatWallDrawing()
     if(m_wallMoveableMode)
     {
         m_moveableWallForm->init();
+        const std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(m_wallFirstCaseSelection);
+        if(caseData && caseData->m_type == LevelElement_e::WALL && caseData->m_moveWallData)
+        {
+            m_moveableWallForm->setData(*caseData);
+        }
         m_moveableWallForm->exec();
         if(!m_moveableWallForm->confirmed())
         {

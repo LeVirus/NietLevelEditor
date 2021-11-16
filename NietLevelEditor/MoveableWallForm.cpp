@@ -2,6 +2,7 @@
 #include "LineWallMove.hpp"
 #include "LevelDataManager.hpp"
 #include "GridEditor.hpp"
+#include "TableModel.hpp"
 #include "ui_MoveableWallForm.h"
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -21,6 +22,22 @@ MoveableWallForm::MoveableWallForm(QWidget *parent) :
 int MoveableWallForm::getCurrentTriggerAppearence()
 {
     return ui->comboBoxTriggerAppearence->currentIndex();
+}
+
+//======================================================================
+void MoveableWallForm::setData(const CaseData &data)
+{
+    clear();
+    for(int i = 0; i < data.m_moveWallData->m_memMoveWallData.size(); ++i)
+    {
+        m_memMove = data.m_moveWallData->m_memMoveWallData[i];
+        addMove();
+    }
+    m_memMove = {};
+    std::cerr << static_cast<int>(data.m_moveWallData->m_triggerType) << "\n";
+    ui->comboBoxTriggerType->setCurrentIndex(static_cast<int>(data.m_moveWallData->m_triggerType));
+    ui->comboBoxTriggerBehaviourType->setCurrentIndex(static_cast<int>(data.m_moveWallData->m_triggerBehaviour));
+    ui->spinBoxVelocity->setValue(data.m_moveWallData->m_velocity);
 }
 
 //======================================================================
@@ -181,8 +198,14 @@ void MoveableWallForm::setConfirmed()
 void MoveableWallForm::addMove()
 {
     LineWallMove *lineLayout = new LineWallMove(m_scrollLayout->children().count());
-    lineLayout->setProperties(static_cast<Direction_e>(ui->comboBoxDirection->currentIndex()),
-                              ui->spinBoxMoveNumber->value());
+    if(m_memMove)
+    {
+        lineLayout->setProperties(m_memMove->first, m_memMove->second);
+    }
+    else
+    {
+        lineLayout->setProperties(static_cast<Direction_e>(ui->comboBoxDirection->currentIndex()), ui->spinBoxMoveNumber->value());
+    }
     m_scrollLayout->addLayout(lineLayout);
     QObject::connect(lineLayout, SIGNAL(sigRemove(int)), this, SLOT(removeItemAt(int)));
     QObject::connect(lineLayout, SIGNAL(sigMoveDown(int)), this, SLOT(moveItemDown(int)));
