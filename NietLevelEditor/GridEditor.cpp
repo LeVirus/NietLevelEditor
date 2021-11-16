@@ -753,6 +753,17 @@ void GridEditor::treatWallDrawing()
     assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
     m_wallSecondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
     m_memCurrentLinkTriggerWall.clear();
+    if(m_wallMoveableMode)
+    {
+        m_moveableWallForm->init();
+        m_moveableWallForm->exec();
+        if(!m_moveableWallForm->confirmed())
+        {
+            m_wallMoveableMode = false;
+            m_memWallSelectLayout->uncheckMoveableWall();
+            return;
+        }
+    }
     bool draw = setWallShape();
     if(m_wallMoveableMode)
     {
@@ -898,16 +909,6 @@ void GridEditor::setWallDrawModeSelected(int wallDrawMode)
 void GridEditor::setWallMoveableMode(int moveableMode)
 {
     m_wallMoveableMode = moveableMode;
-    if(m_wallMoveableMode)
-    {
-        m_moveableWallForm->init();
-        m_moveableWallForm->exec();
-        if(!m_moveableWallForm->confirmed())
-        {
-            m_wallMoveableMode = false;
-            m_memWallSelectLayout->uncheckMoveableWall();
-        }
-    }
 }
 
 //======================================================================
