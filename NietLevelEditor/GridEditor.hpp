@@ -91,6 +91,7 @@ private:
     void treatWallDrawing();
     void treatElementsDrawing();
     void confNewTriggerData(const QModelIndex &caseIndex);
+    void removeWallDistantTriggerData(const QModelIndex &caseIndex);
 private slots:
     void setElementSelected(LevelElement_e num, int currentSelect);
     void stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);

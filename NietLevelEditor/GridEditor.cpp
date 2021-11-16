@@ -90,6 +90,7 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
         }
         if(m_currentElementType == LevelElement_e::WALL && m_wallMoveableMode)
         {
+            removeWallDistantTriggerData(index);
             if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH)
             {
                 m_memCurrentLinkTriggerWall.insert({x, y});
@@ -794,19 +795,7 @@ void GridEditor::treatElementsDrawing()
     }
     else if(deleteMode)
     {
-        std::optional<CaseData> &wallData = m_tableModel->getDataElementCase(caseIndex);
-        if(wallData && wallData->m_type == LevelElement_e::WALL && wallData->m_moveWallData->m_triggerPos)
-        {
-            QModelIndex triggerIndex = m_tableModel->index(wallData->m_moveWallData->m_triggerPos->second,
-                                                           wallData->m_moveWallData->m_triggerPos->first);
-            std::optional<CaseData> &triggerData = m_tableModel->getDataElementCase(triggerIndex);
-            if(triggerData)
-            {
-                QSet<QPair<int, int>>::iterator it = triggerData->m_triggerLinkWall->find({caseIndex.column(), caseIndex.row()});
-                assert(it != triggerData->m_triggerLinkWall->end());
-                triggerData->m_triggerLinkWall->erase(it);
-            }
-        }
+        removeWallDistantTriggerData(caseIndex);
     }
     setCaseIcon(caseIndex.column(), caseIndex.row(), deleteMode);
     if(m_currentElementType == LevelElement_e::TELEPORT)
@@ -818,6 +807,28 @@ void GridEditor::treatElementsDrawing()
     else if(m_currentElementType == LevelElement_e::TRIGGER)
     {
         confNewTriggerData(caseIndex);
+    }
+}
+
+//======================================================================
+void GridEditor::removeWallDistantTriggerData(const QModelIndex &caseIndex)
+{
+    std::optional<CaseData> &wallData = m_tableModel->getDataElementCase(caseIndex);
+    if(wallData && wallData->m_type == LevelElement_e::WALL && wallData->m_moveWallData->m_triggerPos)
+    {
+        QModelIndex triggerIndex = m_tableModel->index(wallData->m_moveWallData->m_triggerPos->second,
+                                                       wallData->m_moveWallData->m_triggerPos->first);
+        if(!triggerIndex.isValid())
+        {
+            return;
+        }
+        std::optional<CaseData> &triggerData = m_tableModel->getDataElementCase(triggerIndex);
+        if(triggerData)
+        {
+            QSet<QPair<int, int>>::iterator it = triggerData->m_triggerLinkWall->find({caseIndex.column(), caseIndex.row()});
+            assert(it != triggerData->m_triggerLinkWall->end());
+            triggerData->m_triggerLinkWall->erase(it);
+        }
     }
 }
 

@@ -13,7 +13,7 @@ Functionalities :
 
 Element to include :
 	Add simple select case==============================OK
-	Wall
+	Wall================================================OK
 		Possibility to include several element from different geometric shape===========================OK
 			Rectangle, line, point==================================================================OK
 		MultiSprite case!!!!============================================================================OK
