@@ -39,5 +39,10 @@ Element to include :
 	Define Player departure=================================================================================OK
 	Define Music
 	
+Bugs::::::::::
+
+)))
+Crash when select moveable wall on several existing move wall shape
+
 Fix memory leak
 

@@ -84,7 +84,7 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
         std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
         ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
                                                    pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
-        if(!caseData || caseData->m_type != LevelElement_e::TRIGGER)
+        if(!caseData || (caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER))
         {
             m_tableModel->setIdData(index, CaseData{m_currentElementType,
                                                     m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}});
@@ -171,8 +171,11 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type)
     {
         pix.fill(Qt::magenta);
     }
+    if(type == LevelElement_e::PLAYER_DEPARTURE || !m_tableModel->getDataElementCase(index))
+    {
+        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}});
+    }
     m_tableModel->setData(index, QVariant(pix));
-    m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}});
     updateGridView();
 }
 
