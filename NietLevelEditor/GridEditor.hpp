@@ -31,6 +31,7 @@ enum class LevelElement_e
     BARREL,
     EXIT,
     TRIGGER,
+    GROUND_TRIGGER,
     DELETE,
     PLAYER_DEPARTURE,
     SELECTION,
@@ -84,14 +85,14 @@ private:
                               bool preview = false);
     void setCaseIcon(int x, int y, bool deleteMode = false);
     void memWallMove(const QModelIndex &index);
-    void setPlayerDeparture(int x, int y);
+    void setColorCaseData(int x, int y, LevelElement_e type);
     QIcon getCurrentSelectedIcon()const;
     void updateGridView();
     void setLineSelectableEnabled(bool enable);
     void treatWallDrawing();
     void treatElementsDrawing();
     void confNewTriggerData(const QModelIndex &caseIndex);
-    void removeWallDistantTriggerData(const QModelIndex &caseIndex);
+    void removeElementCase(const QModelIndex &caseIndex);
 private slots:
     void setElementSelected(LevelElement_e num, int currentSelect);
     void stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);
@@ -104,6 +105,7 @@ private slots:
 private:
     Ui::GridEditor *ui;
     QPair<int, int> m_lastPositionAdded;
+    std::optional<QPair<int, int>> m_PlayerDeparture;
     LevelDataManager m_levelDataManager;
     TableModel *m_tableModel = nullptr;
     int m_currentSelection;

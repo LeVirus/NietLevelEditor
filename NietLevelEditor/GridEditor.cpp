@@ -90,8 +90,9 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
         }
         if(m_currentElementType == LevelElement_e::WALL && m_wallMoveableMode)
         {
-            removeWallDistantTriggerData(index);
-            if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH)
+            removeElementCase(index);
+            if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH ||
+                    m_moveableWallForm->getTriggerType() == TriggerType_e::GROUND)
             {
                 m_memCurrentLinkTriggerWall.insert({x, y});
             }
@@ -157,13 +158,21 @@ void GridEditor::memWallMove(const QModelIndex &index)
 }
 
 //======================================================================
-void GridEditor::setPlayerDeparture(int x, int y)
+void GridEditor::setColorCaseData(int x, int y, LevelElement_e type)
 {
     QModelIndex index = m_tableModel->index(y, x, QModelIndex());
     QPixmap pix(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
-    pix.fill(Qt::darkBlue);
+    if(type == LevelElement_e::PLAYER_DEPARTURE)
+    {
+        pix.fill(Qt::darkBlue);
+        m_PlayerDeparture = {x, y};
+    }
+    else
+    {
+        pix.fill(Qt::magenta);
+    }
     m_tableModel->setData(index, QVariant(pix));
-    m_tableModel->setIdData(index, CaseData{LevelElement_e::PLAYER_DEPARTURE, "", {}, {}, {}});
+    m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}});
     updateGridView();
 }
 
@@ -200,7 +209,8 @@ void GridEditor::initSelectableWidgets()
     for(uint32_t i = 0; i < static_cast<uint32_t>(LevelElement_e::TOTAL); ++i)
     {
         currentEnum = static_cast<LevelElement_e>(i);
-        if(currentEnum == LevelElement_e::TRIGGER || currentEnum == LevelElement_e::TARGET_TELEPORT)
+        if(currentEnum == LevelElement_e::TRIGGER || currentEnum == LevelElement_e::GROUND_TRIGGER ||
+                currentEnum == LevelElement_e::TARGET_TELEPORT)
         {
             continue;
         }
@@ -775,11 +785,17 @@ void GridEditor::treatWallDrawing()
         if(draw)
         {
             m_memWallSelectLayout->uncheckMoveableWall();
-            if(m_moveableWallForm->isDistantTriggerMode())
+            if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH)
             {
                 m_currentElementType = LevelElement_e::TRIGGER;
                 setLineSelectableEnabled(false);
                 m_currentSelection = m_moveableWallForm->getCurrentTriggerAppearence();
+                m_wallMoveableMode = false;
+            }
+            else if(m_moveableWallForm->getTriggerType() == TriggerType_e::GROUND)
+            {
+                m_currentElementType = LevelElement_e::GROUND_TRIGGER;
+                setLineSelectableEnabled(false);
                 m_wallMoveableMode = false;
             }
         }
@@ -794,7 +810,15 @@ void GridEditor::treatElementsDrawing()
     QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
     if(m_currentElementType == LevelElement_e::PLAYER_DEPARTURE)
     {
-        setPlayerDeparture(caseIndex.column(), caseIndex.row());
+        setColorCaseData(caseIndex.column(), caseIndex.row(), m_currentElementType);
+        return;
+    }
+    if(m_currentElementType == LevelElement_e::GROUND_TRIGGER)
+    {
+        setColorCaseData(caseIndex.column(), caseIndex.row(), m_currentElementType);
+        m_currentElementType = LevelElement_e::WALL;
+        setLineSelectableEnabled(true);
+        confNewTriggerData(caseIndex);
         return;
     }
     else if(m_currentElementType == LevelElement_e::TARGET_TELEPORT)
@@ -811,7 +835,7 @@ void GridEditor::treatElementsDrawing()
     }
     else if(deleteMode)
     {
-        removeWallDistantTriggerData(caseIndex);
+        removeElementCase(caseIndex);
     }
     setCaseIcon(caseIndex.column(), caseIndex.row(), deleteMode);
     if(m_currentElementType == LevelElement_e::TELEPORT)
@@ -827,13 +851,13 @@ void GridEditor::treatElementsDrawing()
 }
 
 //======================================================================
-void GridEditor::removeWallDistantTriggerData(const QModelIndex &caseIndex)
+void GridEditor::removeElementCase(const QModelIndex &caseIndex)
 {
-    std::optional<CaseData> &wallData = m_tableModel->getDataElementCase(caseIndex);
-    if(wallData && wallData->m_type == LevelElement_e::WALL && wallData->m_moveWallData->m_triggerPos)
+    std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(caseIndex);
+    if(caseData && caseData->m_type == LevelElement_e::WALL && caseData->m_moveWallData->m_triggerPos)
     {
-        QModelIndex triggerIndex = m_tableModel->index(wallData->m_moveWallData->m_triggerPos->second,
-                                                       wallData->m_moveWallData->m_triggerPos->first);
+        QModelIndex triggerIndex = m_tableModel->index(caseData->m_moveWallData->m_triggerPos->second,
+                                                       caseData->m_moveWallData->m_triggerPos->first);
         if(!triggerIndex.isValid())
         {
             return;
@@ -845,6 +869,10 @@ void GridEditor::removeWallDistantTriggerData(const QModelIndex &caseIndex)
             assert(it != triggerData->m_triggerLinkWall->end());
             triggerData->m_triggerLinkWall->erase(it);
         }
+    }
+    else if(caseData && caseData->m_type == LevelElement_e::PLAYER_DEPARTURE)
+    {
+        m_PlayerDeparture = {};
     }
 }
 
@@ -893,7 +921,7 @@ void GridEditor::treatSelection(const QModelIndex &caseIndex)
                 m_tableModel->setPreviewCase(var->m_moveWallData->m_memMoveWallCases.operator[](i));
             }
         }
-        else if(var->m_type == LevelElement_e::TRIGGER)
+        else if(var->m_type == LevelElement_e::TRIGGER || var->m_type == LevelElement_e::GROUND_TRIGGER)
         {
             assert(var->m_triggerLinkWall);
             for(QSet<QPair<int, int>>::iterator it = var->m_triggerLinkWall->begin(); it != var->m_triggerLinkWall->end(); ++it)
@@ -963,6 +991,8 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
         return "Wall";
     case LevelElement_e::TRIGGER:
         return "Trigger";
+    case LevelElement_e::GROUND_TRIGGER:
+        return "Ground trigger";
     case LevelElement_e::DELETE:
         return "Delete";
     case LevelElement_e::PLAYER_DEPARTURE:
