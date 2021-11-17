@@ -871,6 +871,8 @@ void GridEditor::removeElementCase(const QModelIndex &caseIndex)
             QSet<QPair<int, int>>::iterator it = triggerData->m_triggerLinkWall->find({caseIndex.column(), caseIndex.row()});
             assert(it != triggerData->m_triggerLinkWall->end());
             triggerData->m_triggerLinkWall->erase(it);
+            caseData->m_moveWallData->m_triggerPos.reset();
+            caseData->m_moveWallData.reset();
         }
     }
     else if(caseData && caseData->m_type == LevelElement_e::PLAYER_DEPARTURE)
