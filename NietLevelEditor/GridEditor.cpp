@@ -80,6 +80,7 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
     }
     else
     {
+        removeElementCase(index);
         std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
         ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
                                                    pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
@@ -90,7 +91,6 @@ void GridEditor::setCaseIcon(int x, int y, bool deleteMode)
         }
         if(m_currentElementType == LevelElement_e::WALL && m_wallMoveableMode)
         {
-            removeElementCase(index);
             if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH ||
                     m_moveableWallForm->getTriggerType() == TriggerType_e::GROUND)
             {
