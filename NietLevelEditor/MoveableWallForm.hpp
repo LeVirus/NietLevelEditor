@@ -44,10 +44,6 @@ public:
     {
         return m_confirmed;
     }
-    inline bool isDistantTriggerMode()
-    {
-        return m_distantTriggerMode;
-    }
     inline int getVelocity()
     {
         return m_velocity;
@@ -83,7 +79,6 @@ private:
     Ui::MoveableWallForm *ui;
     QVBoxLayout *m_scrollLayout;
     bool m_confirmed;
-    bool m_distantTriggerMode;
     TriggerType_e m_triggerType;
     TriggerBehaviourType_e m_triggerBehaviour;
     int m_velocity = 1;

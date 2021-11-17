@@ -34,7 +34,6 @@ void MoveableWallForm::setData(const CaseData &data)
         addMove();
     }
     m_memMove = {};
-    std::cerr << static_cast<int>(data.m_moveWallData->m_triggerType) << "\n";
     ui->comboBoxTriggerType->setCurrentIndex(static_cast<int>(data.m_moveWallData->m_triggerType));
     ui->comboBoxTriggerBehaviourType->setCurrentIndex(static_cast<int>(data.m_moveWallData->m_triggerBehaviour));
     ui->spinBoxVelocity->setValue(data.m_moveWallData->m_velocity);
@@ -52,7 +51,6 @@ void MoveableWallForm::setTriggerIcons(const QVector<QIcon> &vectIcon)
 //======================================================================
 void MoveableWallForm::init()
 {
-    m_distantTriggerMode = false;
     m_confirmed = false;
     clear();
 }
@@ -76,6 +74,8 @@ void MoveableWallForm::initUI()
     QObject::connect(ui->pushButtonOK, &QPushButton::clicked, this, &MoveableWallForm::setConfirmed);
     QObject::connect(ui->pushButtonAddMove, &QPushButton::clicked, this, &MoveableWallForm::addMove);
     QObject::connect(ui->spinBoxVelocity, SIGNAL(valueChanged(int)), this, SLOT(modifyVelocity(int)));
+    m_triggerType = static_cast<TriggerType_e>(ui->comboBoxTriggerType->currentIndex());
+    m_triggerBehaviour = static_cast<TriggerBehaviourType_e>(ui->comboBoxTriggerBehaviourType->currentIndex());
 }
 
 //======================================================================
@@ -183,8 +183,6 @@ void MoveableWallForm::setConfirmed()
     if(!m_scrollLayout->isEmpty())
     {
         m_confirmed = true;
-        m_distantTriggerMode = (static_cast<TriggerType_e>(ui->comboBoxTriggerType->currentIndex()) ==
-                                TriggerType_e::DISTANT_SWITCH);
     }
     else
     {
