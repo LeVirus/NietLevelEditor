@@ -58,7 +58,7 @@ public:
     }
     int getCurrentTriggerAppearence();
     void setData(const CaseData &data);
-    void setTriggerIcons(const QVector<QIcon> &vectIcon);
+    void setTriggerIcons(const QVector<QPair<QString, QIcon> > &vectIcon);
     void init();
     const QObjectList &getWallMove()const;
     ~MoveableWallForm();

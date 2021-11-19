@@ -7,12 +7,14 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QComboBox>
+#include <QPushButton>
 #include <iostream>
 #include <MoveableWallForm.hpp>
 #include "TableModel.hpp"
 #include "SelectableLineLayout.hpp"
 #include "EventFilter.hpp"
 #include "LineWallMove.hpp"
+#include "BackgroundForm.hpp"
 
 //======================================================================
 GridEditor::GridEditor(QWidget *parent) :
@@ -36,17 +38,22 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     m_wallDrawMode = WallDrawMode_e::LINE_AND_RECT;
     m_elementSelected = false;
     loadIconPictures(installDir);
+    if(!m_moveableWallForm)
+    {
+        m_moveableWallForm = new MoveableWallForm(this);
+        m_moveableWallForm->setTriggerIcons(m_drawData[static_cast<int>(LevelElement_e::TRIGGER)]);
+    }
+    if(!m_backgroundForm)
+    {
+        m_backgroundForm = new BackgroundForm(m_drawData, this);
+    }
     initSelectableWidgets();
+    initButtons();
     QTableView *tableView = findChild<QTableView*>("tableView");
     assert(tableView);
     if(!m_tableModel)
     {
         m_tableModel = new TableModel(tableView);
-    }
-    if(!m_moveableWallForm)
-    {
-        m_moveableWallForm = new MoveableWallForm(this);
-        m_moveableWallForm->setTriggerIcons(m_drawData[static_cast<int>(LevelElement_e::TRIGGER)]);
     }
     m_tableModel->setLevelSize(levelWidth, levelHeight);
     tableView->setModel(m_tableModel);
@@ -185,7 +192,7 @@ QIcon GridEditor::getCurrentSelectedIcon() const
     uint32_t index = static_cast<uint32_t>(m_currentElementType);
     assert(index < m_drawData.size());
     assert(m_currentSelection < m_drawData[index].size());
-    return m_drawData[index][m_currentSelection];
+    return m_drawData[index][m_currentSelection].second;
 }
 
 //======================================================================
@@ -230,6 +237,20 @@ void GridEditor::initSelectableWidgets()
 }
 
 //======================================================================
+void GridEditor::initButtons()
+{
+    QPushButton *button = new QPushButton("Set Ceiling Background");
+    ui->SelectableLayout->addWidget(button);
+    QObject::connect(button, &QPushButton::clicked, this, &GridEditor::execConfCeilingBackground);
+    button = new QPushButton("Set Ground Background");
+    ui->SelectableLayout->addWidget(button);
+    QObject::connect(button, &QPushButton::clicked, this, &GridEditor::execConfGroundBackground);
+    button = new QPushButton("Set music");
+    ui->SelectableLayout->addWidget(button);
+//    QObject::connect(button, &QPushButton::clicked, this, &GridEditor::setElementSelected);
+}
+
+//======================================================================
 void GridEditor::loadIconPictures(const QString &installDir)
 {
     m_mapElementID.clear();
@@ -259,7 +280,7 @@ void GridEditor::loadTriggerDisplay(const QString &installDir)
         m_mapElementID[LevelElement_e::TRIGGER].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
+        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -281,7 +302,7 @@ void GridEditor::loadWallsPictures(const QString &installDir)
         {
             spriteData = m_levelDataManager.getPictureData(it->second[0]);
             assert(spriteData);
-            m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
+            m_drawData[currentIndex].push_back({it->second[0], getSprite(*spriteData, m_levelDataManager, installDir)});
         }
         else
         {
@@ -297,7 +318,7 @@ void GridEditor::loadWallsPictures(const QString &installDir)
                 paint.drawPixmap(currentPos, 0, multiSpriteSectionSize,
                                  CASE_SPRITE_SIZE, wallSprite);
             }
-            m_drawData[currentIndex].push_back(final);
+            m_drawData[currentIndex].push_back({"", final});
         }
     }
 }
@@ -343,7 +364,7 @@ void GridEditor::loadDoorsPictures(const QString &installDir)
             paint.drawPixmap(CASE_SPRITE_SIZE / 5 * 4, CASE_SPRITE_SIZE / 10,
                              CASE_SPRITE_SIZE / 4, CASE_SPRITE_SIZE / 3, cardSprite);
         }
-        m_drawData[currentIndex].push_back(final);
+        m_drawData[currentIndex].push_back({it->second.m_sprite, final});
     }
 }
 
@@ -362,7 +383,7 @@ void GridEditor::loadTeleportsPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::TELEPORT].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
+        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -380,7 +401,7 @@ void GridEditor::loadEnemiesPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::ENEMY].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
+        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -398,7 +419,7 @@ void GridEditor::loadObjectsPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::OBJECT].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
+        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -416,7 +437,7 @@ void GridEditor::loadStaticCeilingElementPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::STATIC_CEILING].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
+        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -434,7 +455,7 @@ void GridEditor::loadStaticGroundElementPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::STATIC_GROUND].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
+        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -452,7 +473,7 @@ void GridEditor::loadBarrelsPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::BARREL].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
+        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -470,7 +491,7 @@ void GridEditor::loadExitsPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::EXIT].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back(getSprite(*spriteData, m_levelDataManager, installDir));
+        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -879,6 +900,22 @@ void GridEditor::removeElementCase(const QModelIndex &caseIndex)
     {
         m_PlayerDeparture = {};
     }
+}
+
+//======================================================================
+void GridEditor::execConfCeilingBackground()
+{
+    m_backgroundForm->confCeilingOrGroundMode(true);
+    m_backgroundForm->unckeckAll();
+    m_backgroundForm->exec();
+}
+
+//======================================================================
+void GridEditor::execConfGroundBackground()
+{
+    m_backgroundForm->unckeckAll();
+    m_backgroundForm->confCeilingOrGroundMode(false);
+    m_backgroundForm->exec();
 }
 
 //======================================================================

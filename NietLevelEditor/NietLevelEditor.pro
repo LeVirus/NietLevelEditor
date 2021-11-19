@@ -12,6 +12,7 @@ QMAKE_CXXFLAGS_DEBUG += -Wall -Wextra -Wpedantic -Og
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    BackgroundForm.cpp \
     ConfNewLevelForm.cpp \
     EventFilter.cpp \
     GridEditor.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
     main.cpp
 
 HEADERS += \
+    BackgroundForm.hpp \
     ConfNewLevelForm.hpp \
     EventFilter.hpp \
     GridEditor.hpp \
@@ -35,11 +37,11 @@ HEADERS += \
     TableModel.hpp
 
 FORMS += \
+    BackgroundForm.ui \
     ConfNewLevelForm.ui \
     GridEditor.ui \
     MainWindow.ui \
-    MoveableWallForm.ui \
-    TeleportForm.ui
+    MoveableWallForm.ui
 
 CONFIG += ldebug
 CONFIG += embed_translations

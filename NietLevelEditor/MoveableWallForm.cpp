@@ -40,11 +40,11 @@ void MoveableWallForm::setData(const CaseData &data)
 }
 
 //======================================================================
-void MoveableWallForm::setTriggerIcons(const QVector<QIcon> &vectIcon)
+void MoveableWallForm::setTriggerIcons(const QVector<QPair<QString, QIcon>> &vectIcon)
 {
     for(int i = 0; i < vectIcon.size(); ++i)
     {
-        ui->comboBoxTriggerAppearence->addItem(vectIcon[i], "");
+        ui->comboBoxTriggerAppearence->addItem(vectIcon[i].second, "");
     }
 }
 

@@ -11,9 +11,9 @@ class TableModel;
 class QGroupBox;
 class QItemSelection;
 class EventFilter;
-class TeleportForm;
 class MoveableWallForm;
 class SelectableLineLayout;
+class BackgroundForm;
 struct MoveWallData;
 
 enum class Direction_e;
@@ -47,6 +47,8 @@ enum class WallDrawMode_e
 
 inline const float EPSILON_FLOAT = std::numeric_limits<float>::epsilon();
 
+using IconArray_t = std::array<QVector<QPair<QString, QIcon>>, static_cast<uint32_t>(LevelElement_e::TOTAL)>;
+
 namespace Ui {
 class GridEditor;
 }
@@ -62,6 +64,7 @@ private:
     void connectSlots();
     void setStdTableSize();
     void initSelectableWidgets();
+    void initButtons();
     void loadIconPictures(const QString &installDir);
     void loadWallsPictures(const QString &installDir);
     void loadDoorsPictures(const QString &installDir);
@@ -74,15 +77,9 @@ private:
     void loadExitsPictures(const QString &installDir);
     bool setWallShape(bool preview = false);
     void memStdWallMove();
-    void setWallLineRectShape(const QPair<int, int> &topLeftIndex,
-                              const QPair<int, int> &bottomRightIndex,
-                              bool preview = false);
-    void setWallDiagLineShape(const QPair<int, int> &topLeftIndex,
-                              const QPair<int, int> &bottomRightIndex,
-                              bool preview = false);
-    bool setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
-                              const QPair<int, int> &bottomRightIndex,
-                              bool preview = false);
+    void setWallLineRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, bool preview = false);
+    void setWallDiagLineShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, bool preview = false);
+    bool setWallDiagRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, bool preview = false);
     void setCaseIcon(int x, int y, bool deleteMode = false);
     void memWallMove(const QModelIndex &index);
     void setColorCaseData(int x, int y, LevelElement_e type);
@@ -94,6 +91,8 @@ private:
     void confNewTriggerData(const QModelIndex &caseIndex);
     void removeElementCase(const QModelIndex &caseIndex);
 private slots:
+    void execConfCeilingBackground();
+    void execConfGroundBackground();
     void setElementSelected(LevelElement_e num, int currentSelect);
     void stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);
     void wallSelection(const QModelIndex &index);
@@ -112,11 +111,11 @@ private:
     LevelElement_e m_currentElementType;
     WallDrawMode_e m_wallDrawMode;
     bool m_wallMoveableMode;
-    std::array<QVector<QIcon>, static_cast<uint32_t>(LevelElement_e::TOTAL)> m_drawData;
+    IconArray_t m_drawData;
     bool m_elementSelected, m_displayPreview = false;
     EventFilter *m_eventFilter;
     QModelIndex m_wallFirstCaseSelection, m_wallSecondCaseSelection;
-    TeleportForm *m_teleportForm = nullptr;
+    BackgroundForm *m_backgroundForm = nullptr;
     MoveableWallForm *m_moveableWallForm = nullptr;
     SelectableLineLayout *m_memWallSelectLayout = nullptr;
     std::map<LevelElement_e, QVector<QString>> m_mapElementID;
