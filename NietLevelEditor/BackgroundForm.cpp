@@ -76,6 +76,84 @@ void BackgroundForm::modifDisplayModeSimpleTextureAndTiledTexture(bool toggled)
 }
 
 //======================================================================
+void BackgroundForm::confirmForm()
+{
+    BackgroundData &currentBackground = (m_ceilingMode) ? m_ceilingBackground : m_groundBackground;
+    currentBackground.m_displayMode = m_displayMode;
+    if(ui->colorContainer->isEnabled())
+    {
+        currentBackground.m_colorData = std::array<std::array<float, 4>, 4>();
+        for(int i = 0; i < ui->colorContainer->children().size(); ++i)
+        {
+            if(ui->colorContainer->children()[i]->objectName() == "layoutWidget")
+            {
+                for(int j = 0; j < ui->colorContainer->children()[i]->children().size(); ++j)
+                {
+                    memColorCase(ui->colorContainer->children()[i]->children()[j]);
+                }
+                break;
+            }
+        }
+    }
+    if(ui->spriteSimpleTextureComboBox->isEnabled())
+    {
+
+    }
+    if(ui->spriteTiledTextureComboBox->isEnabled())
+    {
+
+    }
+}
+
+//======================================================================
+void BackgroundForm::memColorCase(const QObject *widget)
+{
+    int firstIndex, secondIndex;
+    if(widget->objectName().contains("TopLeft"))
+    {
+        firstIndex = 0;
+    }
+    else if(widget->objectName().contains("TopRight"))
+    {
+        firstIndex = 1;
+    }
+    else if(widget->objectName().contains("BottomRight"))
+    {
+        firstIndex = 2;
+    }
+    else if(widget->objectName().contains("BottomLeft"))
+    {
+        firstIndex = 3;
+    }
+    else
+    {
+        return;
+    }
+    if(widget->objectName().contains("TLRSpinBox"))
+    {
+        secondIndex = 0;
+    }
+    else if(widget->objectName().contains("TLGSpinBox"))
+    {
+        secondIndex = 1;
+    }
+    else if(widget->objectName().contains("TLBSpinBox"))
+    {
+        secondIndex = 2;
+    }
+    else if(widget->objectName().contains("TLASpinBox"))
+    {
+        secondIndex = 3;
+    }
+    else
+    {
+        return;
+    }
+    BackgroundData &currentBackground = (m_ceilingMode) ? m_ceilingBackground : m_groundBackground;
+    (*currentBackground.m_colorData)[firstIndex][secondIndex] = qobject_cast<const QDoubleSpinBox*>(widget)->value();
+}
+
+//======================================================================
 void BackgroundForm::unckeckAll()
 {
     m_displayMode = BackgroundDisplayMode_e::NONE;
@@ -109,6 +187,8 @@ void BackgroundForm::confWidgets()
     QObject::connect(ui->simpleTextureAndTiledTextRadioButton, &QRadioButton::toggled,
                      this, &BackgroundForm::modifDisplayModeSimpleTextureAndTiledTexture);
     QObject::connect(ui->colorAndTiledTextRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeColorAndTiledTexture);
+    QObject::connect(ui->OkButton, &QRadioButton::clicked, this, &BackgroundForm::confirmForm);
+    QObject::connect(ui->CancelButton, &QRadioButton::clicked, this, &BackgroundForm::close);
     unckeckAll();
 }
 

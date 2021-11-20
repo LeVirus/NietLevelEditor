@@ -6,67 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>664</width>
-    <height>404</height>
+    <width>615</width>
+    <height>430</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QRadioButton" name="coloredRadioButton">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>20</y>
-     <width>81</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Color</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="simpleTextRadioButton">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>280</y>
-     <width>121</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Simple Picture</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="tiledTextRadioButton">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>280</y>
-     <width>111</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Tiled Picture</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="spriteSimpleTextureComboBox">
-   <property name="geometry">
-    <rect>
-     <x>80</x>
-     <y>330</y>
-     <width>77</width>
-     <height>28</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QWidget" name="colorContainer" native="true">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>50</y>
+     <x>10</x>
+     <y>80</y>
      <width>601</width>
      <height>231</height>
     </rect>
@@ -91,7 +42,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLRSpinBox">
+        <widget class="QDoubleSpinBox" name="TopLeftTLRSpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -101,7 +52,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLGSpinBox">
+        <widget class="QDoubleSpinBox" name="TopLeftTLGSpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -111,7 +62,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLBSpinBox">
+        <widget class="QDoubleSpinBox" name="TopLeftTLBSpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -121,7 +72,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLASpinBox">
+        <widget class="QDoubleSpinBox" name="TopLeftTLASpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -133,7 +84,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <layout class="QHBoxLayout" name="TopRightAngleLayout">
        <item>
         <widget class="QLabel" name="label_8">
          <property name="text">
@@ -142,7 +93,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLRSpinBox_4">
+        <widget class="QDoubleSpinBox" name="TopRightTLRSpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -152,7 +103,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLGSpinBox_4">
+        <widget class="QDoubleSpinBox" name="TopRightTLGSpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -162,7 +113,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLBSpinBox_4">
+        <widget class="QDoubleSpinBox" name="TopRightTLBSpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -172,7 +123,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLASpinBox_4">
+        <widget class="QDoubleSpinBox" name="TopRightTLASpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -184,7 +135,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <layout class="QHBoxLayout" name="BottomRightAngleLayout">
        <item>
         <widget class="QLabel" name="label_7">
          <property name="text">
@@ -193,7 +144,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLRSpinBox_3">
+        <widget class="QDoubleSpinBox" name="BottomRightTLRSpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -203,7 +154,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLGSpinBox_3">
+        <widget class="QDoubleSpinBox" name="BottomRightTLGSpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -213,7 +164,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLBSpinBox_3">
+        <widget class="QDoubleSpinBox" name="BottomRightTLBSpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -223,7 +174,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLASpinBox_3">
+        <widget class="QDoubleSpinBox" name="BottomRightTLASpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -235,7 +186,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <layout class="QHBoxLayout" name="BottomLeftAngleLayout">
        <item>
         <widget class="QLabel" name="label_6">
          <property name="text">
@@ -244,7 +195,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLRSpinBox_2">
+        <widget class="QDoubleSpinBox" name="BottomLeftTLRSpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -254,7 +205,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLGSpinBox_2">
+        <widget class="QDoubleSpinBox" name="BottomLeftTLGSpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -264,7 +215,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLBSpinBox_2">
+        <widget class="QDoubleSpinBox" name="BottomLeftTLBSpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -274,7 +225,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="TLASpinBox_2">
+        <widget class="QDoubleSpinBox" name="BottomLeftTLASpinBox">
          <property name="maximum">
           <double>1.000000000000000</double>
          </property>
@@ -340,41 +291,118 @@
     </property>
    </widget>
   </widget>
-  <widget class="QComboBox" name="spriteTiledTextureComboBox">
+  <widget class="QPushButton" name="OkButton">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>330</y>
-     <width>77</width>
+     <x>190</x>
+     <y>370</y>
+     <width>88</width>
      <height>28</height>
     </rect>
    </property>
+   <property name="text">
+    <string>OK</string>
+   </property>
   </widget>
-  <widget class="QRadioButton" name="simpleTextureAndTiledTextRadioButton">
+  <widget class="QPushButton" name="CancelButton">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>280</y>
-     <width>181</width>
-     <height>21</height>
+     <x>320</x>
+     <y>370</y>
+     <width>88</width>
+     <height>28</height>
     </rect>
    </property>
    <property name="text">
-    <string>Simple and Tiled Picture</string>
+    <string>Cancel</string>
    </property>
   </widget>
-  <widget class="QRadioButton" name="colorAndTiledTextRadioButton">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>30</x>
+     <y>300</y>
+     <width>337</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QLabel" name="label_9">
+      <property name="text">
+       <string>Simple Texture</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QComboBox" name="spriteSimpleTextureComboBox"/>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>Tiled Texture</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QComboBox" name="spriteTiledTextureComboBox"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
      <y>20</y>
-     <width>161</width>
-     <height>24</height>
+     <width>396</width>
+     <height>60</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Color and Tiled Picture</string>
-   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QRadioButton" name="coloredRadioButton">
+        <property name="text">
+         <string>Color</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="colorAndTiledTextRadioButton">
+        <property name="text">
+         <string>Color and Tiled Picture</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="simpleTextureAndTiledTextRadioButton">
+        <property name="text">
+         <string>Simple and Tiled Picture</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item>
+       <widget class="QRadioButton" name="simpleTextRadioButton">
+        <property name="text">
+         <string>Simple Picture</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="tiledTextRadioButton">
+        <property name="text">
+         <string>Tiled Picture</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

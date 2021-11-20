@@ -17,6 +17,14 @@ enum class BackgroundDisplayMode_e
     NONE
 };
 
+struct BackgroundData
+{
+    //order top left, top right, bottom right, bottom left
+    std::optional<std::array<std::array<float, 4>, 4>> m_colorData;
+    QString m_simpleTexture, m_tiledTexture;
+    BackgroundDisplayMode_e m_displayMode;
+};
+
 class BackgroundForm : public QDialog
 {
     Q_OBJECT
@@ -35,6 +43,8 @@ private slots:
     void modifDisplayModeSimpleTexture(bool toggled);
     void modifDisplayModeColorAndTiledTexture(bool toggled);
     void modifDisplayModeSimpleTextureAndTiledTexture(bool toggled);
+    void confirmForm();
+    void memColorCase(const QObject *widget);
 private:
     void confWidgets();
 private:
@@ -43,4 +53,5 @@ private:
     QString m_pictureDirectory;
     bool m_ceilingMode;
     BackgroundDisplayMode_e m_displayMode;
+    BackgroundData m_groundBackground, m_ceilingBackground;
 };
