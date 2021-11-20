@@ -1,6 +1,7 @@
 #include "BackgroundForm.hpp"
 #include "ui_BackgroundForm.h"
 #include <QRadioButton>
+#include <iostream>
 
 //======================================================================
 BackgroundForm::BackgroundForm(const IconArray_t &pictureData, QWidget *parent) :
@@ -97,11 +98,13 @@ void BackgroundForm::confirmForm()
     }
     if(ui->spriteSimpleTextureComboBox->isEnabled())
     {
-
+        currentBackground.m_simpleTexture = ui->spriteSimpleTextureComboBox->currentText();
+        std::cerr << currentBackground.m_simpleTexture.toStdString() << "\n";
     }
     if(ui->spriteTiledTextureComboBox->isEnabled())
     {
-
+        currentBackground.m_tiledTexture = ui->spriteTiledTextureComboBox->currentText();
+        std::cerr << currentBackground.m_tiledTexture.toStdString() << "\n";
     }
 }
 
@@ -176,8 +179,8 @@ void BackgroundForm::confWidgets()
         {
             if(!m_arrayIcons[i][j].first.isEmpty())
             {
-                ui->spriteSimpleTextureComboBox->addItem(m_arrayIcons[i][j].second, "");
-                ui->spriteTiledTextureComboBox->addItem(m_arrayIcons[i][j].second, "");
+                ui->spriteSimpleTextureComboBox->addItem(m_arrayIcons[i][j].second, m_arrayIcons[i][j].first);
+                ui->spriteTiledTextureComboBox->addItem(m_arrayIcons[i][j].second, m_arrayIcons[i][j].first);
             }
         }
     }
