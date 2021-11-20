@@ -99,12 +99,10 @@ void BackgroundForm::confirmForm()
     if(ui->spriteSimpleTextureComboBox->isEnabled())
     {
         currentBackground.m_simpleTexture = ui->spriteSimpleTextureComboBox->currentText();
-        std::cerr << currentBackground.m_simpleTexture.toStdString() << "\n";
     }
     if(ui->spriteTiledTextureComboBox->isEnabled())
     {
         currentBackground.m_tiledTexture = ui->spriteTiledTextureComboBox->currentText();
-        std::cerr << currentBackground.m_tiledTexture.toStdString() << "\n";
     }
 }
 

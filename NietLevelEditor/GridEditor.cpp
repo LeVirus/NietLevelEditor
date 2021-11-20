@@ -9,6 +9,7 @@
 #include <QComboBox>
 #include <QPushButton>
 #include <iostream>
+#include <QDir>
 #include <MoveableWallForm.hpp>
 #include "TableModel.hpp"
 #include "SelectableLineLayout.hpp"
@@ -49,6 +50,7 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     }
     initSelectableWidgets();
     initButtons();
+    initMusicDir(installDir);
     QTableView *tableView = findChild<QTableView*>("tableView");
     assert(tableView);
     if(!m_tableModel)
@@ -245,9 +247,28 @@ void GridEditor::initButtons()
     button = new QPushButton("Set Ground Background");
     ui->SelectableLayout->addWidget(button);
     QObject::connect(button, &QPushButton::clicked, this, &GridEditor::execConfGroundBackground);
-    button = new QPushButton("Set music");
-    ui->SelectableLayout->addWidget(button);
-//    QObject::connect(button, &QPushButton::clicked, this, &GridEditor::setElementSelected);
+}
+
+//======================================================================
+void GridEditor::initMusicDir(const QString &installDir)
+{
+    QComboBox *musicWidget = new QComboBox();
+    QString musicDir = installDir + "/Ressources/Audio/Music/";
+    QDir dir(musicDir);
+    assert(dir.exists());
+    QFileInfoList list = dir.entryInfoList();
+    QFileInfo fileInfo;
+    musicWidget->addItem("None");
+    for(int i = 0; i < list.size(); ++i)
+    {
+        fileInfo = list[i];
+        if(fileInfo.suffix() == "flac")
+        {
+            musicWidget->addItem(fileInfo.fileName());
+        }
+    }
+    ui->SelectableLayout->addWidget(new QLabel("Music"));
+    ui->SelectableLayout->addWidget(musicWidget);
 }
 
 //======================================================================

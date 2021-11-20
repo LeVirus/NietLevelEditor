@@ -65,6 +65,7 @@ private:
     void setStdTableSize();
     void initSelectableWidgets();
     void initButtons();
+    void initMusicDir(const QString &installDir);
     void loadIconPictures(const QString &installDir);
     void loadWallsPictures(const QString &installDir);
     void loadDoorsPictures(const QString &installDir);
