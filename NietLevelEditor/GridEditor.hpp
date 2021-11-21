@@ -78,10 +78,10 @@ private:
     void loadExitsPictures(const QString &installDir);
     bool setWallShape(bool preview = false);
     void memStdWallMove();
-    void setWallLineRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, bool preview = false);
-    void setWallDiagLineShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, bool preview = false);
-    bool setWallDiagRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, bool preview = false);
-    void setCaseIcon(int x, int y, bool deleteMode = false);
+    uint32_t setWallLineRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, int shapeNum, bool preview = false);
+    uint32_t setWallDiagLineShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, int shapeNum, bool preview = false);
+    bool setWallDiagRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, int shapeNum, uint32_t &wallNumber, bool preview = false);
+    void setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode = false);
     void memWallMove(const QModelIndex &index);
     void setColorCaseData(int x, int y, LevelElement_e type);
     QIcon getCurrentSelectedIcon()const;
@@ -94,6 +94,7 @@ private:
 private slots:
     void execConfCeilingBackground();
     void execConfGroundBackground();
+    void generateLevel();
     void setElementSelected(LevelElement_e num, int currentSelect);
     void stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);
     void wallSelection(const QModelIndex &index);
@@ -126,7 +127,6 @@ private:
 
 Direction_e getDirEnumFromQString(const QString &str);
 const int32_t CASE_SIZE_PX = 40, CASE_SPRITE_SIZE = (CASE_SIZE_PX * 4) / 5;
-QPixmap getSprite(const ArrayFloat_t &spriteData, const LevelDataManager &levelDataManager,
-                  const QString &installDir);
+QPixmap getSprite(const ArrayFloat_t &spriteData, const LevelDataManager &levelDataManager, const QString &installDir);
 QString getStringFromLevelElementEnum(LevelElement_e num);
 

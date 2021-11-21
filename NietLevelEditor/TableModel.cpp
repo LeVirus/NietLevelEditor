@@ -107,6 +107,15 @@ void TableModel::clearPreview()
 }
 
 //======================================================================
+void TableModel::clearModel()
+{
+    m_memWallShape.clear();
+    m_vectPic.clear();
+    m_departurePlayer = {};
+    m_vectPreview.clear();
+}
+
+//======================================================================
 void TableModel::setPreviewCase(int x, int y)
 {
     if(x < 0 || y < 0)
@@ -134,6 +143,32 @@ void TableModel::setTargetTeleport(const QPair<int, int> &teleporterPosition,
         caseData->m_type = LevelElement_e::TELEPORT;
     }
     caseData->m_targetTeleport = {targetPos.column(), targetPos.row()};
+}
+
+//======================================================================
+int TableModel::memWallShape(WallDrawMode_e wallShape, const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex)
+{
+    m_memWallShape.push_back({wallShape, {topLeftIndex, bottomRightIndex, 0, {}}});
+    return m_memWallShape.size() - 1;
+}
+
+//======================================================================
+void TableModel::updateWallNumber(uint32_t num)
+{
+    assert(!m_memWallShape.empty());
+    m_memWallShape.back().second.m_wallCount = num;
+}
+
+//======================================================================
+bool TableModel::wallNumShapeExists(int x, int y, int shapeNum)
+{
+    QModelIndex index = this->index(x, y, QModelIndex());
+    std::optional<CaseData> &caseData = getDataElementCase(index);
+    if(caseData && caseData->m_wallShapeNum && caseData->m_wallShapeNum == shapeNum)
+    {
+        return true;
+    }
+    return false;
 }
 
 //======================================================================

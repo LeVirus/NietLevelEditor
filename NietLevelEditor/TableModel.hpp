@@ -28,9 +28,17 @@ struct CaseData
 {
     LevelElement_e m_type;
     QString m_id;
+    std::optional<int> m_wallShapeNum;
     std::optional<QPair<int, int>> m_targetTeleport;
     std::optional<MoveWallData> m_moveWallData;
     std::optional<QSet<QPair<int, int>>> m_triggerLinkWall;
+};
+
+struct WallShapeData
+{
+    QPair<int, int> m_gridCoordTopLeft, m_gridCoordBottomRight;
+    uint32_t m_wallCount = 0;
+    QVector<QPair<int, int>> m_deletedWall;
 };
 
 class TableModel : public QAbstractTableModel
@@ -49,15 +57,19 @@ public:
         return m_vectPic[index.column()][index.row()].second;
     }
     void clearPreview();
+    void clearModel();
     void setPreviewCase(int x, int y);
     void setPreviewCase(const QPair<int, int> &pos);
-    void setTargetTeleport(const QPair<int, int> &teleporterPosition,
-                           const QModelIndex &targetPos);
+    void setTargetTeleport(const QPair<int, int> &teleporterPosition, const QModelIndex &targetPos);
+    int memWallShape(WallDrawMode_e wallShape, const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex);
+    void updateWallNumber(uint32_t num);
     inline QPair<int, int> getTableSize()const
     {
         return m_tableSize;
     }
+    bool wallNumShapeExists(int x, int y, int shapeNum);
 private:
+    QVector<QPair<WallDrawMode_e, WallShapeData>> m_memWallShape;
     QPair<int, int> m_tableSize;
     QVector<QVector<QPair<QPixmap, std::optional<CaseData>>>> m_vectPic;
     QVector<QBitArray> m_vectPreview;
