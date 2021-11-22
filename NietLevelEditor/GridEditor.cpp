@@ -558,7 +558,8 @@ bool GridEditor::setWallShape(bool preview)
     if(!preview)
     {
         int index = static_cast<int>(m_currentElementType);
-        shapeNum = m_tableModel->memWallShape(m_wallDrawMode, topLeftPos, bottomRight, m_drawData[index][m_currentSelection].first);
+        const MoveWallData *memMoveData = m_wallMoveableMode ? &(*m_memcurrentMoveWallData) : nullptr;
+        shapeNum = m_tableModel->memWallShape(m_wallDrawMode, topLeftPos, bottomRight, m_drawData[index][m_currentSelection].first, memMoveData);
         if(topLeftPos == bottomRight)
         {
             setCaseIcon(minX, minY, shapeNum);

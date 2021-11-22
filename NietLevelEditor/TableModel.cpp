@@ -157,9 +157,16 @@ void TableModel::setTargetTeleport(const QPair<int, int> &teleporterPosition,
 
 //======================================================================
 int TableModel::memWallShape(WallDrawMode_e wallShape, const QPair<int, int> &topLeftIndex,
-                             const QPair<int, int> &bottomRightIndex, const QString &iniId)
+                             const QPair<int, int> &bottomRightIndex, const QString &iniId, const MoveWallData *memMoveData)
 {
-    m_memWallShape.push_back({wallShape, {topLeftIndex, bottomRightIndex, 0, {}, iniId}});
+    if(memMoveData)
+    {
+        m_memWallShape.push_back({wallShape, {topLeftIndex, bottomRightIndex, 0, {}, iniId, *memMoveData}});
+    }
+    else
+    {
+        m_memWallShape.push_back({wallShape, {topLeftIndex, bottomRightIndex, 0, {}, iniId, {}}});
+    }
     return m_memWallShape.size() - 1;
 }
 
