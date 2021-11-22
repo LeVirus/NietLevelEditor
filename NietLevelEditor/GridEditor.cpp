@@ -195,7 +195,7 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type)
     }
     if(type == LevelElement_e::PLAYER_DEPARTURE || !m_tableModel->getDataElementCase(index))
     {
-        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}});
+        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
     }
     m_tableModel->setData(index, QVariant(pix));
     updateGridView();
@@ -559,7 +559,6 @@ bool GridEditor::setWallShape(bool preview)
     {
         setCaseIcon(minX, minY, shapeNum);
         m_tableModel->updateWallNumber(1);
-        std::cerr << 1 << "\n";
         return true;
     }
     bool ret = true;
@@ -927,7 +926,7 @@ void GridEditor::treatElementsDrawing()
     {
         removeElementCase(caseIndex);
     }
-    setCaseIcon(caseIndex.column(), caseIndex.row(), deleteMode);
+    setCaseIcon(caseIndex.column(), caseIndex.row(), -1, deleteMode);
     if(m_currentElementType == LevelElement_e::TELEPORT)
     {
         m_lastPositionAdded = {caseIndex.column(), caseIndex.row()};
