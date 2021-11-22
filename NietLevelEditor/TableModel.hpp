@@ -67,7 +67,6 @@ public:
     {
         return m_tableSize;
     }
-    bool wallNumShapeExists(int x, int y, int shapeNum);
 private:
     QVector<QPair<WallDrawMode_e, WallShapeData>> m_memWallShape;
     QPair<int, int> m_tableSize;

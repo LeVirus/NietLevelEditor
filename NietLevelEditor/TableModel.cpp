@@ -88,12 +88,18 @@ bool TableModel::removeData(const QModelIndex &index)
         return false;
     }
     QPixmap pix;
+    std::optional<CaseData> &caseData = m_vectPic[index.column()][index.row()].second;
     m_vectPic[index.column()][index.row()].first.swap(pix);
-    if(m_vectPic[index.column()][index.row()].second->m_type == LevelElement_e::PLAYER_DEPARTURE)
+    if(caseData->m_type == LevelElement_e::PLAYER_DEPARTURE)
     {
         m_departurePlayer = {};
     }
-    m_vectPic[index.column()][index.row()].second = {};
+    else if(caseData->m_type == LevelElement_e::WALL)
+    {
+        assert(caseData->m_wallShapeNum);
+        --m_memWallShape[*caseData->m_wallShapeNum].second.m_wallCount;
+    }
+    caseData = {};
     return true;
 }
 
@@ -157,18 +163,6 @@ void TableModel::updateWallNumber(uint32_t num)
 {
     assert(!m_memWallShape.empty());
     m_memWallShape.back().second.m_wallCount = num;
-}
-
-//======================================================================
-bool TableModel::wallNumShapeExists(int x, int y, int shapeNum)
-{
-    QModelIndex index = this->index(x, y, QModelIndex());
-    std::optional<CaseData> &caseData = getDataElementCase(index);
-    if(caseData && caseData->m_wallShapeNum && caseData->m_wallShapeNum == shapeNum)
-    {
-        return true;
-    }
-    return false;
 }
 
 //======================================================================

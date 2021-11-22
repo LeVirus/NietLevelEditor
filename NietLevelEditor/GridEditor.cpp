@@ -646,18 +646,12 @@ uint32_t GridEditor::setWallLineRectShape(const QPair<int, int> &topLeftIndex,
         }
         else
         {
-            if(!m_tableModel->wallNumShapeExists(topLeftIndex.first, i, shapeNum))
-            {
-                setCaseIcon(topLeftIndex.first, i, shapeNum);
-                ++count;
-            }
+            setCaseIcon(topLeftIndex.first, i, shapeNum);
+            ++count;
             if(topLeftIndex.first != bottomRightIndex.first)
             {
-                if(!m_tableModel->wallNumShapeExists(bottomRightIndex.first, i, shapeNum))
-                {
-                    setCaseIcon(bottomRightIndex.first, i, shapeNum);
-                    ++count;
-                }
+                setCaseIcon(bottomRightIndex.first, i, shapeNum);
+                ++count;
             }
         }
     }
