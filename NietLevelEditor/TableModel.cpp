@@ -87,8 +87,12 @@ bool TableModel::removeData(const QModelIndex &index)
     {
         return false;
     }
-    QPixmap pix;
     std::optional<CaseData> &caseData = m_vectPic[index.column()][index.row()].second;
+    if(!caseData)
+    {
+        return true;
+    }
+    QPixmap pix;
     m_vectPic[index.column()][index.row()].first.swap(pix);
     if(caseData->m_type == LevelElement_e::PLAYER_DEPARTURE)
     {

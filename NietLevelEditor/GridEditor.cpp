@@ -553,13 +553,17 @@ bool GridEditor::setWallShape(bool preview)
         m_tableModel->clearPreview();
     }
     memStdWallMove();
+    int shapeNum;
     QPair<int, int> topLeftPos = {minX, minY}, bottomRight = {maxX, maxY};
-    int shapeNum = m_tableModel->memWallShape(m_wallDrawMode, topLeftPos, bottomRight);
-    if(!preview && topLeftPos == bottomRight)
+    if(!preview)
     {
-        setCaseIcon(minX, minY, shapeNum);
-        m_tableModel->updateWallNumber(1);
-        return true;
+        shapeNum = m_tableModel->memWallShape(m_wallDrawMode, topLeftPos, bottomRight);
+        if(topLeftPos == bottomRight)
+        {
+            setCaseIcon(minX, minY, shapeNum);
+            m_tableModel->updateWallNumber(1);
+            return true;
+        }
     }
     bool ret = true;
     uint32_t wallNumber;
@@ -581,7 +585,10 @@ bool GridEditor::setWallShape(bool preview)
     }
         break;
     }
-    m_tableModel->updateWallNumber(wallNumber);
+    if(!preview)
+    {
+        m_tableModel->updateWallNumber(wallNumber);
+    }
     //quick fix
     updateGridView();
     return ret;
