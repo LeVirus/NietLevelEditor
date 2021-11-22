@@ -339,7 +339,7 @@ void GridEditor::loadWallsPictures(const QString &installDir)
         {
             spriteData = m_levelDataManager.getPictureData(it->second[0]);
             assert(spriteData);
-            m_drawData[currentIndex].push_back({it->second[0], getSprite(*spriteData, m_levelDataManager, installDir)});
+            m_drawData[currentIndex].push_back({it->first, getSprite(*spriteData, m_levelDataManager, installDir)});
         }
         else
         {
@@ -355,7 +355,7 @@ void GridEditor::loadWallsPictures(const QString &installDir)
                 paint.drawPixmap(currentPos, 0, multiSpriteSectionSize,
                                  CASE_SPRITE_SIZE, wallSprite);
             }
-            m_drawData[currentIndex].push_back({"", final});
+            m_drawData[currentIndex].push_back({it->first, final});
         }
     }
 }
@@ -553,11 +553,12 @@ bool GridEditor::setWallShape(bool preview)
         m_tableModel->clearPreview();
     }
     memStdWallMove();
-    int shapeNum;
+    int shapeNum = -1;
     QPair<int, int> topLeftPos = {minX, minY}, bottomRight = {maxX, maxY};
     if(!preview)
     {
-        shapeNum = m_tableModel->memWallShape(m_wallDrawMode, topLeftPos, bottomRight);
+        int index = static_cast<int>(m_currentElementType);
+        shapeNum = m_tableModel->memWallShape(m_wallDrawMode, topLeftPos, bottomRight, m_drawData[index][m_currentSelection].first);
         if(topLeftPos == bottomRight)
         {
             setCaseIcon(minX, minY, shapeNum);

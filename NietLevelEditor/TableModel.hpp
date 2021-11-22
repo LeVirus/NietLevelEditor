@@ -39,6 +39,7 @@ struct WallShapeData
     QPair<int, int> m_gridCoordTopLeft, m_gridCoordBottomRight;
     uint32_t m_wallCount = 0;
     QVector<QPair<int, int>> m_deletedWall;
+    QString m_iniId;
 };
 
 class TableModel : public QAbstractTableModel
@@ -61,7 +62,7 @@ public:
     void setPreviewCase(int x, int y);
     void setPreviewCase(const QPair<int, int> &pos);
     void setTargetTeleport(const QPair<int, int> &teleporterPosition, const QModelIndex &targetPos);
-    int memWallShape(WallDrawMode_e wallShape, const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex);
+    int memWallShape(WallDrawMode_e wallShape, const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, const QString &iniId);
     void updateWallNumber(uint32_t num);
     inline QPair<int, int> getTableSize()const
     {
