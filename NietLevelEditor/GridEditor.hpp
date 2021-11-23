@@ -38,7 +38,7 @@ enum class LevelElement_e
     TOTAL
 };
 
-enum class WallDrawMode_e
+enum class WallDrawShape_e
 {
     LINE_AND_RECT,
     DIAGONAL_LINE,
@@ -111,7 +111,7 @@ private:
     TableModel *m_tableModel = nullptr;
     int m_currentSelection;
     LevelElement_e m_currentElementType;
-    WallDrawMode_e m_wallDrawMode;
+    WallDrawShape_e m_wallDrawMode;
     bool m_wallMoveableMode;
     IconArray_t m_drawData;
     bool m_elementSelected, m_displayPreview = false;

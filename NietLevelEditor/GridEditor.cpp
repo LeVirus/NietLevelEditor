@@ -37,7 +37,7 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
         return false;
     }
     m_wallMoveableMode = false;
-    m_wallDrawMode = WallDrawMode_e::LINE_AND_RECT;
+    m_wallDrawMode = WallDrawShape_e::LINE_AND_RECT;
     m_elementSelected = false;
     loadIconPictures(installDir);
     if(!m_moveableWallForm)
@@ -401,7 +401,7 @@ void GridEditor::loadDoorsPictures(const QString &installDir)
             paint.drawPixmap(CASE_SPRITE_SIZE / 5 * 4, CASE_SPRITE_SIZE / 10,
                              CASE_SPRITE_SIZE / 4, CASE_SPRITE_SIZE / 3, cardSprite);
         }
-        m_drawData[currentIndex].push_back({it->second.m_sprite, final});
+        m_drawData[currentIndex].push_back({it->first, final});
     }
 }
 
@@ -420,7 +420,7 @@ void GridEditor::loadTeleportsPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::TELEPORT].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -438,7 +438,7 @@ void GridEditor::loadEnemiesPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::ENEMY].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -456,7 +456,7 @@ void GridEditor::loadObjectsPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::OBJECT].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -474,7 +474,7 @@ void GridEditor::loadStaticCeilingElementPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::STATIC_CEILING].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -492,7 +492,7 @@ void GridEditor::loadStaticGroundElementPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::STATIC_GROUND].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -510,7 +510,7 @@ void GridEditor::loadBarrelsPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::BARREL].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -528,7 +528,7 @@ void GridEditor::loadExitsPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::EXIT].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -571,17 +571,17 @@ bool GridEditor::setWallShape(bool preview)
     uint32_t wallNumber;
     switch (m_wallDrawMode)
     {
-    case WallDrawMode_e::LINE_AND_RECT:
+    case WallDrawShape_e::LINE_AND_RECT:
     {
         wallNumber = setWallLineRectShape(topLeftPos, bottomRight, shapeNum, preview);
     }
         break;
-    case WallDrawMode_e::DIAGONAL_LINE:
+    case WallDrawShape_e::DIAGONAL_LINE:
     {
         wallNumber = setWallDiagLineShape(topLeftPos, bottomRight, shapeNum, preview);
     }
         break;
-    case WallDrawMode_e::DIAGONAL_RECT:
+    case WallDrawShape_e::DIAGONAL_RECT:
     {
         ret = setWallDiagRectShape(topLeftPos, bottomRight, shapeNum, wallNumber, preview);
     }
@@ -900,6 +900,7 @@ void GridEditor::treatElementsDrawing()
 {
     bool deleteMode = m_currentElementType == LevelElement_e::DELETE;
     QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
+    int index = static_cast<int>(m_currentElementType);
     if(m_currentElementType == LevelElement_e::PLAYER_DEPARTURE)
     {
         setColorCaseData(caseIndex.column(), caseIndex.row(), m_currentElementType);
@@ -918,6 +919,9 @@ void GridEditor::treatElementsDrawing()
         m_tableModel->setTargetTeleport(m_lastPositionAdded, caseIndex);
         m_currentElementType = LevelElement_e::TELEPORT;
         setLineSelectableEnabled(true);
+        int teleportIndex = static_cast<int>(LevelElement_e::TELEPORT);
+        m_tableModel->memTeleportElement(m_lastPositionAdded, {caseIndex.column(), caseIndex.row()},
+                                         m_drawData[teleportIndex][m_currentSelection].first);
         return;
     }
     else if(m_currentElementType == LevelElement_e::SELECTION)
@@ -925,10 +929,7 @@ void GridEditor::treatElementsDrawing()
         treatSelection(caseIndex);
         return;
     }
-    else if(deleteMode)
-    {
-        removeElementCase(caseIndex);
-    }
+    m_tableModel->memStdElement({caseIndex.column(), caseIndex.row()}, m_currentElementType, m_drawData[index][m_currentSelection].first);
     setCaseIcon(caseIndex.column(), caseIndex.row(), -1, deleteMode);
     if(m_currentElementType == LevelElement_e::TELEPORT)
     {
@@ -1030,7 +1031,7 @@ void GridEditor::treatSelection(const QModelIndex &caseIndex)
             assert(var->m_targetTeleport);
             m_tableModel->setPreviewCase(var->m_targetTeleport->first, var->m_targetTeleport->second);
         }
-        else if(var->m_type == LevelElement_e::WALL)
+        else if(var->m_type == LevelElement_e::WALL && var->m_moveWallData)
         {
             for(int32_t i = 0; i < var->m_moveWallData->m_memMoveWallCases.size(); ++i)
             {
@@ -1051,7 +1052,7 @@ void GridEditor::treatSelection(const QModelIndex &caseIndex)
 //======================================================================
 void GridEditor::setWallDrawModeSelected(int wallDrawMode)
 {
-    m_wallDrawMode = static_cast<WallDrawMode_e>(wallDrawMode);
+    m_wallDrawMode = static_cast<WallDrawShape_e>(wallDrawMode);
 }
 
 //======================================================================

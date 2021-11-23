@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QBitArray>
 #include <QSet>
+#include <map>
 #include "GridEditor.hpp"
 #include "MoveableWallForm.hpp"
 
@@ -15,13 +16,13 @@ struct MoveWallData
     int m_velocity;
     TriggerType_e m_triggerType;
     TriggerBehaviourType_e m_triggerBehaviour;
+    std::optional<QPair<int, int>> m_triggerPos;
     void clear()
     {
         m_memMoveWallCases.clear();
         m_memMoveWallData.clear();
         m_triggerPos = {};
     }
-    std::optional<QPair<int, int>> m_triggerPos;
 };
 
 struct CaseData
@@ -41,6 +42,11 @@ struct WallShapeData
     QVector<QPair<int, int>> m_deletedWall;
     QString m_iniId;
     std::optional<MoveWallData> m_memMoveData;
+};
+
+struct TeleportData
+{
+    QPair<int, int> m_teleporterPos, m_targetPos;
 };
 
 class TableModel : public QAbstractTableModel
@@ -63,14 +69,20 @@ public:
     void setPreviewCase(int x, int y);
     void setPreviewCase(const QPair<int, int> &pos);
     void setTargetTeleport(const QPair<int, int> &teleporterPosition, const QModelIndex &targetPos);
-    int memWallShape(WallDrawMode_e wallShape, const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, const QString &iniId, const MoveWallData *memMoveData);
+    int memWallShape(WallDrawShape_e wallShape, const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex,
+                     const QString &iniId, const MoveWallData *memMoveData);
+    void memStdElement(const QPair<int, int> &pos, LevelElement_e elementType, const QString &iniId);
+    void memTeleportElement(const QPair<int, int> &teleporterPos, const QPair<int, int> &targetPos, const QString &iniId);
     void updateWallNumber(uint32_t num);
     inline QPair<int, int> getTableSize()const
     {
         return m_tableSize;
     }
 private:
-    QVector<QPair<WallDrawMode_e, WallShapeData>> m_memWallShape;
+    QVector<QPair<WallDrawShape_e, WallShapeData>> m_memWallShape;
+    std::multimap<QString, QPair<int, int>> m_memEnemy, m_memBarrel, m_memDoor, m_memExit, m_memObject, m_memStaticCeiling,
+    m_memStaticGround;
+    std::multimap<QString, TeleportData> m_memTeleport;
     QPair<int, int> m_tableSize;
     QVector<QVector<QPair<QPixmap, std::optional<CaseData>>>> m_vectPic;
     QVector<QBitArray> m_vectPreview;

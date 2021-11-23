@@ -123,6 +123,14 @@ void TableModel::clearModel()
     m_vectPic.clear();
     m_departurePlayer = {};
     m_vectPreview.clear();
+    m_memBarrel.clear();
+    m_memDoor.clear();
+    m_memEnemy.clear();
+    m_memExit.clear();
+    m_memObject.clear();
+    m_memStaticCeiling.clear();
+    m_memStaticGround.clear();
+    m_memTeleport.clear();
 }
 
 //======================================================================
@@ -156,7 +164,7 @@ void TableModel::setTargetTeleport(const QPair<int, int> &teleporterPosition,
 }
 
 //======================================================================
-int TableModel::memWallShape(WallDrawMode_e wallShape, const QPair<int, int> &topLeftIndex,
+int TableModel::memWallShape(WallDrawShape_e wallShape, const QPair<int, int> &topLeftIndex,
                              const QPair<int, int> &bottomRightIndex, const QString &iniId, const MoveWallData *memMoveData)
 {
     if(memMoveData)
@@ -168,6 +176,51 @@ int TableModel::memWallShape(WallDrawMode_e wallShape, const QPair<int, int> &to
         m_memWallShape.push_back({wallShape, {topLeftIndex, bottomRightIndex, 0, {}, iniId, {}}});
     }
     return m_memWallShape.size() - 1;
+}
+
+//======================================================================
+void TableModel::memStdElement(const QPair<int, int> &pos, LevelElement_e elementType, const QString &iniId)
+{
+    switch(elementType)
+    {
+    case LevelElement_e::BARREL:
+        m_memBarrel.insert({iniId, pos});
+        break;
+    case LevelElement_e::DOOR:
+        m_memDoor.insert({iniId, pos});
+        break;
+    case LevelElement_e::ENEMY:
+        m_memEnemy.insert({iniId, pos});
+        break;
+    case LevelElement_e::EXIT:
+        m_memExit.insert({iniId, pos});
+        break;
+    case LevelElement_e::OBJECT:
+        m_memObject.insert({iniId, pos});
+        break;
+    case LevelElement_e::STATIC_CEILING:
+        m_memStaticCeiling.insert({iniId, pos});
+        break;
+    case LevelElement_e::STATIC_GROUND:
+        m_memStaticGround.insert({iniId, pos});
+        break;
+    case LevelElement_e::TELEPORT:
+    case LevelElement_e::TRIGGER:
+    case LevelElement_e::SELECTION:
+    case LevelElement_e::TARGET_TELEPORT:
+    case LevelElement_e::PLAYER_DEPARTURE:
+    case LevelElement_e::DELETE:
+    case LevelElement_e::GROUND_TRIGGER:
+    case LevelElement_e::WALL:
+    case LevelElement_e::TOTAL:
+        break;
+    }
+}
+
+//======================================================================
+void TableModel::memTeleportElement(const QPair<int, int> &teleporterPos, const QPair<int, int> &targetPos, const QString &iniId)
+{
+    m_memTeleport.insert({iniId, {teleporterPos, targetPos}});
 }
 
 //======================================================================
