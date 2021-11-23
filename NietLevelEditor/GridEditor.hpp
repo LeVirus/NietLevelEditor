@@ -124,6 +124,7 @@ private:
     std::map<LevelElement_e, QVector<QString>> m_mapElementID;
     std::unique_ptr<MoveWallData> m_memcurrentMoveWallData;
     QSet<QPair<int, int>> m_memCurrentLinkTriggerWall;
+    QPushButton *m_generateButton;
 };
 
 Direction_e getDirEnumFromQString(const QString &str);

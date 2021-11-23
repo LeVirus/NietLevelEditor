@@ -221,6 +221,7 @@ void GridEditor::setLineSelectableEnabled(bool enable)
     {
         static_cast<SelectableLineLayout*>(children[i])->setRadioButtonEnabled(enable);
     }
+    m_generateButton->setEnabled(enable);
 }
 
 //======================================================================
@@ -259,6 +260,7 @@ void GridEditor::initButtons()
     button = new QPushButton("Generate Level");
     ui->SelectableLayout->addWidget(button);
     QObject::connect(button, &QPushButton::clicked, this, &GridEditor::generateLevel);
+    m_generateButton = button;
 }
 
 //======================================================================
