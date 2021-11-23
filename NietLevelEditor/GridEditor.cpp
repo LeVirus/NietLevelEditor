@@ -84,12 +84,15 @@ void GridEditor::connectSlots()
 void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode)
 {
     QModelIndex index = m_tableModel->index(y, x, QModelIndex());
-    removeElementCase(index);
+    std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
+    if(!caseData || (caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER))
+    {
+        removeElementCase(index);
+    }
     if(deleteMode)
     {
         return;
     }
-    std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
     bool ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
                                                pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
     if(!caseData || (caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER))
