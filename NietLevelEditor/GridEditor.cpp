@@ -87,39 +87,35 @@ void GridEditor::connectSlots()
 void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode)
 {
     QModelIndex index = m_tableModel->index(y, x, QModelIndex());
-    bool ok;
+    removeElementCase(index);
     if(deleteMode)
     {
-        ok = m_tableModel->removeData(index);
+        return;
+    }
+    std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
+    bool ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
+                                               pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
+    if(!caseData || (caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER))
+    {
+        m_tableModel->setIdData(index, CaseData{m_currentElementType,
+                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}});
+    }
+    if(m_currentElementType == LevelElement_e::WALL)
+    {
+        caseData->m_wallShapeNum = wallShapeNum;
+        if(m_wallMoveableMode)
+        {
+            if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH ||
+                    m_moveableWallForm->getTriggerType() == TriggerType_e::GROUND)
+            {
+                m_memCurrentLinkTriggerWall.insert({x, y});
+            }
+            memWallMove(index);
+        }
     }
     else
     {
-        removeElementCase(index);
-        std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
-        ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
-                                                   pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
-        if(!caseData || (caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER))
-        {
-            m_tableModel->setIdData(index, CaseData{m_currentElementType,
-                                                    m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}});
-        }
-        if(m_currentElementType == LevelElement_e::WALL)
-        {
-            caseData->m_wallShapeNum = wallShapeNum;
-            if(m_wallMoveableMode)
-            {
-                if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH ||
-                        m_moveableWallForm->getTriggerType() == TriggerType_e::GROUND)
-                {
-                    m_memCurrentLinkTriggerWall.insert({x, y});
-                }
-                memWallMove(index);
-            }
-        }
-        else
-        {
-            caseData->m_wallShapeNum = {};
-        }
+        caseData->m_wallShapeNum = {};
     }
     assert(ok);
 }
@@ -929,7 +925,10 @@ void GridEditor::treatElementsDrawing()
         treatSelection(caseIndex);
         return;
     }
-    m_tableModel->memStdElement({caseIndex.column(), caseIndex.row()}, m_currentElementType, m_drawData[index][m_currentSelection].first);
+    if(!deleteMode)
+    {
+        m_tableModel->memStdElement({caseIndex.column(), caseIndex.row()}, m_currentElementType, m_drawData[index][m_currentSelection].first);
+    }
     setCaseIcon(caseIndex.column(), caseIndex.row(), -1, deleteMode);
     if(m_currentElementType == LevelElement_e::TELEPORT)
     {
@@ -946,26 +945,9 @@ void GridEditor::treatElementsDrawing()
 //======================================================================
 void GridEditor::removeElementCase(const QModelIndex &caseIndex)
 {
+    m_tableModel->removeData(caseIndex);
     std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(caseIndex);
-    if(caseData && caseData->m_type == LevelElement_e::WALL && caseData->m_moveWallData->m_triggerPos)
-    {
-        QModelIndex triggerIndex = m_tableModel->index(caseData->m_moveWallData->m_triggerPos->second,
-                                                       caseData->m_moveWallData->m_triggerPos->first);
-        if(!triggerIndex.isValid())
-        {
-            return;
-        }
-        std::optional<CaseData> &triggerData = m_tableModel->getDataElementCase(triggerIndex);
-        if(triggerData)
-        {
-            QSet<QPair<int, int>>::iterator it = triggerData->m_triggerLinkWall->find({caseIndex.column(), caseIndex.row()});
-            assert(it != triggerData->m_triggerLinkWall->end());
-            triggerData->m_triggerLinkWall->erase(it);
-            caseData->m_moveWallData->m_triggerPos.reset();
-            caseData->m_moveWallData.reset();
-        }
-    }
-    else if(caseData && caseData->m_type == LevelElement_e::PLAYER_DEPARTURE)
+    if(caseData && caseData->m_type == LevelElement_e::PLAYER_DEPARTURE)
     {
         m_PlayerDeparture = {};
     }

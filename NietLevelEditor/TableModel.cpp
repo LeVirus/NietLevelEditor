@@ -81,16 +81,16 @@ bool TableModel::setIdData(const QModelIndex &index, const CaseData &value)
 }
 
 //======================================================================
-bool TableModel::removeData(const QModelIndex &index)
+void TableModel::removeData(const QModelIndex &index)
 {
     if (!checkIndex(index))
     {
-        return false;
+        return;
     }
     std::optional<CaseData> &caseData = m_vectPic[index.column()][index.row()].second;
     if(!caseData)
     {
-        return true;
+        return;
     }
     QPixmap pix;
     m_vectPic[index.column()][index.row()].first.swap(pix);
@@ -102,9 +102,30 @@ bool TableModel::removeData(const QModelIndex &index)
     {
         assert(caseData->m_wallShapeNum);
         --m_memWallShape[*caseData->m_wallShapeNum].second.m_wallCount;
+        if(caseData->m_moveWallData->m_triggerPos)
+        {
+            QModelIndex triggerIndex = this->index(caseData->m_moveWallData->m_triggerPos->second,
+                                                   caseData->m_moveWallData->m_triggerPos->first);
+            if(triggerIndex.isValid())
+            {
+                std::optional<CaseData> &triggerData = getDataElementCase(triggerIndex);
+                if(triggerData)
+                {
+                    QSet<QPair<int, int>>::iterator it = triggerData->m_triggerLinkWall->find({index.column(), index.row()});
+                    assert(it != triggerData->m_triggerLinkWall->end());
+                    triggerData->m_triggerLinkWall->erase(it);
+                    caseData->m_moveWallData->m_triggerPos.reset();
+                    caseData->m_moveWallData.reset();
+                }
+            }
+        }
     }
-    caseData = {};
-    return true;
+    else
+    {
+        rmStdElement({index.column(), index.row()}, caseData->m_type);
+    }
+    caseData.reset();
+    return;
 }
 
 //======================================================================
@@ -181,40 +202,133 @@ int TableModel::memWallShape(WallDrawShape_e wallShape, const QPair<int, int> &t
 //======================================================================
 void TableModel::memStdElement(const QPair<int, int> &pos, LevelElement_e elementType, const QString &iniId)
 {
-    switch(elementType)
+    if(elementType == LevelElement_e::BARREL)
     {
-    case LevelElement_e::BARREL:
         m_memBarrel.insert({iniId, pos});
-        break;
-    case LevelElement_e::DOOR:
-        m_memDoor.insert({iniId, pos});
-        break;
-    case LevelElement_e::ENEMY:
-        m_memEnemy.insert({iniId, pos});
-        break;
-    case LevelElement_e::EXIT:
-        m_memExit.insert({iniId, pos});
-        break;
-    case LevelElement_e::OBJECT:
-        m_memObject.insert({iniId, pos});
-        break;
-    case LevelElement_e::STATIC_CEILING:
-        m_memStaticCeiling.insert({iniId, pos});
-        break;
-    case LevelElement_e::STATIC_GROUND:
-        m_memStaticGround.insert({iniId, pos});
-        break;
-    case LevelElement_e::TELEPORT:
-    case LevelElement_e::TRIGGER:
-    case LevelElement_e::SELECTION:
-    case LevelElement_e::TARGET_TELEPORT:
-    case LevelElement_e::PLAYER_DEPARTURE:
-    case LevelElement_e::DELETE:
-    case LevelElement_e::GROUND_TRIGGER:
-    case LevelElement_e::WALL:
-    case LevelElement_e::TOTAL:
-        break;
     }
+    else if(elementType == LevelElement_e::DOOR)
+    {
+        m_memDoor.insert({iniId, pos});
+    }
+    else if(elementType == LevelElement_e::ENEMY)
+    {
+        m_memEnemy.insert({iniId, pos});
+    }
+    else if(elementType == LevelElement_e::EXIT)
+    {
+        m_memExit.insert({iniId, pos});
+    }
+    else if(elementType == LevelElement_e::OBJECT)
+    {
+        m_memObject.insert({iniId, pos});
+    }
+    else if(elementType == LevelElement_e::STATIC_CEILING)
+    {
+        m_memStaticCeiling.insert({iniId, pos});
+    }
+    else if(elementType == LevelElement_e::STATIC_GROUND)
+    {
+        m_memStaticGround.insert({iniId, pos});
+    }
+}
+
+//======================================================================
+void TableModel::rmStdElement(const QPair<int, int> &pos, LevelElement_e elementType)
+{
+    std::multimap<QString, QPair<int, int>>::iterator it;
+    if(elementType == LevelElement_e::BARREL)
+    {
+        for(it = m_memBarrel.begin(); it != m_memBarrel.end(); ++it)
+        {
+            if(it->second == pos)
+            {
+                m_memBarrel.erase(it);
+                return;
+            }
+        }
+    }
+    else if(elementType == LevelElement_e::DOOR)
+    {
+        for(it = m_memDoor.begin(); it != m_memDoor.end(); ++it)
+        {
+            if(it->second == pos)
+            {
+                m_memDoor.erase(it);
+                return;
+            }
+        }
+    }
+    else if(elementType == LevelElement_e::ENEMY)
+    {
+        for(it = m_memEnemy.begin(); it != m_memEnemy.end(); ++it)
+        {
+            if(it->second == pos)
+            {
+                m_memEnemy.erase(it);
+                return;
+            }
+        }
+    }
+    else if(elementType == LevelElement_e::EXIT)
+    {
+        for(it = m_memExit.begin(); it != m_memExit.end(); ++it)
+        {
+            if(it->second == pos)
+            {
+                m_memExit.erase(it);
+                return;
+            }
+        }
+    }
+    else if(elementType == LevelElement_e::OBJECT)
+    {
+        for(it = m_memObject.begin(); it != m_memObject.end(); ++it)
+        {
+            if(it->second == pos)
+            {
+                m_memObject.erase(it);
+                return;
+            }
+        }
+    }
+    else if(elementType == LevelElement_e::STATIC_CEILING)
+    {
+        for(it = m_memStaticCeiling.begin(); it != m_memStaticCeiling.end(); ++it)
+        {
+            if(it->second == pos)
+            {
+                m_memStaticCeiling.erase(it);
+                return;
+            }
+        }
+    }
+    else if(elementType == LevelElement_e::STATIC_GROUND)
+    {
+        for(it = m_memStaticGround.begin(); it != m_memStaticGround.end(); ++it)
+        {
+            if(it->second == pos)
+            {
+                m_memStaticGround.erase(it);
+                return;
+            }
+        }
+    }
+    else if(elementType == LevelElement_e::TELEPORT)
+    {
+        for(std::multimap<QString, TeleportData>::iterator it = m_memTeleport.begin(); it != m_memTeleport.end(); ++it)
+        {
+            if(it->second.m_teleporterPos == pos)
+            {
+                m_memTeleport.erase(it);
+                return;
+            }
+        }
+    }
+    else
+    {
+        return;
+    }
+    assert(false);
 }
 
 //======================================================================

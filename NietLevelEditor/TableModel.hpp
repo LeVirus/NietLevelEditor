@@ -59,7 +59,7 @@ public:
     void setLevelSize(int tableWidth, int tableHeight);
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole)override;
     bool setIdData(const QModelIndex &index, const CaseData &value);
-    bool removeData(const QModelIndex &index);
+    void removeData(const QModelIndex &index);
     inline std::optional<CaseData> &getDataElementCase(const QModelIndex &index)
     {
         return m_vectPic[index.column()][index.row()].second;
@@ -78,6 +78,8 @@ public:
     {
         return m_tableSize;
     }
+private:
+    void rmStdElement(const QPair<int, int> &pos, LevelElement_e elementType);
 private:
     QVector<QPair<WallDrawShape_e, WallShapeData>> m_memWallShape;
     std::multimap<QString, QPair<int, int>> m_memEnemy, m_memBarrel, m_memDoor, m_memExit, m_memObject, m_memStaticCeiling,
