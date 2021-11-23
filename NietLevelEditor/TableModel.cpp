@@ -345,6 +345,32 @@ void TableModel::updateWallNumber(uint32_t num)
 }
 
 //======================================================================
+void TableModel::setTableDeletionZone(const QPair<int, int> &originSelectPos, const QPair<int, int> &targetSelectPos, bool preview)
+{
+    int minX = std::min(originSelectPos.first, targetSelectPos.first),
+            maxX = std::max(originSelectPos.first, targetSelectPos.first),
+            minY = std::min(originSelectPos.second, targetSelectPos.second),
+            maxY = std::max(originSelectPos.second, targetSelectPos.second);
+    clearPreview();
+    QModelIndex index;
+    for(int i = minY; i < maxY + 1; ++i)
+    {
+        for(int j = minX; j < maxX + 1; ++j)
+        {
+            if(preview)
+            {
+                setPreviewCase(j, i);
+            }
+            else
+            {
+                index = this->index(i, j, QModelIndex());
+                removeData(index);
+            }
+        }
+    }
+}
+
+//======================================================================
 void TableModel::setLevelSize(int tableWidth, int tableHeight)
 {
     m_tableSize = {tableWidth, tableHeight};

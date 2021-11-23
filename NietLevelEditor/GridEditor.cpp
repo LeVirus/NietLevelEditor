@@ -73,14 +73,11 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
 //======================================================================
 void GridEditor::connectSlots()
 {
-    QObject::connect(ui->tableView->selectionModel(),
-                     &QItemSelectionModel::currentChanged,
+    QObject::connect(ui->tableView->selectionModel(), &QItemSelectionModel::currentChanged,
                      this, &GridEditor::stdElementCaseSelectedChanged);
     ui->tableView->viewport()->installEventFilter(m_eventFilter);
-    QObject::connect(ui->tableView, &QAbstractItemView::pressed,
-                     this, &GridEditor::wallSelection);
-    QObject::connect(m_eventFilter, &EventFilter::mouseReleased,
-                     this, &GridEditor::mouseReleaseSelection);
+    QObject::connect(ui->tableView, &QAbstractItemView::pressed, this, &GridEditor::wallSelection);
+    QObject::connect(m_eventFilter, &EventFilter::mouseReleased, this, &GridEditor::mouseReleaseSelection);
 }
 
 //======================================================================
@@ -534,16 +531,16 @@ bool GridEditor::setWallShape(bool preview)
     if(preview)
     {
         if(!m_displayPreview ||
-                ui->tableView->selectionModel()->selection().indexes().empty())
+                ui->tableView->selectionModel()->selection().indexes().empty() || m_firstCaseSelection.column() == -1)
         {
             return false;
         }
-        m_wallSecondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
+        m_secondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
     }
-    int minX = std::min(m_wallFirstCaseSelection.column(), m_wallSecondCaseSelection.column()),
-            maxX = std::max(m_wallFirstCaseSelection.column(), m_wallSecondCaseSelection.column()),
-            minY = std::min(m_wallFirstCaseSelection.row(), m_wallSecondCaseSelection.row()),
-            maxY = std::max(m_wallFirstCaseSelection.row(), m_wallSecondCaseSelection.row());
+    int minX = std::min(m_firstCaseSelection.column(), m_secondCaseSelection.column()),
+            maxX = std::max(m_firstCaseSelection.column(), m_secondCaseSelection.column()),
+            minY = std::min(m_firstCaseSelection.row(), m_secondCaseSelection.row()),
+            maxY = std::max(m_firstCaseSelection.row(), m_secondCaseSelection.row());
     if(preview)
     {
         m_tableModel->clearPreview();
@@ -590,6 +587,19 @@ bool GridEditor::setWallShape(bool preview)
     //quick fix
     updateGridView();
     return ret;
+}
+
+//======================================================================
+void GridEditor::setDeletionZone(bool preview)
+{
+    if(ui->tableView->selectionModel()->selection().indexes().isEmpty() || m_firstCaseSelection.column() == -1)
+    {
+        return;
+    }
+    m_secondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
+    m_tableModel->setTableDeletionZone({m_firstCaseSelection.column(), m_firstCaseSelection.row()},
+                                       {m_secondCaseSelection.column(), m_secondCaseSelection.row()}, preview);
+    updateGridView();
 }
 
 //======================================================================
@@ -668,9 +678,9 @@ uint32_t GridEditor::setWallDiagLineShape(const QPair<int, int> &topLeftIndex,
                                           const QPair<int, int> &bottomRightIndex, int shapeNum, bool preview)
 {
     uint32_t count = 0;
-    int j = m_wallFirstCaseSelection.row(), modY, i = m_wallFirstCaseSelection.column();
-    modY = (topLeftIndex.second == m_wallFirstCaseSelection.row()) ? 1 : -1;
-    int modX = (topLeftIndex.first == m_wallFirstCaseSelection.column()) ? 1 : -1;
+    int j = m_firstCaseSelection.row(), modY, i = m_firstCaseSelection.column();
+    modY = (topLeftIndex.second == m_firstCaseSelection.row()) ? 1 : -1;
+    int modX = (topLeftIndex.first == m_firstCaseSelection.column()) ? 1 : -1;
     for(;((modY == 1 && j < bottomRightIndex.second + 1) || (modY == -1 && j > topLeftIndex.second - 1)) &&
         ((modX == 1 && i < bottomRightIndex.first + 1) || (modX == -1 && i > topLeftIndex.first - 1)); i += modX, j += modY)
     {
@@ -693,8 +703,8 @@ bool GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
                                       bool preview)
 {
     wallNumber = 0;
-    bool modX = (topLeftIndex.first != m_wallFirstCaseSelection.column()),
-            modY = (topLeftIndex.second != m_wallFirstCaseSelection.row());
+    bool modX = (topLeftIndex.first != m_firstCaseSelection.column()),
+            modY = (topLeftIndex.second != m_firstCaseSelection.row());
     QPair bottomRightIndexCpy = bottomRightIndex;
     int diffX = bottomRightIndexCpy.first - topLeftIndex.first,
             diffY = bottomRightIndexCpy.second - topLeftIndex.second;
@@ -716,7 +726,7 @@ bool GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
     int mainDiff = std::min(diffX, diffY);
     if(modX)
     {
-        bottomRightIndexCpy.first = m_wallFirstCaseSelection.column();
+        bottomRightIndexCpy.first = m_firstCaseSelection.column();
     }
     else
     {
@@ -813,16 +823,21 @@ void GridEditor::stdElementCaseSelectedChanged(const QModelIndex &current, const
     {
         setWallShape(true);
     }
+    else if(m_currentElementType == LevelElement_e::DELETE)
+    {
+        setDeletionZone(true);
+    }
 }
 
 //======================================================================
 void GridEditor::wallSelection(const QModelIndex &index)
 {
-    if(m_currentElementType != LevelElement_e::WALL)
+    if(m_currentElementType != LevelElement_e::WALL && m_currentElementType != LevelElement_e::DELETE)
     {
         return;
     }
-    m_wallFirstCaseSelection = index;
+    m_firstCaseSelection = index;
+    m_secondCaseSelection = index;
     m_displayPreview = true;
 }
 
@@ -838,10 +853,18 @@ void GridEditor::mouseReleaseSelection()
     {
         treatWallDrawing();
     }
+    else if(m_currentElementType == LevelElement_e::DELETE)
+    {
+        m_secondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
+        m_tableModel->setTableDeletionZone({m_firstCaseSelection.column(), m_firstCaseSelection.row()},
+                                           {m_secondCaseSelection.column(), m_secondCaseSelection.row()}, false);
+    }
     else
     {
         treatElementsDrawing();
     }
+    m_firstCaseSelection = m_tableModel->index(-1, -1, QModelIndex());
+    m_secondCaseSelection = m_tableModel->index(-1, -1, QModelIndex());
     updateGridView();
 }
 
@@ -849,12 +872,12 @@ void GridEditor::mouseReleaseSelection()
 void GridEditor::treatWallDrawing()
 {
     assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
-    m_wallSecondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
+    m_secondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
     m_memCurrentLinkTriggerWall.clear();
     if(m_wallMoveableMode)
     {
         m_moveableWallForm->init();
-        const std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(m_wallFirstCaseSelection);
+        const std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(m_firstCaseSelection);
         if(caseData && caseData->m_type == LevelElement_e::WALL && caseData->m_moveWallData)
         {
             m_moveableWallForm->setData(*caseData);

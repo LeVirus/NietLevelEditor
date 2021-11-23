@@ -77,6 +77,7 @@ private:
     void loadBarrelsPictures(const QString &installDir);
     void loadExitsPictures(const QString &installDir);
     bool setWallShape(bool preview = false);
+    void setDeletionZone(bool preview = false);
     void memStdWallMove();
     uint32_t setWallLineRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, int shapeNum, bool preview = false);
     uint32_t setWallDiagLineShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, int shapeNum, bool preview = false);
@@ -116,7 +117,7 @@ private:
     IconArray_t m_drawData;
     bool m_elementSelected, m_displayPreview = false;
     EventFilter *m_eventFilter;
-    QModelIndex m_wallFirstCaseSelection, m_wallSecondCaseSelection;
+    QModelIndex m_firstCaseSelection, m_secondCaseSelection;
     BackgroundForm *m_backgroundForm = nullptr;
     MoveableWallForm *m_moveableWallForm = nullptr;
     SelectableLineLayout *m_memWallSelectLayout = nullptr;

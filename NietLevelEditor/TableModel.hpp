@@ -74,6 +74,7 @@ public:
     void memStdElement(const QPair<int, int> &pos, LevelElement_e elementType, const QString &iniId);
     void memTeleportElement(const QPair<int, int> &teleporterPos, const QPair<int, int> &targetPos, const QString &iniId);
     void updateWallNumber(uint32_t num);
+    void setTableDeletionZone(const QPair<int, int> &originSelectPos, const QPair<int, int> &targetSelectPos, bool preview);
     inline QPair<int, int> getTableSize()const
     {
         return m_tableSize;
