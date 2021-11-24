@@ -79,6 +79,7 @@ public:
     {
         return m_tableSize;
     }
+    bool checkLevelData()const;
 private:
     void rmStdElement(const QPair<int, int> &pos, LevelElement_e elementType);
 private:

@@ -7,6 +7,7 @@
 
 using ArrayFloat_t = std::array<float, 5>;
 class QSettings;
+class TableModel;
 
 struct DoorData
 {
@@ -66,6 +67,7 @@ public:
         return m_texturesPath;
     }
     std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
+    void generateLevel(const TableModel &tableModel);
 private:
     void clear();
     inline bool spriteExists(const QString &sprite)const

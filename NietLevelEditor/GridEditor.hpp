@@ -29,12 +29,12 @@ enum class LevelElement_e
     STATIC_CEILING,
     STATIC_GROUND,
     BARREL,
-    EXIT,
     TRIGGER,
     GROUND_TRIGGER,
-    DELETE,
+    EXIT,
     PLAYER_DEPARTURE,
     SELECTION,
+    DELETE,
     TOTAL
 };
 
@@ -91,7 +91,6 @@ private:
     void treatWallDrawing();
     void treatElementsDrawing();
     void confNewTriggerData(const QModelIndex &caseIndex);
-    void removeElementCase(const QModelIndex &caseIndex);
 private slots:
     void execConfCeilingBackground();
     void execConfGroundBackground();

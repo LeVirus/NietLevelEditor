@@ -3,6 +3,9 @@
 #include <QFile>
 #include <QRegularExpression>
 #include <iostream>
+#include "TableModel.hpp"
+#include <QFileDialog>
+#include <QMessageBox>
 
 //======================================================================
 LevelDataManager::LevelDataManager()
@@ -13,6 +16,7 @@ LevelDataManager::LevelDataManager()
 //======================================================================
 bool LevelDataManager::loadLevelData(const QString &installDir)
 {
+    m_installDirectory = installDir;
     QString standardDataINI = installDir + "/Ressources/standardData.ini", pictureDataINI = installDir + "/Ressources/pictureData.ini";
     if(!QFile::exists(standardDataINI) || !QFile::exists(pictureDataINI))
     {
@@ -45,6 +49,20 @@ std::optional<ArrayFloat_t> LevelDataManager::getPictureData(const QString &spri
         return it->second;
     }
     return {};
+}
+
+//======================================================================
+void LevelDataManager::generateLevel(const TableModel &tableModel)
+{
+    if(!tableModel.checkLevelData())
+    {
+        QMessageBox::warning(nullptr, "Error", "Player departure and Exit have to be defined");
+        return;
+    }
+    QFileDialog dialog;
+    dialog.setDirectory(m_installDirectory + "/Ressources/");
+    QString selfilter = "INI (*.ini)", file;
+    file = dialog.getOpenFileName(nullptr, "Level file selection", m_installDirectory + "/Ressources/", "INI (*.ini)", &selfilter);
 }
 
 //======================================================================

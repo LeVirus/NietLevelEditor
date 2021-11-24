@@ -85,9 +85,9 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode)
 {
     QModelIndex index = m_tableModel->index(y, x, QModelIndex());
     std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
-    if(!caseData || (caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER))
+    if(caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER)
     {
-        removeElementCase(index);
+        m_tableModel->removeData(index);
     }
     if(deleteMode)
     {
@@ -926,6 +926,11 @@ void GridEditor::treatElementsDrawing()
     int index = static_cast<int>(m_currentElementType);
     if(m_currentElementType == LevelElement_e::PLAYER_DEPARTURE)
     {
+        std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(caseIndex);
+        if(caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER)
+        {
+            m_tableModel->removeData(caseIndex);
+        }
         setColorCaseData(caseIndex.column(), caseIndex.row(), m_currentElementType);
         return;
     }
@@ -970,12 +975,6 @@ void GridEditor::treatElementsDrawing()
 }
 
 //======================================================================
-void GridEditor::removeElementCase(const QModelIndex &caseIndex)
-{
-    m_tableModel->removeData(caseIndex);
-}
-
-//======================================================================
 void GridEditor::execConfCeilingBackground()
 {
     m_backgroundForm->confCeilingOrGroundMode(true);
@@ -994,7 +993,7 @@ void GridEditor::execConfGroundBackground()
 //======================================================================
 void GridEditor::generateLevel()
 {
-
+    m_levelDataManager.generateLevel(*m_tableModel);
 }
 
 //======================================================================

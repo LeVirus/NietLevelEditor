@@ -106,9 +106,10 @@ void TableModel::removeData(const QModelIndex &index)
     {
         m_departurePlayer.reset();
     }
-    else if(caseData->m_type == LevelElement_e::PLAYER_DEPARTURE)
+    else if(caseData->m_type == LevelElement_e::EXIT)
     {
         m_exitPos.reset();
+
     }
     else if(caseData->m_type == LevelElement_e::WALL)
     {
@@ -380,6 +381,16 @@ void TableModel::setTableDeletionZone(const QPair<int, int> &originSelectPos, co
             }
         }
     }
+}
+
+//======================================================================
+bool TableModel::checkLevelData()const
+{
+    if(!m_exitPos || !m_departurePlayer)
+    {
+        return false;
+    }
+    return true;
 }
 
 //======================================================================
