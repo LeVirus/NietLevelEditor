@@ -77,6 +77,14 @@ bool TableModel::setIdData(const QModelIndex &index, const CaseData &value)
         }
         m_departurePlayer = {index.column(), index.row()};
     }
+    else if(value.m_type == LevelElement_e::EXIT)
+    {
+        if(m_exitPos)
+        {
+            removeData(this->index(m_exitPos->second, m_exitPos->first, QModelIndex()));
+        }
+        m_exitPos = {index.column(), index.row()};
+    }
     return true;
 }
 
@@ -96,7 +104,11 @@ void TableModel::removeData(const QModelIndex &index)
     m_vectPic[index.column()][index.row()].first.swap(pix);
     if(caseData->m_type == LevelElement_e::PLAYER_DEPARTURE)
     {
-        m_departurePlayer = {};
+        m_departurePlayer.reset();
+    }
+    else if(caseData->m_type == LevelElement_e::PLAYER_DEPARTURE)
+    {
+        m_exitPos.reset();
     }
     else if(caseData->m_type == LevelElement_e::WALL)
     {

@@ -89,7 +89,7 @@ private:
     QPair<int, int> m_tableSize;
     QVector<QVector<QPair<QPixmap, std::optional<CaseData>>>> m_vectPic;
     QVector<QBitArray> m_vectPreview;
-    std::optional<QPair<int, int>> m_departurePlayer;
+    std::optional<QPair<int, int>> m_departurePlayer, m_exitPos;
 signals:
     void editCompleted(const QString &str);
 };

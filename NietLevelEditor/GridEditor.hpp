@@ -107,7 +107,6 @@ private slots:
 private:
     Ui::GridEditor *ui;
     QPair<int, int> m_lastPositionAdded;
-    std::optional<QPair<int, int>> m_PlayerDeparture;
     LevelDataManager m_levelDataManager;
     TableModel *m_tableModel = nullptr;
     int m_currentSelection;

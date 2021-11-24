@@ -19,8 +19,9 @@ SelectableLineLayout::SelectableLineLayout(const QString &radioBoxTxt,
     {
         m_comboBox->setEnabled(false);
         addWidget(m_comboBox);
-        QObject::connect(m_comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(selectedIndex(int)));}
+        QObject::connect(m_comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(selectedIndex(int)));
     }
+}
 
 //======================================================================
 void SelectableLineLayout::setIcons(const QVector<QPair<QString, QIcon>> &vectIcons)

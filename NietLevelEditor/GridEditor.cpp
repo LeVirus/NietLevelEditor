@@ -183,7 +183,6 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type)
     if(type == LevelElement_e::PLAYER_DEPARTURE)
     {
         pix.fill(Qt::darkBlue);
-        m_PlayerDeparture = {x, y};
     }
     else
     {
@@ -974,11 +973,6 @@ void GridEditor::treatElementsDrawing()
 void GridEditor::removeElementCase(const QModelIndex &caseIndex)
 {
     m_tableModel->removeData(caseIndex);
-    std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(caseIndex);
-    if(caseData && caseData->m_type == LevelElement_e::PLAYER_DEPARTURE)
-    {
-        m_PlayerDeparture = {};
-    }
 }
 
 //======================================================================
