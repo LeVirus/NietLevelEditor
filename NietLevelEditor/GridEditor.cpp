@@ -11,7 +11,6 @@
 #include <QPushButton>
 #include <iostream>
 #include <QDir>
-#include <MoveableWallForm.hpp>
 #include "TableModel.hpp"
 #include "SelectableLineLayout.hpp"
 #include "EventFilter.hpp"
@@ -243,6 +242,10 @@ void GridEditor::initSelectableWidgets()
             m_memWallSelectLayout = selectLayout;
             selectLayout->confWallSelectWidget(this);
         }
+        else if(currentEnum == LevelElement_e::PLAYER_DEPARTURE)
+        {
+            selectLayout->confPlayerDeparture(this);
+        }
         QObject::connect(selectLayout, &SelectableLineLayout::lineSelected, this, &GridEditor::setElementSelected);
     }
 }
@@ -265,23 +268,23 @@ void GridEditor::initButtons()
 //======================================================================
 void GridEditor::initMusicDir(const QString &installDir)
 {
-    QComboBox *musicWidget = new QComboBox();
+    m_musicWidget = new QComboBox();
     QString musicDir = installDir + "/Ressources/Audio/Music/";
     QDir dir(musicDir);
     assert(dir.exists());
     QFileInfoList list = dir.entryInfoList();
     QFileInfo fileInfo;
-    musicWidget->addItem("None");
+    m_musicWidget->addItem("None");
     for(int i = 0; i < list.size(); ++i)
     {
         fileInfo = list[i];
         if(fileInfo.suffix() == "flac")
         {
-            musicWidget->addItem(fileInfo.fileName());
+            m_musicWidget->addItem(fileInfo.fileName());
         }
     }
     ui->SelectableLayout->addWidget(new QLabel("Music"));
-    ui->SelectableLayout->addWidget(musicWidget);
+    ui->SelectableLayout->addWidget(m_musicWidget);
 }
 
 //======================================================================
@@ -316,6 +319,13 @@ void GridEditor::loadTriggerDisplay(const QString &installDir)
         assert(spriteData);
         m_drawData[currentIndex].push_back({it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
+}
+
+//======================================================================
+void GridEditor::memPlayerDirection(int direction)
+{
+    assert(direction < 4);
+    m_memPlayerDirection = static_cast<Direction_e>(direction);
 }
 
 //======================================================================
@@ -985,15 +995,16 @@ void GridEditor::execConfCeilingBackground()
 //======================================================================
 void GridEditor::execConfGroundBackground()
 {
-    m_backgroundForm->unckeckAll();
     m_backgroundForm->confCeilingOrGroundMode(false);
+    m_backgroundForm->unckeckAll();
     m_backgroundForm->exec();
 }
 
 //======================================================================
 void GridEditor::generateLevel()
 {
-    m_levelDataManager.generateLevel(*m_tableModel);
+    m_levelDataManager.generateLevel(*m_tableModel, m_musicWidget->currentText(),
+                                     {&m_backgroundForm->getGroundData(), &m_backgroundForm->getCeilingData()}, m_memPlayerDirection);
 }
 
 //======================================================================

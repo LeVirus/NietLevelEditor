@@ -4,6 +4,7 @@
 #include <QRegularExpression>
 #include <iostream>
 #include "TableModel.hpp"
+#include "BackgroundForm.hpp"
 #include <QFileDialog>
 #include <QMessageBox>
 
@@ -52,7 +53,8 @@ std::optional<ArrayFloat_t> LevelDataManager::getPictureData(const QString &spri
 }
 
 //======================================================================
-void LevelDataManager::generateLevel(const TableModel &tableModel)
+void LevelDataManager::generateLevel(const TableModel &tableModel, const QString &musicFilename,
+                                     const QPair<BackgroundData const*, BackgroundData const*> &backgroundData, Direction_e playerDirection)
 {
     if(!tableModel.checkLevelData())
     {
@@ -60,9 +62,91 @@ void LevelDataManager::generateLevel(const TableModel &tableModel)
         return;
     }
     QFileDialog dialog;
-    dialog.setDirectory(m_installDirectory + "/Ressources/");
-    QString selfilter = "INI (*.ini)", file;
-    file = dialog.getOpenFileName(nullptr, "Level file selection", m_installDirectory + "/Ressources/", "INI (*.ini)", &selfilter);
+    QString selfilter = "INI (*.ini)", filename;
+    filename = dialog.getSaveFileName(nullptr, "Level file selection", m_installDirectory + "/Ressources/", "INI (*.ini)", &selfilter);
+    if(m_INIFile)
+    {
+        delete m_INIFile;
+    }
+    m_INIFile = new QSettings(filename, QSettings::NativeFormat);
+    //Level
+    m_INIFile->setValue("Level/weight", tableModel.getTableSize().first);
+    m_INIFile->setValue("Level/height", tableModel.getTableSize().second);
+    if(musicFilename != "None")
+    {
+        m_INIFile->setValue("Level/music", musicFilename);
+    }
+    //Background
+    loadBackgroundData(backgroundData);
+    //PlayerInit
+    m_INIFile->setValue("PlayerInit/playerDepartureX", tableModel.getPlayerDepartureData()->first);
+    m_INIFile->setValue("PlayerInit/playerDepartureY", tableModel.getPlayerDepartureData()->second);
+    m_INIFile->setValue("PlayerInit/PlayerOrientation", static_cast<int>(playerDirection));
+}
+
+//======================================================================
+void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &backgroundData)
+{
+    assert(m_INIFile);
+    //GROUND====
+    BackgroundDisplayMode_e mode = backgroundData.first->m_displayMode;
+    //COLOR
+    if(mode == BackgroundDisplayMode_e::COLOR || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE)
+    {
+        assert(backgroundData.first->m_colorData);
+        QString colorR, colorG, colorB;
+        for(uint32_t i = 0; i < 4; ++i)
+        {
+            QString::number((*backgroundData.first->m_colorData)[0][i]);
+            colorR += QString::number((*backgroundData.first->m_colorData)[i][0]) + " ";
+            colorG += QString::number((*backgroundData.first->m_colorData)[i][1]) + " ";
+            colorB += QString::number((*backgroundData.first->m_colorData)[i][2]) + " ";
+        }
+        m_INIFile->setValue("ColorGroundBackground/colorR", colorR);
+        m_INIFile->setValue("ColorGroundBackground/colorG", colorG);
+        m_INIFile->setValue("ColorGroundBackground/colorB", colorB);
+    }
+    //SIMPLE TEXTURE
+    else if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
+    {
+        m_INIFile->setValue("SimpleTextureGroundBackground/sprite", backgroundData.first->m_simpleTexture);
+    }
+    //TILED TEXTURE
+    else if(mode == BackgroundDisplayMode_e::TILED_TEXTURE || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE ||
+            mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
+    {
+        m_INIFile->setValue("TiledTextureGroundBackground/sprite", backgroundData.first->m_simpleTexture);
+    }
+
+    //CEILING====
+    mode = backgroundData.second->m_displayMode;
+    //COLOR
+    if(mode == BackgroundDisplayMode_e::COLOR || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE)
+    {
+        assert(backgroundData.second->m_colorData);
+        QString colorR, colorG, colorB;
+        for(uint32_t i = 0; i < 4; ++i)
+        {
+            QString::number((*backgroundData.second->m_colorData)[0][i]);
+            colorR += QString::number((*backgroundData.second->m_colorData)[i][0]) + " ";
+            colorG += QString::number((*backgroundData.second->m_colorData)[i][1]) + " ";
+            colorB += QString::number((*backgroundData.second->m_colorData)[i][2]) + " ";
+        }
+        m_INIFile->setValue("ColorCeilingBackground/colorR", colorR);
+        m_INIFile->setValue("ColorCeilingBackground/colorG", colorG);
+        m_INIFile->setValue("ColorCeilingBackground/colorB", colorB);
+    }
+    //SIMPLE TEXTURE
+    else if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
+    {
+        m_INIFile->setValue("SimpleTextureCeilingBackground/sprite", backgroundData.second->m_simpleTexture);
+    }
+    //TILED TEXTURE
+    else if(mode == BackgroundDisplayMode_e::TILED_TEXTURE || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE ||
+            mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
+    {
+        m_INIFile->setValue("TiledTextureCeilingBackground/sprite", backgroundData.second->m_simpleTexture);
+    }
 }
 
 //======================================================================

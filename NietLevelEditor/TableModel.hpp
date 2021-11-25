@@ -44,6 +44,8 @@ struct WallShapeData
     std::optional<MoveWallData> m_memMoveData;
 };
 
+using WallDataContainer_t = QVector<QPair<WallDrawShape_e, WallShapeData>>;
+
 struct TeleportData
 {
     QPair<int, int> m_teleporterPos, m_targetPos;
@@ -80,10 +82,50 @@ public:
         return m_tableSize;
     }
     bool checkLevelData()const;
+    inline const WallDataContainer_t &getWallData()const
+    {
+        return m_memWallShape;
+    }
+    inline const std::multimap<QString, TeleportData> &getTeleporterData()const
+    {
+        return m_memTeleport;
+    }
+    inline const std::optional<QPair<int, int>> &getPlayerDepartureData()const
+    {
+        return m_departurePlayer;
+    }
+    inline const std::multimap<QString, QPair<int, int>> &getEnemiesData()const
+    {
+        return m_memEnemy;
+    }
+    inline const std::multimap<QString, QPair<int, int>> &getBarrelsData()const
+    {
+        return m_memBarrel;
+    }
+    inline const std::multimap<QString, QPair<int, int>> &getDoorsData()const
+    {
+        return m_memDoor;
+    }
+    inline const std::multimap<QString, QPair<int, int>> &getExitData()const
+    {
+        return m_memExit;
+    }
+    inline const std::multimap<QString, QPair<int, int>> &getObjectsData()const
+    {
+        return m_memObject;
+    }
+    inline const std::multimap<QString, QPair<int, int>> &getStaticCeilingData()const
+    {
+        return m_memStaticCeiling;
+    }
+    inline const std::multimap<QString, QPair<int, int>> &getStaticGroundData()const
+    {
+        return m_memStaticGround;
+    }
 private:
     void rmStdElement(const QPair<int, int> &pos, LevelElement_e elementType);
 private:
-    QVector<QPair<WallDrawShape_e, WallShapeData>> m_memWallShape;
+    WallDataContainer_t m_memWallShape;
     std::multimap<QString, QPair<int, int>> m_memEnemy, m_memBarrel, m_memDoor, m_memExit, m_memObject, m_memStaticCeiling,
     m_memStaticGround;
     std::multimap<QString, TeleportData> m_memTeleport;

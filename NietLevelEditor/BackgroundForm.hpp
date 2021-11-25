@@ -34,6 +34,14 @@ public:
     {
         m_ceilingMode = ceiling;
     }
+    inline const BackgroundData &getGroundData()const
+    {
+        return m_groundBackground;
+    }
+    inline const BackgroundData &getCeilingData()const
+    {
+        return m_ceilingBackground;
+    }
     void modifBackgroundDisplayMode(BackgroundDisplayMode_e mode);
     void unckeckAll();
     ~BackgroundForm();

@@ -50,6 +50,20 @@ void SelectableLineLayout::confWallSelectWidget(GridEditor *parent)
 }
 
 //======================================================================
+void SelectableLineLayout::confPlayerDeparture(GridEditor *parent)
+{
+    QComboBox *combo = new QComboBox();
+    combo->addItem("NORTH");
+    combo->addItem("WEST");
+    combo->addItem("SOUTH");
+    combo->addItem("EAST");
+    addWidget(combo);
+    QObject::connect(combo, SIGNAL(currentIndexChanged(int)), parent, SLOT(memPlayerDirection(int)));
+    QObject::connect(m_radio, &QRadioButton::toggled, combo, &QComboBox::setEnabled);
+    combo->setEnabled(false);
+}
+
+//======================================================================
 void SelectableLineLayout::uncheckMoveableWall()
 {
     m_wallCheckBox->setCheckState(Qt::CheckState::Unchecked);

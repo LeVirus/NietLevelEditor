@@ -8,6 +8,10 @@
 using ArrayFloat_t = std::array<float, 5>;
 class QSettings;
 class TableModel;
+struct BackgroundData;
+
+using BackgroundPairData_t = QPair<const BackgroundData*, const BackgroundData*>;
+enum class Direction_e;
 
 struct DoorData
 {
@@ -67,8 +71,10 @@ public:
         return m_texturesPath;
     }
     std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
-    void generateLevel(const TableModel &tableModel);
+    void generateLevel(const TableModel &tableModel, const QString &musicFilename,
+                       const BackgroundPairData_t &backgroundData, Direction_e playerDirection);
 private:
+    void loadBackgroundData(const BackgroundPairData_t &backgroundData);
     void clear();
     inline bool spriteExists(const QString &sprite)const
     {

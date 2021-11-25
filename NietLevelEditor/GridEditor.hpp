@@ -6,6 +6,7 @@
 #include <QSet>
 #include <limits>
 #include "LevelDataManager.hpp"
+#include <MoveableWallForm.hpp>
 
 class TableModel;
 class QGroupBox;
@@ -15,8 +16,7 @@ class MoveableWallForm;
 class SelectableLineLayout;
 class BackgroundForm;
 struct MoveWallData;
-
-enum class Direction_e;
+class QComboBox;
 
 enum class LevelElement_e
 {
@@ -103,6 +103,7 @@ private slots:
     void setWallDrawModeSelected(int wallDrawMode);
     void setWallMoveableMode(int moveableMode);
     void loadTriggerDisplay(const QString &installDir);
+    void memPlayerDirection(int direction);
 private:
     Ui::GridEditor *ui;
     QPair<int, int> m_lastPositionAdded;
@@ -123,6 +124,8 @@ private:
     std::unique_ptr<MoveWallData> m_memcurrentMoveWallData;
     QSet<QPair<int, int>> m_memCurrentLinkTriggerWall;
     QPushButton *m_generateButton;
+    QComboBox *m_musicWidget;
+    Direction_e m_memPlayerDirection = Direction_e::NORTH;
 };
 
 Direction_e getDirEnumFromQString(const QString &str);

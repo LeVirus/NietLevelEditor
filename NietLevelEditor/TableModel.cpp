@@ -109,7 +109,6 @@ void TableModel::removeData(const QModelIndex &index)
     else if(caseData->m_type == LevelElement_e::EXIT)
     {
         m_exitPos.reset();
-
     }
     else if(caseData->m_type == LevelElement_e::WALL)
     {

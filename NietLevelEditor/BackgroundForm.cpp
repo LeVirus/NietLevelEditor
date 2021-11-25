@@ -104,6 +104,7 @@ void BackgroundForm::confirmForm()
     {
         currentBackground.m_tiledTexture = ui->spriteTiledTextureComboBox->currentText();
     }
+    close();
 }
 
 //======================================================================
