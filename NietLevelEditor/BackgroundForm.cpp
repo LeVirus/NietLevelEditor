@@ -159,11 +159,21 @@ void BackgroundForm::memColorCase(const QObject *widget)
 void BackgroundForm::unckeckAll()
 {
     m_displayMode = BackgroundDisplayMode_e::NONE;
+    ui->coloredRadioButton->setAutoExclusive(false);
     ui->coloredRadioButton->setChecked(false);
+    ui->coloredRadioButton->setAutoExclusive(true);
+    ui->simpleTextRadioButton->setAutoExclusive(false);
     ui->simpleTextRadioButton->setChecked(false);
+    ui->simpleTextRadioButton->setAutoExclusive(true);
+    ui->tiledTextRadioButton->setAutoExclusive(false);
     ui->tiledTextRadioButton->setChecked(false);
+    ui->tiledTextRadioButton->setAutoExclusive(true);
+    ui->simpleTextureAndTiledTextRadioButton->setAutoExclusive(false);
     ui->simpleTextureAndTiledTextRadioButton->setChecked(false);
+    ui->simpleTextureAndTiledTextRadioButton->setAutoExclusive(true);
+    ui->colorAndTiledTextRadioButton->setAutoExclusive(false);
     ui->colorAndTiledTextRadioButton->setChecked(false);
+    ui->colorAndTiledTextRadioButton->setAutoExclusive(true);
     ui->colorContainer->setEnabled(false);
     ui->spriteSimpleTextureComboBox->setEnabled(false);
     ui->spriteTiledTextureComboBox->setEnabled(false);
