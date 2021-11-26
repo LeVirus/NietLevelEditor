@@ -189,16 +189,6 @@ void LevelDataManager::generateWallIniLevel(const TableModel &tableModel)
             memWallData[key].m_removePosition += removePos;
         }
     }
-//    for(std::map<QString, WallDataINI>::const_iterator it = memWallData.begin(); it != memWallData.end(); ++it)
-//    {
-//        std::cerr << "key=============== " << it->first.toStdString() << "\n  gamepos " <<
-//                     it->second.m_position.toStdString() << " " << it->second.m_removePosition.toStdString() << " ";
-//        if(it->second.m_moveableData)
-//        {
-//            std::cerr << (*it->second.m_iniID).toStdString() << " " << (int)it->second.m_moveableData->m_triggerBehaviour;
-//        }
-//        std::cerr << "\n";
-//    }
 }
 
 //======================================================================

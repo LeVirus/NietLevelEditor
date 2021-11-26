@@ -202,11 +202,11 @@ int TableModel::memWallShape(WallDrawShape_e wallShape, const QPair<int, int> &t
 {
     if(memMoveData)
     {
-        m_memWallShape.push_back({wallShape, {topLeftIndex, bottomRightIndex, 0, {}, iniId, *memMoveData}});
+        m_memWallShape.push_back({wallShape, {topLeftIndex, bottomRightIndex, 0, {}, iniId, *memMoveData, false}});
     }
     else
     {
-        m_memWallShape.push_back({wallShape, {topLeftIndex, bottomRightIndex, 0, {}, iniId, {}}});
+        m_memWallShape.push_back({wallShape, {topLeftIndex, bottomRightIndex, 0, {}, iniId, {}, false}});
     }
     return m_memWallShape.size() - 1;
 }
@@ -387,6 +387,12 @@ void TableModel::setTableWallDiagCaseConf(QPair<int, int> originPoint, bool dire
 {
     m_memWallShape.back().second.m_gridCoordTopLeft = originPoint;
     m_memWallShape.back().second.m_diagCaseUp = directionUp;
+}
+
+//======================================================================
+void TableModel::setTableWallDiagRectCaseConf(QPair<int, int> originPoint)
+{
+    m_memWallShape.back().second.m_gridCoordTopLeft = originPoint;
 }
 
 //======================================================================

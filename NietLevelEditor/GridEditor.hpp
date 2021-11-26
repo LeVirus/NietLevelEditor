@@ -78,6 +78,7 @@ private:
     void loadExitsPictures(const QString &installDir);
     bool setWallShape(bool preview = false);
     void setWallDiagCaseConf();
+    void setWallDiagRectCaseConf();
     void setDeletionZone(bool preview = false);
     void memStdWallMove();
     uint32_t setWallLineRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, int shapeNum, bool preview = false);

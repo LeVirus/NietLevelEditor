@@ -602,6 +602,10 @@ bool GridEditor::setWallShape(bool preview)
         {
             setWallDiagCaseConf();
         }
+        else if(m_wallDrawMode == WallDrawShape_e::DIAGONAL_RECT)
+        {
+            setWallDiagRectCaseConf();
+        }
     }
     //quick fix
     updateGridView();
@@ -651,6 +655,30 @@ void GridEditor::setWallDiagCaseConf()
         }
     }
     m_tableModel->setTableWallDiagCaseConf({originX, originY}, directionUp);
+}
+
+//======================================================================
+void GridEditor::setWallDiagRectCaseConf()
+{
+    int size = m_tableModel->getLastWallCount() / 2;
+    QPair<int, int> originPoint;
+    if(m_firstCaseSelection.column() < m_secondCaseSelection.column())
+    {
+        originPoint.first = m_firstCaseSelection.column();
+    }
+    else
+    {
+        originPoint.first = m_firstCaseSelection.column() - size;
+    }
+    if(m_firstCaseSelection.row() < m_secondCaseSelection.row())
+    {
+        originPoint.second = m_firstCaseSelection.row();
+    }
+    else
+    {
+        originPoint.second = m_firstCaseSelection.row() - size;
+    }
+    m_tableModel->setTableWallDiagRectCaseConf(originPoint);
 }
 
 //======================================================================

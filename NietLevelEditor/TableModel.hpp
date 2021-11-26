@@ -98,9 +98,18 @@ public:
     void updateWallNumber(uint32_t num);
     void setTableDeletionZone(const QPair<int, int> &originSelectPos, const QPair<int, int> &targetSelectPos, bool preview);
     void setTableWallDiagCaseConf(QPair<int, int> originPoint, bool directionUp);
+    void setTableWallDiagRectCaseConf(QPair<int, int> originPoint);
     inline QPair<int, int> getTableSize()const
     {
         return m_tableSize;
+    }
+    inline int getLastWallCount()const
+    {
+        if(m_memWallShape.empty())
+        {
+            return -1;
+        }
+        return m_memWallShape.back().second.m_wallCount;
     }
     bool checkLevelData()const;
     inline const WallDataContainer_t &getWallData()const
