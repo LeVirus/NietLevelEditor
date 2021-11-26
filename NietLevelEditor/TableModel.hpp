@@ -23,6 +23,24 @@ struct MoveWallData
         m_memMoveWallData.clear();
         m_triggerPos = {};
     }
+    MoveWallData& operator=(const MoveWallData& other)
+    {
+        if (this == &other)
+        {
+            return *this;
+        }
+        m_memMoveWallCases = other.m_memMoveWallCases;
+        m_memMoveWallData = other.m_memMoveWallData;
+        m_velocity = other.m_velocity;
+        m_triggerType = other.m_triggerType;
+        m_triggerBehaviour = other.m_triggerBehaviour;
+        m_triggerType = other.m_triggerType;
+        if(other.m_triggerPos)
+        {
+            m_triggerPos = *other.m_triggerPos;
+        }
+        return *this;
+    }
 };
 
 struct CaseData
@@ -37,11 +55,13 @@ struct CaseData
 
 struct WallShapeData
 {
+    //!!!diag case top left respresent ORIGIN POINT!!!
     QPair<int, int> m_gridCoordTopLeft, m_gridCoordBottomRight;
     uint32_t m_wallCount = 0;
     QVector<QPair<int, int>> m_deletedWall;
     QString m_iniId;
     std::optional<MoveWallData> m_memMoveData;
+    bool m_diagCaseUp;
 };
 
 using WallDataContainer_t = QVector<QPair<WallDrawShape_e, WallShapeData>>;
@@ -77,6 +97,7 @@ public:
     void memTeleportElement(const QPair<int, int> &teleporterPos, const QPair<int, int> &targetPos, const QString &iniId);
     void updateWallNumber(uint32_t num);
     void setTableDeletionZone(const QPair<int, int> &originSelectPos, const QPair<int, int> &targetSelectPos, bool preview);
+    void setTableWallDiagCaseConf(QPair<int, int> originPoint, bool directionUp);
     inline QPair<int, int> getTableSize()const
     {
         return m_tableSize;

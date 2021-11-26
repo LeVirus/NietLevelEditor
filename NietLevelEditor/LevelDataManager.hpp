@@ -4,11 +4,13 @@
 #include <QStringList>
 #include <functional>
 #include <optional>
+#include <memory>
 
 using ArrayFloat_t = std::array<float, 5>;
 class QSettings;
 class TableModel;
 struct BackgroundData;
+struct MoveWallData;
 
 using BackgroundPairData_t = QPair<const BackgroundData*, const BackgroundData*>;
 enum class Direction_e;
@@ -18,6 +20,14 @@ struct DoorData
     QString m_sprite;
     bool m_vertical;
     std::optional<QString> m_cardID;
+};
+
+struct WallDataINI
+{
+    QString m_position, m_removePosition;
+    //Moveable data
+    std::optional<QString> m_iniID;
+    std::unique_ptr<MoveWallData> m_moveableData;
 };
 
 class LevelDataManager
@@ -74,6 +84,7 @@ public:
     void generateLevel(const TableModel &tableModel, const QString &musicFilename,
                        const BackgroundPairData_t &backgroundData, Direction_e playerDirection);
 private:
+    void generateWallIniLevel(const TableModel &tableModel);
     void loadBackgroundData(const BackgroundPairData_t &backgroundData);
     void clear();
     inline bool spriteExists(const QString &sprite)const

@@ -3,10 +3,10 @@
 #include <QFile>
 #include <QRegularExpression>
 #include <iostream>
-#include "TableModel.hpp"
 #include "BackgroundForm.hpp"
 #include <QFileDialog>
 #include <QMessageBox>
+#include "TableModel.hpp"
 
 //======================================================================
 LevelDataManager::LevelDataManager()
@@ -82,6 +82,123 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     m_INIFile->setValue("PlayerInit/playerDepartureX", tableModel.getPlayerDepartureData()->first);
     m_INIFile->setValue("PlayerInit/playerDepartureY", tableModel.getPlayerDepartureData()->second);
     m_INIFile->setValue("PlayerInit/PlayerOrientation", static_cast<int>(playerDirection));
+    //Wall
+    generateWallIniLevel(tableModel);
+}
+
+//======================================================================
+void LevelDataManager::generateWallIniLevel(const TableModel &tableModel)
+{
+    QString key, gamePos, removePos;
+    std::map<QString, WallDataINI> memWallData;
+    const WallDataContainer_t &wallData = tableModel.getWallData();
+    uint32_t cmpt = 0;
+    for(int i = 0; i < wallData.size(); ++i)
+    {
+        removePos = "";
+        gamePos = "";
+        if(wallData[i].second.m_memMoveData)
+        {
+            key = "MoveableWall" + QString::number(cmpt);
+            ++cmpt;
+        }
+        else
+        {
+            key = wallData[i].second.m_iniId;
+        }
+        int sizeX, sizeY;
+        if(wallData[i].second.m_wallCount == 0)
+        {
+            continue;
+        }
+        if(wallData[i].second.m_wallCount == 1 && wallData[i].second.m_gridCoordTopLeft == wallData[i].second.m_gridCoordBottomRight)
+        {
+            gamePos += "3 " + QString::number(wallData[i].second.m_gridCoordTopLeft.first) + " " +
+                    QString::number(wallData[i].second.m_gridCoordTopLeft.second) + "  ";
+            continue;
+        }
+        switch(wallData[i].first)
+        {
+        case WallDrawShape_e::DIAGONAL_LINE:
+        {
+            sizeY = wallData[i].second.m_wallCount;
+            sizeX = sizeY;
+            gamePos = wallData[i].second.m_diagCaseUp ? "6 ": "5 ";
+            gamePos += QString::number(wallData[i].second.m_gridCoordTopLeft.first) + " " +
+                    QString::number(wallData[i].second.m_gridCoordTopLeft.second) + " ";
+            gamePos += QString::number(sizeX) + "  ";
+            break;
+        }
+        case WallDrawShape_e::DIAGONAL_RECT:
+        {
+            sizeY = wallData[i].second.m_wallCount / 2 + 1;
+            sizeX = sizeY;
+            gamePos += "4 " + QString::number(wallData[i].second.m_gridCoordTopLeft.first) + " " +
+                    QString::number(wallData[i].second.m_gridCoordTopLeft.second) +
+                    " " + QString::number(sizeX) + " " + QString::number(sizeY) + "  ";
+            break;
+        }
+        case WallDrawShape_e::LINE_AND_RECT:
+        {
+            sizeX = std::abs(wallData[i].second.m_gridCoordTopLeft.first - wallData[i].second.m_gridCoordBottomRight.first) + 1,
+            sizeY = std::abs(wallData[i].second.m_gridCoordTopLeft.second - wallData[i].second.m_gridCoordBottomRight.second) + 1;
+            //VERTICAL LINE
+            if(sizeX == 1)
+            {
+                gamePos += "1 " + QString::number(wallData[i].second.m_gridCoordTopLeft.first) + " " +
+                        QString::number(wallData[i].second.m_gridCoordTopLeft.second) + " " + QString::number(sizeY) + "  ";
+            }
+            //LATERAL LINE
+            else if(sizeY == 1)
+            {
+                gamePos += "2 " + QString::number(wallData[i].second.m_gridCoordTopLeft.first) + " " +
+                        QString::number(wallData[i].second.m_gridCoordTopLeft.second) + " " + QString::number(sizeX) + "  ";
+            }
+            //RECT
+            else
+            {
+                gamePos += "0 " + QString::number(wallData[i].second.m_gridCoordTopLeft.first) + " " +
+                        QString::number(wallData[i].second.m_gridCoordTopLeft.second) +
+                        " " + QString::number(sizeX) + " " + QString::number(sizeY) + "  ";
+            }
+            break;
+        }
+        }
+        for(int32_t j = 0; j < wallData[i].second.m_deletedWall.size(); ++j)
+        {
+            removePos += QString::number(wallData[i].second.m_deletedWall[j].first) + " " +
+                    QString::number(wallData[i].second.m_deletedWall[j].second) + " " + QString::number(3) + "  ";
+        }
+        std::map<QString, WallDataINI>::iterator it = memWallData.find(key);
+        if(it == memWallData.end())
+        {
+            if(wallData[i].second.m_memMoveData)
+            {
+                memWallData.insert({key, WallDataINI{gamePos, removePos, wallData[i].second.m_iniId,
+                                          std::make_unique<MoveWallData>()}});
+                *memWallData[key].m_moveableData = *wallData[i].second.m_memMoveData;
+            }
+            else
+            {
+                memWallData.insert({key, WallDataINI{gamePos, removePos, {}, {}}});
+            }
+        }
+        else
+        {
+            memWallData[key].m_position += gamePos;
+            memWallData[key].m_removePosition += removePos;
+        }
+    }
+//    for(std::map<QString, WallDataINI>::const_iterator it = memWallData.begin(); it != memWallData.end(); ++it)
+//    {
+//        std::cerr << "key=============== " << it->first.toStdString() << "\n  gamepos " <<
+//                     it->second.m_position.toStdString() << " " << it->second.m_removePosition.toStdString() << " ";
+//        if(it->second.m_moveableData)
+//        {
+//            std::cerr << (*it->second.m_iniID).toStdString() << " " << (int)it->second.m_moveableData->m_triggerBehaviour;
+//        }
+//        std::cerr << "\n";
+//    }
 }
 
 //======================================================================

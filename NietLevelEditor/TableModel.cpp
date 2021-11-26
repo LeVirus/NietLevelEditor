@@ -383,6 +383,13 @@ void TableModel::setTableDeletionZone(const QPair<int, int> &originSelectPos, co
 }
 
 //======================================================================
+void TableModel::setTableWallDiagCaseConf(QPair<int, int> originPoint, bool directionUp)
+{
+    m_memWallShape.back().second.m_gridCoordTopLeft = originPoint;
+    m_memWallShape.back().second.m_diagCaseUp = directionUp;
+}
+
+//======================================================================
 bool TableModel::checkLevelData()const
 {
     if(!m_exitPos || !m_departurePlayer)

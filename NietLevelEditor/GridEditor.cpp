@@ -11,6 +11,7 @@
 #include <QPushButton>
 #include <iostream>
 #include <QDir>
+#include <algorithm>
 #include "TableModel.hpp"
 #include "SelectableLineLayout.hpp"
 #include "EventFilter.hpp"
@@ -597,10 +598,59 @@ bool GridEditor::setWallShape(bool preview)
     if(!preview)
     {
         m_tableModel->updateWallNumber(wallNumber);
+        if(m_wallDrawMode == WallDrawShape_e::DIAGONAL_LINE)
+        {
+            setWallDiagCaseConf();
+        }
     }
     //quick fix
     updateGridView();
     return ret;
+}
+
+//======================================================================
+void GridEditor::setWallDiagCaseConf()
+{
+    int totalX = std::abs(m_firstCaseSelection.column() - m_secondCaseSelection.column()),
+            totalY = std::abs(m_firstCaseSelection.row() - m_secondCaseSelection.row());
+    int size = std::min(totalX, totalY);
+    int originX, originY;
+    bool directionUp;
+    if(m_firstCaseSelection.column() < m_secondCaseSelection.column())
+    {
+        originX = m_firstCaseSelection.column();
+        originY = m_firstCaseSelection.row();
+        //reverse Y axe
+        directionUp = m_firstCaseSelection.row() > m_secondCaseSelection.row();
+    }
+    else
+    {
+        directionUp = m_firstCaseSelection.row() < m_secondCaseSelection.row();
+        if(totalX == size)
+        {
+            originX = m_secondCaseSelection.column();
+        }
+        else
+        {
+            originX = m_firstCaseSelection.column() - size;
+        }
+        if(totalY == size)
+        {
+            originY = m_secondCaseSelection.row();
+        }
+        else
+        {
+            if(m_firstCaseSelection.row() < m_secondCaseSelection.row())
+            {
+                originY = m_firstCaseSelection.row() + size;
+            }
+            else
+            {
+                originY = m_firstCaseSelection.row() - size;
+            }
+        }
+    }
+    m_tableModel->setTableWallDiagCaseConf({originX, originY}, directionUp);
 }
 
 //======================================================================
