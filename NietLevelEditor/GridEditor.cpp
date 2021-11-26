@@ -81,13 +81,13 @@ void GridEditor::connectSlots()
 }
 
 //======================================================================
-void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode)
+void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bool diagRectCase)
 {
     QModelIndex index = m_tableModel->index(y, x, QModelIndex());
     std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
     if(caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER)
     {
-        m_tableModel->removeData(index);
+        m_tableModel->removeData(index, diagRectCase);
     }
     if(deleteMode)
     {
@@ -856,8 +856,8 @@ bool GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
         }
         else
         {
-            setCaseIcon(i, currentYA, shapeNum);
-            setCaseIcon(i, currentYB, shapeNum);
+            setCaseIcon(i, currentYA, shapeNum, false, true);
+            setCaseIcon(i, currentYB, shapeNum, false, true);
             wallNumber += 2;
         }
     }
@@ -873,8 +873,8 @@ bool GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
         }
         else
         {
-            setCaseIcon(i, currentYA, shapeNum);
-            setCaseIcon(i, currentYB, shapeNum);
+            setCaseIcon(i, currentYA, shapeNum, false, true);
+            setCaseIcon(i, currentYB, shapeNum, false, true);
             wallNumber += 2;
         }
     }

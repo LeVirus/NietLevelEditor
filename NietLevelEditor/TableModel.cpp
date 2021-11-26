@@ -89,7 +89,7 @@ bool TableModel::setIdData(const QModelIndex &index, const CaseData &value)
 }
 
 //======================================================================
-void TableModel::removeData(const QModelIndex &index)
+void TableModel::removeData(const QModelIndex &index, bool diagRectCase)
 {
     if (!checkIndex(index))
     {
@@ -113,8 +113,12 @@ void TableModel::removeData(const QModelIndex &index)
     else if(caseData->m_type == LevelElement_e::WALL)
     {
         assert(caseData->m_wallShapeNum);
+        if(!diagRectCase)
+        {
+            std::cerr << "CONNARD ";
+            m_memWallShape[*caseData->m_wallShapeNum].second.m_deletedWall.push_back({index.column(), index.row()});
+        }
         --m_memWallShape[*caseData->m_wallShapeNum].second.m_wallCount;
-        m_memWallShape[*caseData->m_wallShapeNum].second.m_deletedWall.push_back({index.column(), index.row()});
         if(caseData->m_moveWallData->m_triggerPos)
         {
             QModelIndex triggerIndex = this->index(caseData->m_moveWallData->m_triggerPos->second,
