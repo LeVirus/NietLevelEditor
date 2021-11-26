@@ -115,7 +115,6 @@ void TableModel::removeData(const QModelIndex &index, bool diagRectCase)
         assert(caseData->m_wallShapeNum);
         if(!diagRectCase)
         {
-            std::cerr << "CONNARD ";
             m_memWallShape[*caseData->m_wallShapeNum].second.m_deletedWall.push_back({index.column(), index.row()});
         }
         --m_memWallShape[*caseData->m_wallShapeNum].second.m_wallCount;

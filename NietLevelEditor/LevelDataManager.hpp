@@ -90,6 +90,7 @@ private:
     void generateWallIniLevel(const TableModel &tableModel);
     void writeWallData(const std::map<QString, WallDataINI> &wallData);
     QString getCurrentWallRemovedINI(int index, const WallDataContainer_t &wallData)const;
+    QString getIniWallPos(int index, const WallDataContainer_t &wallData) const;
     void loadBackgroundData(const BackgroundPairData_t &backgroundData);
     void clear();
     inline bool spriteExists(const QString &sprite)const
