@@ -114,6 +114,7 @@ void TableModel::removeData(const QModelIndex &index)
     {
         assert(caseData->m_wallShapeNum);
         --m_memWallShape[*caseData->m_wallShapeNum].second.m_wallCount;
+        m_memWallShape[*caseData->m_wallShapeNum].second.m_deletedWall.push_back({index.column(), index.row()});
         if(caseData->m_moveWallData->m_triggerPos)
         {
             QModelIndex triggerIndex = this->index(caseData->m_moveWallData->m_triggerPos->second,

@@ -95,7 +95,7 @@ void LevelDataManager::generateWallIniLevel(const TableModel &tableModel)
     uint32_t cmpt = 0;
     for(int i = 0; i < wallData.size(); ++i)
     {
-        removePos = "";
+        removePos = getCurrentWallRemovedINI(i, wallData);
         gamePos = "";
         if(wallData[i].second.m_memMoveData)
         {
@@ -164,11 +164,6 @@ void LevelDataManager::generateWallIniLevel(const TableModel &tableModel)
             break;
         }
         }
-        for(int32_t j = 0; j < wallData[i].second.m_deletedWall.size(); ++j)
-        {
-            removePos += QString::number(wallData[i].second.m_deletedWall[j].first) + " " +
-                    QString::number(wallData[i].second.m_deletedWall[j].second) + " " + QString::number(3) + "  ";
-        }
         std::map<QString, WallDataINI>::iterator it = memWallData.find(key);
         if(it == memWallData.end())
         {
@@ -189,6 +184,32 @@ void LevelDataManager::generateWallIniLevel(const TableModel &tableModel)
             memWallData[key].m_removePosition += removePos;
         }
     }
+    writeWallData(memWallData);
+}
+
+//======================================================================
+void LevelDataManager::writeWallData(const std::map<QString, WallDataINI> &wallData)
+{
+    for(std::map<QString, WallDataINI>::const_iterator it = wallData.begin(); it != wallData.end(); ++it)
+    {
+        m_INIFile->setValue(it->first + "/GamePosition", it->second.m_position);
+        if(!it->second.m_removePosition.isEmpty())
+        {
+            m_INIFile->setValue(it->first + "/RemovePosition", it->second.m_removePosition);
+        }
+    }
+}
+
+//======================================================================
+QString LevelDataManager::getCurrentWallRemovedINI(int index, const WallDataContainer_t &wallData)const
+{
+    QString str;
+    for(int i = 0; i < wallData[index].second.m_deletedWall.size(); ++i)
+    {
+        str += "3 " + QString::number(wallData[index].second.m_deletedWall[i].first) + " " +
+                QString::number(wallData[index].second.m_deletedWall[i].second) + "  ";
+    }
+    return str;
 }
 
 //======================================================================

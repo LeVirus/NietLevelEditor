@@ -11,7 +11,10 @@ class QSettings;
 class TableModel;
 struct BackgroundData;
 struct MoveWallData;
+struct WallShapeData;
+enum class WallDrawShape_e;
 
+using WallDataContainer_t = QVector<QPair<WallDrawShape_e, WallShapeData>>;
 using BackgroundPairData_t = QPair<const BackgroundData*, const BackgroundData*>;
 enum class Direction_e;
 
@@ -85,6 +88,8 @@ public:
                        const BackgroundPairData_t &backgroundData, Direction_e playerDirection);
 private:
     void generateWallIniLevel(const TableModel &tableModel);
+    void writeWallData(const std::map<QString, WallDataINI> &wallData);
+    QString getCurrentWallRemovedINI(int index, const WallDataContainer_t &wallData)const;
     void loadBackgroundData(const BackgroundPairData_t &backgroundData);
     void clear();
     inline bool spriteExists(const QString &sprite)const
