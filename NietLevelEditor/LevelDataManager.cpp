@@ -64,6 +64,11 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     QFileDialog dialog;
     QString selfilter = "INI (*.ini)", filename;
     filename = dialog.getSaveFileName(nullptr, "Level file selection", m_installDirectory + "/Ressources/", "INI (*.ini)", &selfilter);
+    QFile file(filename);
+    if(file.exists())
+    {
+        file.remove();
+    }
     if(m_INIFile)
     {
         delete m_INIFile;
