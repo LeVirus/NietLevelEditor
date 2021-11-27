@@ -45,9 +45,15 @@ enum class WallDrawShape_e
     DIAGONAL_RECT
 };
 
+struct DisplayData
+{
+    QString m_elementSectionName, m_spriteName;
+    QIcon m_icon;
+};
+
 inline const float EPSILON_FLOAT = std::numeric_limits<float>::epsilon();
 
-using IconArray_t = std::array<QVector<QPair<QString, QIcon>>, static_cast<uint32_t>(LevelElement_e::TOTAL)>;
+using IconArray_t = std::array<QVector<DisplayData>, static_cast<uint32_t>(LevelElement_e::TOTAL)>;
 
 namespace Ui {
 class GridEditor;

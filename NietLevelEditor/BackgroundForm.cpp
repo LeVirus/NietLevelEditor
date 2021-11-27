@@ -186,10 +186,10 @@ void BackgroundForm::confWidgets()
     {
         for(int32_t j = 0; j < m_arrayIcons[i].size(); ++j)
         {
-            if(!m_arrayIcons[i][j].first.isEmpty())
+            if(!m_arrayIcons[i][j].m_elementSectionName.isEmpty())
             {
-                ui->spriteSimpleTextureComboBox->addItem(m_arrayIcons[i][j].second, m_arrayIcons[i][j].first);
-                ui->spriteTiledTextureComboBox->addItem(m_arrayIcons[i][j].second, m_arrayIcons[i][j].first);
+                ui->spriteSimpleTextureComboBox->addItem(m_arrayIcons[i][j].m_icon, m_arrayIcons[i][j].m_spriteName);
+                ui->spriteTiledTextureComboBox->addItem(m_arrayIcons[i][j].m_icon, m_arrayIcons[i][j].m_spriteName);
             }
         }
     }

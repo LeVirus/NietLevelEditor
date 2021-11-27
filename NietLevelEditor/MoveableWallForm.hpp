@@ -7,6 +7,7 @@ class QVBoxLayout;
 class LevelDataManager;
 class LineWallMove;
 struct CaseData;
+struct DisplayData;
 
 namespace Ui {
 class MoveableWallForm;
@@ -58,7 +59,7 @@ public:
     }
     int getCurrentTriggerAppearence();
     void setData(const CaseData &data);
-    void setTriggerIcons(const QVector<QPair<QString, QIcon> > &vectIcon);
+    void setTriggerIcons(const QVector<DisplayData> &vectIcon);
     void init();
     const QObjectList &getWallMove()const;
     ~MoveableWallForm();

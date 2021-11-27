@@ -82,6 +82,9 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     m_INIFile->setValue("PlayerInit/playerDepartureX", tableModel.getPlayerDepartureData()->first);
     m_INIFile->setValue("PlayerInit/playerDepartureY", tableModel.getPlayerDepartureData()->second);
     m_INIFile->setValue("PlayerInit/PlayerOrientation", static_cast<int>(playerDirection));
+    //Exit
+    m_INIFile->setValue("Exit/GamePosition", QString::number(tableModel.getExitData().begin()->second.first) + " " +
+                        QString::number(tableModel.getExitData().begin()->second.second));
     //Wall
     generateWallIniLevel(tableModel);
 }

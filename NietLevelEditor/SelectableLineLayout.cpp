@@ -24,11 +24,11 @@ SelectableLineLayout::SelectableLineLayout(const QString &radioBoxTxt,
 }
 
 //======================================================================
-void SelectableLineLayout::setIcons(const QVector<QPair<QString, QIcon>> &vectIcons)
+void SelectableLineLayout::setIcons(const QVector<DisplayData> &vectIcons)
 {
     for(int32_t i = 0; i < vectIcons.size(); ++i)
     {
-        m_comboBox->addItem(vectIcons[i].second, "");
+        m_comboBox->addItem(vectIcons[i].m_icon, "");
     }
 }
 
