@@ -247,15 +247,15 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
         m_INIFile->setValue("ColorGroundBackground/colorB", colorB);
     }
     //SIMPLE TEXTURE
-    else if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
+    if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
     {
         m_INIFile->setValue("SimpleTextureGroundBackground/sprite", backgroundData.first->m_simpleTexture);
     }
     //TILED TEXTURE
-    else if(mode == BackgroundDisplayMode_e::TILED_TEXTURE || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE ||
+    if(mode == BackgroundDisplayMode_e::TILED_TEXTURE || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE ||
             mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
     {
-        m_INIFile->setValue("TiledTextureGroundBackground/sprite", backgroundData.first->m_simpleTexture);
+        m_INIFile->setValue("TiledTextureGroundBackground/sprite", backgroundData.first->m_tiledTexture);
     }
 
     //CEILING====
@@ -277,15 +277,15 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
         m_INIFile->setValue("ColorCeilingBackground/colorB", colorB);
     }
     //SIMPLE TEXTURE
-    else if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
+    if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
     {
         m_INIFile->setValue("SimpleTextureCeilingBackground/sprite", backgroundData.second->m_simpleTexture);
     }
     //TILED TEXTURE
-    else if(mode == BackgroundDisplayMode_e::TILED_TEXTURE || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE ||
+    if(mode == BackgroundDisplayMode_e::TILED_TEXTURE || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE ||
             mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
     {
-        m_INIFile->setValue("TiledTextureCeilingBackground/sprite", backgroundData.second->m_simpleTexture);
+        m_INIFile->setValue("TiledTextureCeilingBackground/sprite", backgroundData.second->m_tiledTexture);
     }
 }
 

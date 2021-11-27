@@ -347,7 +347,6 @@ void GridEditor::loadWallsPictures(const QString &installDir)
         {
             spriteData = m_levelDataManager.getPictureData(it->second[0]);
             assert(spriteData);
-            std::cerr << it->first.toStdString() << " AAAD\n";
             m_drawData[currentIndex].push_back({it->first, it->second[0], getSprite(*spriteData, m_levelDataManager, installDir)});
         }
         else
