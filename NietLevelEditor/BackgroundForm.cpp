@@ -110,7 +110,6 @@ void BackgroundForm::confirmForm()
     {
         currentBackground.m_tiledTexture = ui->spriteTiledTextureComboBox->currentText();
     }
-    close();
     if(m_ceilingMode)
     {
         m_ceilingSet = true;
@@ -119,6 +118,7 @@ void BackgroundForm::confirmForm()
     {
         m_groundSet = true;
     }
+    close();
 }
 
 //======================================================================

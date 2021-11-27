@@ -48,7 +48,7 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     }
     if(!m_backgroundForm)
     {
-        m_backgroundForm = new BackgroundForm(m_drawData, this);
+        m_backgroundForm = new BackgroundForm(m_drawData);
     }
     initSelectableWidgets();
     initMusicDir(installDir);
@@ -1177,6 +1177,10 @@ void GridEditor::setStdTableSize()
 GridEditor::~GridEditor()
 {
     delete ui;
+    if(m_backgroundForm)
+    {
+        delete m_backgroundForm;
+    }
 }
 
 //======================================================================
