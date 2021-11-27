@@ -9,6 +9,7 @@
 #include <QComboBox>
 #include <QMenuBar>
 #include <QPushButton>
+#include <QMessageBox>
 #include <iostream>
 #include <QDir>
 #include <algorithm>
@@ -1081,6 +1082,11 @@ void GridEditor::execConfGroundBackground()
 //======================================================================
 void GridEditor::generateLevel()
 {
+    if(!m_backgroundForm->backgroundSetted())
+    {
+        QMessageBox::warning(nullptr, "Error", "Ground OR/AND Ceiling background are not been setted.");
+        return;
+    }
     m_levelDataManager.generateLevel(*m_tableModel, m_musicWidget->currentText(),
                                      {&m_backgroundForm->getGroundData(), &m_backgroundForm->getCeilingData()}, m_memPlayerDirection);
 }

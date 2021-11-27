@@ -44,6 +44,7 @@ public:
     }
     void modifBackgroundDisplayMode(BackgroundDisplayMode_e mode);
     void unckeckAll();
+    bool backgroundSetted();
     ~BackgroundForm();
 private slots:
     void modifDisplayModeColor(bool toggled);
@@ -62,4 +63,5 @@ private:
     bool m_ceilingMode;
     BackgroundDisplayMode_e m_displayMode;
     BackgroundData m_groundBackground, m_ceilingBackground;
+    bool m_ceilingSet = false, m_groundSet = false;
 };

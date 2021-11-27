@@ -1,6 +1,7 @@
 #include "BackgroundForm.hpp"
 #include "ui_BackgroundForm.h"
 #include <QRadioButton>
+#include <QMessageBox>
 #include <iostream>
 
 //======================================================================
@@ -79,6 +80,11 @@ void BackgroundForm::modifDisplayModeSimpleTextureAndTiledTexture(bool toggled)
 //======================================================================
 void BackgroundForm::confirmForm()
 {
+    if(!ui->colorContainer->isEnabled() && !ui->spriteSimpleTextureComboBox->isEnabled() && !ui->spriteTiledTextureComboBox->isEnabled())
+    {
+        QMessageBox::warning(nullptr, "Error", "No background mode are selected.");
+        return;
+    }
     BackgroundData &currentBackground = (m_ceilingMode) ? m_ceilingBackground : m_groundBackground;
     currentBackground.m_displayMode = m_displayMode;
     if(ui->colorContainer->isEnabled())
@@ -105,6 +111,14 @@ void BackgroundForm::confirmForm()
         currentBackground.m_tiledTexture = ui->spriteTiledTextureComboBox->currentText();
     }
     close();
+    if(m_ceilingMode)
+    {
+        m_ceilingSet = true;
+    }
+    else
+    {
+        m_groundSet = true;
+    }
 }
 
 //======================================================================
@@ -177,6 +191,12 @@ void BackgroundForm::unckeckAll()
     ui->colorContainer->setEnabled(false);
     ui->spriteSimpleTextureComboBox->setEnabled(false);
     ui->spriteTiledTextureComboBox->setEnabled(false);
+}
+
+//======================================================================
+bool BackgroundForm::backgroundSetted()
+{
+    return m_groundSet && m_ceilingSet;
 }
 
 //======================================================================
