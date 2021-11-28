@@ -167,11 +167,10 @@ QString LevelDataManager::getIniWallPos(int index, const WallDataContainer_t &wa
         }
         case WallDrawShape_e::DIAGONAL_RECT:
         {
-            sizeY = wallData[index].second.m_wallCount / 2 + 1;
-            sizeX = sizeY;
+            sizeX = wallData[index].second.m_wallCount / 2 + 1;
             gamePos += "4 " + QString::number(wallData[index].second.m_gridCoordTopLeft.first) + " " +
                     QString::number(wallData[index].second.m_gridCoordTopLeft.second) +
-                    " " + QString::number(sizeX) + " " + QString::number(sizeY) + "  ";
+                    " " + QString::number(sizeX) + "  ";
             break;
         }
         case WallDrawShape_e::LINE_AND_RECT:
