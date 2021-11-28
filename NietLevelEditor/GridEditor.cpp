@@ -998,7 +998,8 @@ void GridEditor::treatWallDrawing()
                 m_currentSelection = m_moveableWallForm->getCurrentTriggerAppearence();
                 m_wallMoveableMode = false;
             }
-            else if(m_moveableWallForm->getTriggerType() == TriggerType_e::GROUND)
+            else if(m_moveableWallForm->getTriggerType() == TriggerType_e::GROUND &&
+                    m_moveableWallForm->getTriggerBehaviour() != TriggerBehaviourType_e::AUTO)
             {
                 m_currentElementType = LevelElement_e::GROUND_TRIGGER;
                 setLineSelectableEnabled(false);
