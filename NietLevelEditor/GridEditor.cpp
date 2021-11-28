@@ -48,7 +48,7 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     }
     if(!m_backgroundForm)
     {
-        m_backgroundForm = new BackgroundForm(m_drawData);
+        loadSpritesForBackgroundForm();
     }
     initSelectableWidgets();
     initMusicDir(installDir);
@@ -306,6 +306,13 @@ void GridEditor::loadIconPictures(const QString &installDir)
 }
 
 //======================================================================
+void GridEditor::loadSpritesForBackgroundForm()
+{
+    const std::map<QString, ArrayFloat_t> &picData = m_levelDataManager.getSpriteData();
+    m_backgroundForm = new BackgroundForm(picData);
+}
+
+//======================================================================
 void GridEditor::loadTriggerDisplay(const QString &installDir)
 {
     const std::map<QString, QString> &triggersMap = m_levelDataManager.getTriggerData();
@@ -429,7 +436,7 @@ void GridEditor::loadTeleportsPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::TELEPORT].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second[0], getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -447,7 +454,7 @@ void GridEditor::loadEnemiesPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::ENEMY].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second[0], getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -465,7 +472,7 @@ void GridEditor::loadObjectsPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::OBJECT].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second[0], getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -483,7 +490,7 @@ void GridEditor::loadStaticCeilingElementPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::STATIC_CEILING].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second[0], getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -501,7 +508,7 @@ void GridEditor::loadStaticGroundElementPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::STATIC_GROUND].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second[0], getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -519,7 +526,7 @@ void GridEditor::loadBarrelsPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::BARREL].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second[0], getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -537,7 +544,7 @@ void GridEditor::loadExitsPictures(const QString &installDir)
         m_mapElementID[LevelElement_e::EXIT].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second[0], getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 

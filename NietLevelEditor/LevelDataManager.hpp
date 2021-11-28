@@ -83,6 +83,10 @@ public:
     {
         return m_texturesPath;
     }
+    inline const std::map<QString, ArrayFloat_t> &getSpriteData()const
+    {
+        return m_memPictureElement;
+    }
     std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
     void generateLevel(const TableModel &tableModel, const QString &musicFilename,
                        const BackgroundPairData_t &backgroundData, Direction_e playerDirection);

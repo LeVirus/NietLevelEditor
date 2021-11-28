@@ -73,6 +73,7 @@ private:
     void initButtons();
     void initMusicDir(const QString &installDir);
     void loadIconPictures(const QString &installDir);
+    void loadSpritesForBackgroundForm();
     void loadWallsPictures(const QString &installDir);
     void loadDoorsPictures(const QString &installDir);
     void loadTeleportsPictures(const QString &installDir);
