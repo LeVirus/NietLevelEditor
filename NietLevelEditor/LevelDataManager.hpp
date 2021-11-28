@@ -92,6 +92,7 @@ public:
                        const BackgroundPairData_t &backgroundData, Direction_e playerDirection);
 private:
     void generateWallIniLevel(const TableModel &tableModel);
+    void generateDoorIniLevel(const TableModel &tableModel);
     void writeWallData(const std::map<QString, WallDataINI> &wallData);
     QString getCurrentWallRemovedINI(int index, const WallDataContainer_t &wallData)const;
     QString getIniWallPos(int index, const WallDataContainer_t &wallData) const;

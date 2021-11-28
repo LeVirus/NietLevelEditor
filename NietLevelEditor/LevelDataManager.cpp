@@ -92,6 +92,14 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
                         QString::number(tableModel.getExitData().begin()->second.second));
     //Wall
     generateWallIniLevel(tableModel);
+    //DOOR
+    generateDoorIniLevel(tableModel);
+    //TELEPORT
+    //ENEMIES
+    //OBJECTS
+    //STATIC CEILING
+    //STATIC GROUND
+    //BARRELS
 }
 
 //======================================================================
@@ -139,6 +147,32 @@ void LevelDataManager::generateWallIniLevel(const TableModel &tableModel)
         }
     }
     writeWallData(memWallData);
+}
+
+//======================================================================
+void LevelDataManager::generateDoorIniLevel(const TableModel &tableModel)
+{
+    const std::multimap<QString, QPair<int, int>> doorData = tableModel.getDoorsData();
+    std::map<QString, QString> mapINI;
+    std::map<QString, QString>::iterator itt;
+    QString str;
+    for(std::multimap<QString, QPair<int, int>>::const_iterator it = doorData.begin(); it != doorData.end(); ++it)
+    {
+        str = QString::number(it->second.first) + " " + QString::number(it->second.second) + " ";
+        itt = mapINI.find(it->first);
+        if(itt == mapINI.end())
+        {
+            mapINI.insert({it->first, str});
+        }
+        else
+        {
+            mapINI[it->first] += str;
+        }
+    }
+    for(std::map<QString, QString>::const_iterator it = mapINI.begin(); it != mapINI.end(); ++it)
+    {
+        m_INIFile->setValue(it->first + "/GamePosition", it->second);
+    }
 }
 
 //======================================================================
