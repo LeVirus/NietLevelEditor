@@ -44,7 +44,7 @@ void MoveableWallForm::setTriggerIcons(const QVector<DisplayData> &vectIcon)
 {
     for(int i = 0; i < vectIcon.size(); ++i)
     {
-        ui->comboBoxTriggerAppearence->addItem(vectIcon[i].m_elementSectionName, "");
+        ui->comboBoxTriggerAppearence->addItem(vectIcon[i].m_icon, vectIcon[i].m_elementSectionName);
     }
 }
 
@@ -59,6 +59,12 @@ void MoveableWallForm::init()
 const QObjectList &MoveableWallForm::getWallMove()const
 {
     return m_scrollLayout->children();
+}
+
+//======================================================================
+QString MoveableWallForm::getCurrentTriggerINISection()const
+{
+    return ui->comboBoxTriggerAppearence->currentText();
 }
 
 //======================================================================

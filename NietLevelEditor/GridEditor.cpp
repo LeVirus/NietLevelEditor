@@ -319,7 +319,7 @@ void GridEditor::loadTriggerDisplay(const QString &installDir)
         m_mapElementID[LevelElement_e::TRIGGER].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
-        m_drawData[currentIndex].push_back({it->second, it->second[0], getSprite(*spriteData, m_levelDataManager, installDir)});
+        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 
@@ -568,7 +568,8 @@ bool GridEditor::setWallShape(bool preview)
     {
         int index = static_cast<int>(m_currentElementType);
         const MoveWallData *memMoveData = m_wallMoveableMode ? &(*m_memcurrentMoveWallData) : nullptr;
-        shapeNum = m_tableModel->memWallShape(m_wallDrawMode, topLeftPos, bottomRight, m_drawData[index][m_currentSelection].m_elementSectionName, memMoveData);
+        shapeNum = m_tableModel->memWallShape(m_wallDrawMode, topLeftPos, bottomRight,
+                                              m_drawData[index][m_currentSelection].m_elementSectionName, memMoveData);
         if(topLeftPos == bottomRight)
         {
             setCaseIcon(minX, minY, shapeNum);
@@ -707,6 +708,7 @@ void GridEditor::memStdWallMove()
     m_memcurrentMoveWallData->m_velocity = m_moveableWallForm->getVelocity();
     m_memcurrentMoveWallData->m_triggerType = m_moveableWallForm->getTriggerType();
     m_memcurrentMoveWallData->m_triggerBehaviour = m_moveableWallForm->getTriggerBehaviour();
+    m_memcurrentMoveWallData->m_triggerINISectionName = m_moveableWallForm->getCurrentTriggerINISection();
     QString currentMove;
     QStringList subStr;
     Direction_e currentDir;
@@ -1105,6 +1107,7 @@ void GridEditor::confNewTriggerData(const QModelIndex &caseIndex)
     setElementSelected(LevelElement_e::WALL, *index);
     setLineSelectableEnabled(true);
     QModelIndex wallIndex;
+    m_tableModel->updateTriggerPos({caseIndex.column(), caseIndex.row()});
     //mem trigger pos for wall
     for(QSet<QPair<int, int>>::iterator it = m_memCurrentLinkTriggerWall.begin(); it != m_memCurrentLinkTriggerWall.end(); ++it)
     {

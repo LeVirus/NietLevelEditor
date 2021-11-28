@@ -361,6 +361,13 @@ void TableModel::updateWallNumber(uint32_t num)
 }
 
 //======================================================================
+void TableModel::updateTriggerPos(const QPair<int, int> &pos)
+{
+    assert(!m_memWallShape.empty());
+    m_memWallShape.back().second.m_memMoveData->m_triggerPos = pos;
+}
+
+//======================================================================
 void TableModel::setTableDeletionZone(const QPair<int, int> &originSelectPos, const QPair<int, int> &targetSelectPos, bool preview)
 {
     int minX = std::min(originSelectPos.first, targetSelectPos.first),

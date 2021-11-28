@@ -124,7 +124,7 @@ void LevelDataManager::generateWallIniLevel(const TableModel &tableModel)
             if(wallData[i].second.m_memMoveData)
             {
                 memWallData.insert({key, WallDataINI{gamePos, removePos, wallData[i].second.m_iniId,
-                                          std::make_unique<MoveWallData>()}});
+                                                     std::make_unique<MoveWallData>()}});
                 *memWallData[key].m_moveableData = *wallData[i].second.m_memMoveData;
             }
             else
@@ -207,12 +207,41 @@ QString LevelDataManager::getIniWallPos(int index, const WallDataContainer_t &wa
 //======================================================================
 void LevelDataManager::writeWallData(const std::map<QString, WallDataINI> &wallData)
 {
+    QString strDir, strMoveNumber;
     for(std::map<QString, WallDataINI>::const_iterator it = wallData.begin(); it != wallData.end(); ++it)
     {
         m_INIFile->setValue(it->first + "/GamePosition", it->second.m_position);
         if(!it->second.m_removePosition.isEmpty())
         {
             m_INIFile->setValue(it->first + "/RemovePosition", it->second.m_removePosition);
+        }
+        if(it->second.m_moveableData)
+        {
+            m_INIFile->setValue(it->first + "/WallDisplayID", *it->second.m_iniID);
+            strDir = "";
+            strMoveNumber = "";
+            for(int i = 0; i < it->second.m_moveableData->m_memMoveWallData.size(); ++i)
+            {
+                strDir += QString::number(static_cast<int>(it->second.m_moveableData->m_memMoveWallData[i].first)) + " ";
+                strMoveNumber += QString::number(it->second.m_moveableData->m_memMoveWallData[i].second) + " ";
+            }
+            m_INIFile->setValue(it->first + "/Direction", strDir);
+            m_INIFile->setValue(it->first + "/NumberOfMove", strMoveNumber);
+            m_INIFile->setValue(it->first + "/Velocity", it->second.m_moveableData->m_velocity);
+            m_INIFile->setValue(it->first + "/TriggerBehaviourType", static_cast<int>(it->second.m_moveableData->m_triggerBehaviour));
+            if(it->second.m_moveableData->m_triggerBehaviour != TriggerBehaviourType_e::AUTO)
+            {
+                m_INIFile->setValue(it->first + "/TriggerType", static_cast<int>(it->second.m_moveableData->m_triggerType));
+                if(it->second.m_moveableData->m_triggerType != TriggerType_e::WALL)
+                {
+                    m_INIFile->setValue(it->first + "/TriggerGamePosition", QString::number(it->second.m_moveableData->m_triggerPos->first) +
+                                        " " + QString::number(it->second.m_moveableData->m_triggerPos->second));
+                }
+                if(it->second.m_moveableData->m_triggerType == TriggerType_e::DISTANT_SWITCH)
+                {
+                    m_INIFile->setValue(it->first + "/TriggerDisplayID", it->second.m_moveableData->m_triggerINISectionName);
+                }
+            }
         }
     }
 }

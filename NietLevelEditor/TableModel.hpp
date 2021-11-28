@@ -17,6 +17,7 @@ struct MoveWallData
     TriggerType_e m_triggerType;
     TriggerBehaviourType_e m_triggerBehaviour;
     std::optional<QPair<int, int>> m_triggerPos;
+    QString m_triggerINISectionName;
     void clear()
     {
         m_memMoveWallCases.clear();
@@ -35,6 +36,7 @@ struct MoveWallData
         m_triggerType = other.m_triggerType;
         m_triggerBehaviour = other.m_triggerBehaviour;
         m_triggerType = other.m_triggerType;
+        m_triggerINISectionName = other.m_triggerINISectionName;
         if(other.m_triggerPos)
         {
             m_triggerPos = *other.m_triggerPos;
@@ -152,6 +154,7 @@ public:
     {
         return m_memStaticGround;
     }
+    void updateTriggerPos(const QPair<int, int> &pos);
 private:
     void rmStdElement(const QPair<int, int> &pos, LevelElement_e elementType);
 private:
