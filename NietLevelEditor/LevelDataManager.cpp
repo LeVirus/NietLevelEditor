@@ -152,7 +152,7 @@ void LevelDataManager::generateDoorsIniLevel(const TableModel &tableModel)
     QString str;
     for(std::multimap<QString, QPair<int, int>>::const_iterator it = doorData.begin(); it != doorData.end(); ++it)
     {
-        str = QString::number(it->second.first) + " " + QString::number(it->second.second) + " ";
+        str = QString::number(it->second.first) + " " + QString::number(it->second.second) + "  ";
         itt = mapINI.find(it->first);
         if(itt == mapINI.end())
         {
@@ -173,6 +173,10 @@ void LevelDataManager::generateDoorsIniLevel(const TableModel &tableModel)
 void LevelDataManager::generateTeleportsIniLevel(const TableModel &tableModel)
 {
     const std::multimap<QString, TeleportData> teleportData = tableModel.getTeleporterData();
+    if(teleportData.empty())
+    {
+        return;
+    }
     QString pos, target, biDirection;
     for(std::multimap<QString, TeleportData>::const_iterator it = teleportData.begin(); it != teleportData.end(); ++it)
     {
@@ -188,7 +192,27 @@ void LevelDataManager::generateTeleportsIniLevel(const TableModel &tableModel)
 //======================================================================
 void LevelDataManager::generateEnemiesIniLevel(const TableModel &tableModel)
 {
-
+    const std::multimap<QString, QPair<int, int>> enemiesData = tableModel.getEnemiesData();
+    QString pos;
+    std::map<QString, QString> mapINI;
+    std::map<QString, QString>::iterator itt;
+    for(std::multimap<QString, QPair<int, int>>::const_iterator it = enemiesData.begin(); it != enemiesData.end(); ++it)
+    {
+        pos = QString::number(it->second.first) + " " + QString::number(it->second.second) + "  ";
+        itt = mapINI.find(it->first);
+        if(itt == mapINI.end())
+        {
+            mapINI.insert({it->first, pos});
+        }
+        else
+        {
+            mapINI[it->first] += pos;
+        }
+    }
+    for(std::map<QString, QString>::const_iterator it = mapINI.begin(); it != mapINI.end(); ++it)
+    {
+        m_INIFile->setValue(it->first + "/GamePosition", it->second);
+    }
 }
 
 //======================================================================
