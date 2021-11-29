@@ -95,10 +95,7 @@ private:
     void generateDoorsIniLevel(const TableModel &tableModel);
     void generateTeleportsIniLevel(const TableModel &tableModel);
     void generateEnemiesIniLevel(const TableModel &tableModel);
-    void generateObjectsIniLevel(const TableModel &tableModel);
-    void generateStaticCeilingElementsIniLevel(const TableModel &tableModel);
-    void generateStaticGroundElementsIniLevel(const TableModel &tableModel);
-    void generateBarrelsIniLevel(const TableModel &tableModel);
+    void generateStandardIniLevel(const std::multimap<QString, QPair<int, int>> &datas);
     void writeWallData(const std::map<QString, WallDataINI> &wallData);
     QString getCurrentWallRemovedINI(int index, const WallDataContainer_t &wallData)const;
     QString getIniWallPos(int index, const WallDataContainer_t &wallData) const;

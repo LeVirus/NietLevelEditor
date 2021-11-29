@@ -87,13 +87,13 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     m_INIFile->setValue("Exit/GamePosition", QString::number(tableModel.getExitData().begin()->second.first) + " " +
                         QString::number(tableModel.getExitData().begin()->second.second));
     generateWallsIniLevel(tableModel);
-    generateDoorsIniLevel(tableModel);
     generateTeleportsIniLevel(tableModel);
-    generateEnemiesIniLevel(tableModel);
-    generateObjectsIniLevel(tableModel);
-    generateStaticCeilingElementsIniLevel(tableModel);
-    generateStaticGroundElementsIniLevel(tableModel);
-    generateBarrelsIniLevel(tableModel);
+    generateStandardIniLevel(tableModel.getDoorsData());
+    generateStandardIniLevel(tableModel.getEnemiesData());
+    generateStandardIniLevel(tableModel.getObjectsData());
+    generateStandardIniLevel(tableModel.getStaticCeilingData());
+    generateStandardIniLevel(tableModel.getStaticGroundData());
+    generateStandardIniLevel(tableModel.getBarrelsData());
 }
 
 //======================================================================
@@ -144,32 +144,6 @@ void LevelDataManager::generateWallsIniLevel(const TableModel &tableModel)
 }
 
 //======================================================================
-void LevelDataManager::generateDoorsIniLevel(const TableModel &tableModel)
-{
-    const std::multimap<QString, QPair<int, int>> doorData = tableModel.getDoorsData();
-    std::map<QString, QString> mapINI;
-    std::map<QString, QString>::iterator itt;
-    QString str;
-    for(std::multimap<QString, QPair<int, int>>::const_iterator it = doorData.begin(); it != doorData.end(); ++it)
-    {
-        str = QString::number(it->second.first) + " " + QString::number(it->second.second) + "  ";
-        itt = mapINI.find(it->first);
-        if(itt == mapINI.end())
-        {
-            mapINI.insert({it->first, str});
-        }
-        else
-        {
-            mapINI[it->first] += str;
-        }
-    }
-    for(std::map<QString, QString>::const_iterator it = mapINI.begin(); it != mapINI.end(); ++it)
-    {
-        m_INIFile->setValue(it->first + "/GamePosition", it->second);
-    }
-}
-
-//======================================================================
 void LevelDataManager::generateTeleportsIniLevel(const TableModel &tableModel)
 {
     const std::multimap<QString, TeleportData> teleportData = tableModel.getTeleporterData();
@@ -190,13 +164,12 @@ void LevelDataManager::generateTeleportsIniLevel(const TableModel &tableModel)
 }
 
 //======================================================================
-void LevelDataManager::generateEnemiesIniLevel(const TableModel &tableModel)
+void LevelDataManager::generateStandardIniLevel(const std::multimap<QString, QPair<int, int> > &datas)
 {
-    const std::multimap<QString, QPair<int, int>> enemiesData = tableModel.getEnemiesData();
     QString pos;
     std::map<QString, QString> mapINI;
     std::map<QString, QString>::iterator itt;
-    for(std::multimap<QString, QPair<int, int>>::const_iterator it = enemiesData.begin(); it != enemiesData.end(); ++it)
+    for(std::multimap<QString, QPair<int, int>>::const_iterator it = datas.begin(); it != datas.end(); ++it)
     {
         pos = QString::number(it->second.first) + " " + QString::number(it->second.second) + "  ";
         itt = mapINI.find(it->first);
@@ -213,30 +186,6 @@ void LevelDataManager::generateEnemiesIniLevel(const TableModel &tableModel)
     {
         m_INIFile->setValue(it->first + "/GamePosition", it->second);
     }
-}
-
-//======================================================================
-void LevelDataManager::generateObjectsIniLevel(const TableModel &tableModel)
-{
-
-}
-
-//======================================================================
-void LevelDataManager::generateStaticCeilingElementsIniLevel(const TableModel &tableModel)
-{
-
-}
-
-//======================================================================
-void LevelDataManager::generateStaticGroundElementsIniLevel(const TableModel &tableModel)
-{
-
-}
-
-//======================================================================
-void LevelDataManager::generateBarrelsIniLevel(const TableModel &tableModel)
-{
-
 }
 
 //======================================================================
