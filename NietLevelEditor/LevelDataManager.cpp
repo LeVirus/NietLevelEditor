@@ -74,36 +74,30 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
         delete m_INIFile;
     }
     m_INIFile = new QSettings(filename, QSettings::NativeFormat);
-    //Level
     m_INIFile->setValue("Level/weight", tableModel.getTableSize().first);
     m_INIFile->setValue("Level/height", tableModel.getTableSize().second);
     if(musicFilename != "None")
     {
         m_INIFile->setValue("Level/music", musicFilename);
     }
-    //Background
     loadBackgroundData(backgroundData);
-    //PlayerInit
     m_INIFile->setValue("PlayerInit/playerDepartureX", tableModel.getPlayerDepartureData()->first);
     m_INIFile->setValue("PlayerInit/playerDepartureY", tableModel.getPlayerDepartureData()->second);
     m_INIFile->setValue("PlayerInit/PlayerOrientation", static_cast<int>(playerDirection));
-    //Exit
     m_INIFile->setValue("Exit/GamePosition", QString::number(tableModel.getExitData().begin()->second.first) + " " +
                         QString::number(tableModel.getExitData().begin()->second.second));
-    //Wall
-    generateWallIniLevel(tableModel);
-    //DOOR
-    generateDoorIniLevel(tableModel);
-    //TELEPORT
-    //ENEMIES
-    //OBJECTS
-    //STATIC CEILING
-    //STATIC GROUND
-    //BARRELS
+    generateWallsIniLevel(tableModel);
+    generateDoorsIniLevel(tableModel);
+    generateTeleportsIniLevel(tableModel);
+    generateEnemiesIniLevel(tableModel);
+    generateObjectsIniLevel(tableModel);
+    generateStaticCeilingElementsIniLevel(tableModel);
+    generateStaticGroundElementsIniLevel(tableModel);
+    generateBarrelsIniLevel(tableModel);
 }
 
 //======================================================================
-void LevelDataManager::generateWallIniLevel(const TableModel &tableModel)
+void LevelDataManager::generateWallsIniLevel(const TableModel &tableModel)
 {
     QString key, gamePos, removePos;
     std::map<QString, WallDataINI> memWallData;
@@ -150,7 +144,7 @@ void LevelDataManager::generateWallIniLevel(const TableModel &tableModel)
 }
 
 //======================================================================
-void LevelDataManager::generateDoorIniLevel(const TableModel &tableModel)
+void LevelDataManager::generateDoorsIniLevel(const TableModel &tableModel)
 {
     const std::multimap<QString, QPair<int, int>> doorData = tableModel.getDoorsData();
     std::map<QString, QString> mapINI;
@@ -173,6 +167,52 @@ void LevelDataManager::generateDoorIniLevel(const TableModel &tableModel)
     {
         m_INIFile->setValue(it->first + "/GamePosition", it->second);
     }
+}
+
+//======================================================================
+void LevelDataManager::generateTeleportsIniLevel(const TableModel &tableModel)
+{
+    const std::multimap<QString, TeleportData> teleportData = tableModel.getTeleporterData();
+    QString pos, target, biDirection;
+    for(std::multimap<QString, TeleportData>::const_iterator it = teleportData.begin(); it != teleportData.end(); ++it)
+    {
+        pos += QString::number(it->second.m_teleporterPos.first) + " " + QString::number(it->second.m_teleporterPos.second) + "  ";
+        target += QString::number(it->second.m_targetPos.first) + " " + QString::number(it->second.m_targetPos.second) + "  ";
+        biDirection += "0 ";
+    }
+    m_INIFile->setValue(teleportData.begin()->first + "/PosA", pos);
+    m_INIFile->setValue(teleportData.begin()->first + "/PosB", target);
+    m_INIFile->setValue(teleportData.begin()->first + "/BiDirection", biDirection);
+}
+
+//======================================================================
+void LevelDataManager::generateEnemiesIniLevel(const TableModel &tableModel)
+{
+
+}
+
+//======================================================================
+void LevelDataManager::generateObjectsIniLevel(const TableModel &tableModel)
+{
+
+}
+
+//======================================================================
+void LevelDataManager::generateStaticCeilingElementsIniLevel(const TableModel &tableModel)
+{
+
+}
+
+//======================================================================
+void LevelDataManager::generateStaticGroundElementsIniLevel(const TableModel &tableModel)
+{
+
+}
+
+//======================================================================
+void LevelDataManager::generateBarrelsIniLevel(const TableModel &tableModel)
+{
+
 }
 
 //======================================================================

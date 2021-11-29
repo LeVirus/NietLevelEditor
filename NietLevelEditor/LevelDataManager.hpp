@@ -91,8 +91,14 @@ public:
     void generateLevel(const TableModel &tableModel, const QString &musicFilename,
                        const BackgroundPairData_t &backgroundData, Direction_e playerDirection);
 private:
-    void generateWallIniLevel(const TableModel &tableModel);
-    void generateDoorIniLevel(const TableModel &tableModel);
+    void generateWallsIniLevel(const TableModel &tableModel);
+    void generateDoorsIniLevel(const TableModel &tableModel);
+    void generateTeleportsIniLevel(const TableModel &tableModel);
+    void generateEnemiesIniLevel(const TableModel &tableModel);
+    void generateObjectsIniLevel(const TableModel &tableModel);
+    void generateStaticCeilingElementsIniLevel(const TableModel &tableModel);
+    void generateStaticGroundElementsIniLevel(const TableModel &tableModel);
+    void generateBarrelsIniLevel(const TableModel &tableModel);
     void writeWallData(const std::map<QString, WallDataINI> &wallData);
     QString getCurrentWallRemovedINI(int index, const WallDataContainer_t &wallData)const;
     QString getIniWallPos(int index, const WallDataContainer_t &wallData) const;
