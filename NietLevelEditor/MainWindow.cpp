@@ -2,7 +2,7 @@
 #include "ui_MainWindow.h"
 
 //======================================================================
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), m_confNewLevelForm(this)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), m_confNewLevelForm()
 {
     ui->setupUi(this);
     linkButtons();
@@ -24,6 +24,7 @@ void MainWindow::linkButtons()
 //======================================================================
 void MainWindow::openEmptyEditorGrid()
 {
+    m_confNewLevelForm.clearForm();
     m_confNewLevelForm.exec();
 }
 

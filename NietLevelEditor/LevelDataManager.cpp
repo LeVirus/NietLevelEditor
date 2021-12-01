@@ -42,6 +42,214 @@ bool LevelDataManager::loadLevelData(const QString &installDir)
 }
 
 //======================================================================
+bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
+{
+    if(m_installDirectory.isEmpty())
+    {
+        return false;
+    }
+    QSettings levelFile(levelFilePath, QSettings::NativeFormat);
+    //Level
+    m_existingLevelData = std::make_unique<LevelData>();
+    QVariant varA = levelFile.value("Level/weight", -1), varB = levelFile.value("Level/height", -1);
+    if(varA.toInt() == -1 || varB.toInt() == -1)
+    {
+        return false;
+    }
+    m_existingLevelData->m_levelSize = {varA.toInt(), varB.toInt()};
+    varA = levelFile.value("Level/music");
+    if(!varA.isNull())
+    {
+        m_existingLevelData->m_music = varA.toString();
+    }
+    //Background
+    if(!loadBackgroundLevel(true, levelFile))
+    {
+        return false;
+    }
+    if(!loadBackgroundLevel(false, levelFile))
+    {
+        return false;
+    }
+    //PlayerInit
+    varA = levelFile.value("PlayerInit/playerDepartureX", -1), varB = levelFile.value("PlayerInit/playerDepartureY", -1);
+    if(varA.toInt() == -1 || varB.toInt() == -1)
+    {
+        return false;
+    }
+    m_existingLevelData->m_playerDeparture = {varA.toInt(), varB.toInt()};
+    varA = levelFile.value("PlayerInit/PlayerOrientation", -1);
+    int playerOrientation = varA.toInt();
+    if(playerOrientation < 0 || playerOrientation > 3)
+    {
+        return false;
+    }
+    m_existingLevelData->m_playerDirection = static_cast<Direction_e>(playerOrientation);
+    //Wall
+    if(!loadWallLevel(levelFile))
+    {
+        return false;
+    }
+    //Barrel
+    if(!loadStandardElementLevel(levelFile, StandardElement_e::BARREL))
+    {
+        return false;
+    }
+    //Enemy
+    if(!loadStandardElementLevel(levelFile, StandardElement_e::ENEMY))
+    {
+        return false;
+    }
+    //Door
+    if(!loadStandardElementLevel(levelFile, StandardElement_e::DOOR))
+    {
+        return false;
+    }
+    //Exit
+    if(!loadStandardElementLevel(levelFile, StandardElement_e::EXIT))
+    {
+        return false;
+    }
+    //Object
+    if(!loadStandardElementLevel(levelFile, StandardElement_e::OBJECT))
+    {
+        return false;
+    }
+    //Ceiling
+    if(!loadStandardElementLevel(levelFile, StandardElement_e::STATIC_CEILING_ELEMENT))
+    {
+        return false;
+    }
+    //Ground
+    if(!loadStandardElementLevel(levelFile, StandardElement_e::STATIC_GROUND_ELEMENT))
+    {
+        return false;
+    }
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadStandardElementLevel(const QSettings &ini, StandardElement_e elementType)
+{
+    std::map<QString, QPair<int, int>> *currentMap;
+    QString str;
+    switch(elementType)
+    {
+    case StandardElement_e::BARREL:
+        str = "Barrel";
+        currentMap = &m_existingLevelData->m_barrelsData;
+        break;
+    case StandardElement_e::DOOR:
+        str = "Door";
+        currentMap = &m_existingLevelData->m_doorsData;
+        break;
+    case StandardElement_e::ENEMY:
+        str = "Enemy";
+        currentMap = &m_existingLevelData->m_enemiesData;
+        break;
+    case StandardElement_e::EXIT:
+        str = "Exit";
+        currentMap = &m_existingLevelData->m_enemiesData;
+        break;
+    case StandardElement_e::OBJECT:
+        str = "Object";
+        currentMap = &m_existingLevelData->m_objectsData;
+        break;
+    case StandardElement_e::STATIC_CEILING_ELEMENT:
+        str = "Ceiling";
+        currentMap = &m_existingLevelData->m_ceilingElementsData;
+        break;
+    case StandardElement_e::STATIC_GROUND_ELEMENT:
+        str = "Ground";
+        currentMap = &m_existingLevelData->m_groundElementsData;
+        break;
+    }
+    QStringList keys = ini.childGroups(), list;
+    QString pos;
+    for(int i = 0; i < keys.size(); ++i)
+    {
+        if(keys[i].contains(str))
+        {
+            pos = ini.value(keys[i] + "/GamePosition", "").toString();
+            list = pos.split(" ");
+            if(list.isEmpty())
+            {
+                return false;
+            }
+            for(int j = 0; j < list.size(); j += 2)
+            {
+                if(list[j].isEmpty())
+                {
+                    ++j;
+                    if(j >= list.size())
+                    {
+                        break;
+                    }
+                }
+                currentMap->insert({keys[i], {list[j].toInt(), list[j + 1].toInt()}});
+            }
+        }
+    }
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadWallLevel(const QSettings &ini)
+{
+    QStringList keys = ini.childGroups();
+    for(int i = 0; i < keys.size(); ++i)
+    {
+        if(keys[i].contains("Wall"))
+        {
+            m_existingLevelData->m_wallsData.insert({keys[i], WallDataINI()});
+            m_existingLevelData->m_wallsData[keys[i]].m_position = ini.value(keys[i] + "/GamePosition", "").toString();
+            m_existingLevelData->m_wallsData[keys[i]].m_removePosition = ini.value(keys[i] + "/RemovePosition", "").toString();
+            if(m_existingLevelData->m_wallsData[keys[i]].m_position.isEmpty())
+            {
+                return false;
+            }
+            if(keys[i].contains("MoveableWall"))
+            {
+                m_existingLevelData->m_wallsData[keys[i]].m_moveableData = std::make_unique<MoveWallData>();
+                m_existingLevelData->m_wallsData[keys[i]].m_iniID = ini.value(keys[i] + "/WallDisplayID", "").toString();
+                QVariant varA = ini.value(keys[i] + "/Direction", ""),
+                        varB = ini.value(keys[i] + "/NumberOfMove", "");
+                QStringList listDir = varA.toStringList(), listMoveNumber = varB.toStringList();
+                if(listDir.isEmpty() || listMoveNumber.isEmpty() || listDir.size() != listMoveNumber.size())
+                {
+                    return false;
+                }
+                for(int j = 0; j < listDir.size(); ++j)
+                {
+                    m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_memMoveWallData.push_back(
+                                {static_cast<Direction_e>(listDir[j].toInt()), listMoveNumber[j].toInt()});
+                }
+                m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_velocity = ini.value(keys[i] + "/Velocity", -1).toInt();
+
+                m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerType =
+                        static_cast<TriggerType_e>(ini.value(keys[i] + "/TriggerType", -1).toInt());
+                m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerBehaviour =
+                        static_cast<TriggerBehaviourType_e>(ini.value(keys[i] + "/TriggerBehaviourType", -1).toInt());
+
+                if(m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerType == TriggerType_e::DISTANT_SWITCH ||
+                        m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerType == TriggerType_e::GROUND)
+                {
+                    m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerINISectionName =
+                            ini.value(keys[i] + "/TriggerDisplayID", "").toString();
+                    listDir = ini.value(keys[i] + "/TriggerGamePosition", "").toStringList();
+                    if(listDir.size() != 3)
+                    {
+                        return false;
+                    }
+                    m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerPos = {listDir[0].toInt(), listDir[1].toInt()};
+                }
+            }
+        }
+    }
+    return true;
+}
+
+//======================================================================
 std::optional<ArrayFloat_t> LevelDataManager::getPictureData(const QString &sprite)const
 {
     std::map<QString, ArrayFloat_t>::const_iterator it = m_memPictureElement.find(sprite);
@@ -94,6 +302,66 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     generateStandardIniLevel(tableModel.getStaticCeilingData());
     generateStandardIniLevel(tableModel.getStaticGroundData());
     generateStandardIniLevel(tableModel.getBarrelsData());
+}
+
+//======================================================================
+bool LevelDataManager::loadBackgroundLevel(bool ground, const QSettings &ini)
+{
+    QString id = ground ? "Ground" : "Ceiling";
+    if(!m_existingLevelData->m_backgroundData)
+    {
+        m_existingLevelData->m_backgroundData = std::make_unique<QPair<BackgroundData, BackgroundData>>();
+    }
+    BackgroundData &currentBackground = ground ? m_existingLevelData->m_backgroundData->first : m_existingLevelData->m_backgroundData->second;
+    BackgroundDisplayMode_e mode = BackgroundDisplayMode_e::NONE;
+    QVariant varA;
+    //SIMPLE
+    varA = ini.value("SimpleTexture" + id + "Background/sprite");
+    if(!varA.isNull())
+    {
+        currentBackground.m_simpleTexture = varA.toString();
+        mode = BackgroundDisplayMode_e::SIMPLE_TEXTURE;
+    }
+    else
+    {
+        //COLOR
+        varA = ini.value("Color" + id + "Background/colorR");
+        if(!varA.isNull())
+        {
+            QVariant varB = ini.value("Color" + id + "Background/colorG"), varC = ini.value("Color" + id + "Background/colorB");
+            QStringList listA = varA.toString().split(' '), listB = varB.toString().split(' '), listC = varC.toString().split(' ');
+            if(listA.size() != 4 || listB.size() != 4 || listC.size() != 4)
+            {
+                return false;
+            }
+            for(int i = 0; i < 4; ++i)
+            {
+                currentBackground.m_colorData->operator[](0)[i] = listA[i].toFloat();
+                currentBackground.m_colorData->operator[](1)[i] = listB[i].toFloat();
+                currentBackground.m_colorData->operator[](2)[i] = listC[i].toFloat();
+            }
+            mode = BackgroundDisplayMode_e::COLOR;
+        }
+    }
+    //TILED
+    varA = ini.value("TiledTexture" + id + "Background/sprite");
+    if(!varA.isNull())
+    {
+        currentBackground.m_tiledTexture = varA.toString();
+        if(mode == BackgroundDisplayMode_e::NONE)
+        {
+            currentBackground.m_displayMode = BackgroundDisplayMode_e::TILED_TEXTURE;
+        }
+        else if(mode == BackgroundDisplayMode_e::COLOR)
+        {
+            currentBackground.m_displayMode = BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE;
+        }
+        else if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE)
+        {
+            currentBackground.m_displayMode = BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE;
+        }
+    }
+    return true;
 }
 
 //======================================================================
@@ -184,7 +452,7 @@ void LevelDataManager::generateStandardIniLevel(const std::multimap<QString, QPa
     }
     for(std::map<QString, QString>::const_iterator it = mapINI.begin(); it != mapINI.end(); ++it)
     {
-        m_INIFile->setValue(it->first + "/GamePosition", it->second);
+        m_INIFile->setValue(it->first + "/GamePosition", it->second + " ");
     }
 }
 

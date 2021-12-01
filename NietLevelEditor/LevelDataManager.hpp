@@ -18,6 +18,17 @@ using WallDataContainer_t = QVector<QPair<WallDrawShape_e, WallShapeData>>;
 using BackgroundPairData_t = QPair<const BackgroundData*, const BackgroundData*>;
 enum class Direction_e;
 
+enum class StandardElement_e
+{
+    DOOR,
+    STATIC_CEILING_ELEMENT,
+    STATIC_GROUND_ELEMENT,
+    EXIT,
+    BARREL,
+    ENEMY,
+    OBJECT
+};
+
 struct DoorData
 {
     QString m_sprite;
@@ -33,12 +44,26 @@ struct WallDataINI
     std::unique_ptr<MoveWallData> m_moveableData;
 };
 
+struct LevelData
+{
+    QPair<int, int> m_levelSize;
+    std::optional<QString> m_music;
+    //first ground
+    std::unique_ptr<QPair<BackgroundData, BackgroundData>> m_backgroundData;
+    QPair<int, int> m_playerDeparture;
+    Direction_e m_playerDirection;
+    std::map<QString, WallDataINI> m_wallsData;
+    std::map<QString, QPair<int, int>> m_exitData, m_barrelsData, m_groundElementsData, m_ceilingElementsData,
+    m_enemiesData, m_objectsData, m_doorsData;
+};
+
 class LevelDataManager
 {
 public:
     LevelDataManager();
     ~LevelDataManager();
     bool loadLevelData(const QString &installDir);
+    bool loadExistingLevel(const QString &levelFilePath);
     inline const std::map<QString, QStringList> &getWallData()const
     {
         return m_wallElement;
@@ -89,8 +114,11 @@ public:
     }
     std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
     void generateLevel(const TableModel &tableModel, const QString &musicFilename,
-                       const BackgroundPairData_t &backgroundData, Direction_e playerDirection);
+                       const BackgroundPairData_t &backgroundData, Direction_e playerDirection);    
 private:
+    bool loadBackgroundLevel(bool ground, const QSettings &ini);
+    bool loadStandardElementLevel(const QSettings &ini, StandardElement_e elementType);
+    bool loadWallLevel(const QSettings &ini);
     void generateWallsIniLevel(const TableModel &tableModel);
     void generateDoorsIniLevel(const TableModel &tableModel);
     void generateTeleportsIniLevel(const TableModel &tableModel);
@@ -127,5 +155,6 @@ private:
     std::map<QString, DoorData> m_doorElement;
     std::map<QString, QString> m_triggerElement, m_teleportElement, m_enemyElement, m_objectElement, m_staticCeilingElement,
     m_staticGroundElement, m_barrelElement, m_exitElement;
+    std::unique_ptr<LevelData> m_existingLevelData;
 };
 

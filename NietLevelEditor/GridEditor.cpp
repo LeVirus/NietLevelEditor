@@ -31,12 +31,20 @@ GridEditor::GridEditor(QWidget *parent) :
 }
 
 //======================================================================
-bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHeight)
+bool GridEditor::loadMainInstallDirData(const QString &installDir)
 {
-    if(!m_levelDataManager.loadLevelData(installDir))
-    {
-        return false;
-    }
+    return m_levelDataManager.loadLevelData(installDir);
+}
+
+//======================================================================
+bool GridEditor::loadExistingLevel(const QString &levelFilePath)
+{
+    return m_levelDataManager.loadExistingLevel(levelFilePath);
+}
+
+//======================================================================
+void GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHeight)
+{
     m_wallMoveableMode = false;
     m_wallDrawMode = WallDrawShape_e::LINE_AND_RECT;
     m_elementSelected = false;
@@ -68,7 +76,6 @@ bool GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     connectSlots();
     setStdTableSize();
     m_displayPreview = false;
-    return true;
 }
 
 //======================================================================
@@ -198,7 +205,7 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type)
 }
 
 //======================================================================
-QIcon GridEditor::getCurrentSelectedIcon() const
+QIcon GridEditor::getCurrentSelectedIcon()const
 {
     uint32_t index = static_cast<uint32_t>(m_currentElementType);
     assert(index < m_drawData.size());

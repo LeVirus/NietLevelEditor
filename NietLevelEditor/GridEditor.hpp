@@ -64,7 +64,9 @@ class GridEditor : public QDialog
     Q_OBJECT
 public:
     explicit GridEditor(QWidget *parent = nullptr);
-    bool initGrid(const QString &installDir, int levelWidth, int levelHeight);
+    bool loadMainInstallDirData(const QString &installDir);
+    bool loadExistingLevel(const QString &levelFilePath);
+    void initGrid(const QString &installDir, int levelWidth, int levelHeight);
     ~GridEditor();
 private:
     void connectSlots();
