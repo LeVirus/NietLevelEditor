@@ -181,10 +181,14 @@ bool LevelDataManager::loadStandardElementLevel(const QSettings &ini, StandardEl
                 if(list[j].isEmpty())
                 {
                     ++j;
-                    if(j >= list.size())
+                    if(j >= list.size() - 1)
                     {
                         break;
                     }
+                }
+                else if(j >= list.size() - 1)
+                {
+                    return false;
                 }
                 currentMap->insert({keys[i], {list[j].toInt(), list[j + 1].toInt()}});
             }

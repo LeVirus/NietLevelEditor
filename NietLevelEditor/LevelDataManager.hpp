@@ -113,6 +113,10 @@ public:
     {
         return m_memPictureElement;
     }
+    inline LevelData const *getExistingLevel()const
+    {
+        return m_existingLevelData.get();
+    }
     std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
     std::optional<QPair<int, int>> getLoadedLevelSize()const;
     void generateLevel(const TableModel &tableModel, const QString &musicFilename,

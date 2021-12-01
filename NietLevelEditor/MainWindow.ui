@@ -27,24 +27,11 @@
      <string>New level</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="LoadExistLevelButton">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>280</y>
-      <width>131</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Load existing level</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="QuitButton">
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>320</y>
+      <y>290</y>
       <width>131</width>
       <height>28</height>
      </rect>

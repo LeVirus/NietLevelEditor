@@ -128,14 +128,19 @@ void ConfNewLevelForm::onOkButtonClicked()
             QMessageBox::warning(this, "Error", "Please select a correct level file.");
             return;
         }
-        if(!m_gridEditorForm.loadExistingLevel(m_existingLevelFile))
+        if(!m_gridEditorForm.loadExistingLevelINI(m_existingLevelFile))
         {
-            QMessageBox::warning(this, "Error", "Error while loading level.");
+            QMessageBox::warning(this, "Error", "Error while loading level ini file.");
             return;
         }
         std::optional<QPair<int, int>> levelSize = m_gridEditorForm.getLoadedLevelSize();
         assert(levelSize);
         m_gridEditorForm.initGrid(m_installDirectory, levelSize->first, levelSize->second);
+        if(!m_gridEditorForm.loadExistingLevelGrid())
+        {
+            QMessageBox::warning(this, "Error", "Error while loading level on grid.");
+            return;
+        }
     }
     m_existingLevelFile.clear();
     m_gridEditorForm.exec();

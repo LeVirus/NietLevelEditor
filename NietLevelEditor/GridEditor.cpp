@@ -37,7 +37,7 @@ bool GridEditor::loadMainInstallDirData(const QString &installDir)
 }
 
 //======================================================================
-bool GridEditor::loadExistingLevel(const QString &levelFilePath)
+bool GridEditor::loadExistingLevelINI(const QString &levelFilePath)
 {
     return m_levelDataManager.loadExistingLevel(levelFilePath);
 }
@@ -85,6 +85,25 @@ std::optional<QPair<int, int>> GridEditor::getLoadedLevelSize()const
 }
 
 //======================================================================
+bool GridEditor::loadExistingLevelGrid()
+{
+    LevelData const *existingLevel = m_levelDataManager.getExistingLevel();
+    if(!existingLevel)
+    {
+        return false;
+    }
+    loadStandardExistingLevelGrid(LevelElement_e::BARREL);
+    loadStandardExistingLevelGrid(LevelElement_e::DOOR);
+    loadStandardExistingLevelGrid(LevelElement_e::ENEMY);
+    loadStandardExistingLevelGrid(LevelElement_e::STATIC_CEILING);
+    loadStandardExistingLevelGrid(LevelElement_e::STATIC_GROUND);
+    loadStandardExistingLevelGrid(LevelElement_e::EXIT);
+    loadStandardExistingLevelGrid(LevelElement_e::OBJECT);
+    updateGridView();
+    return true;
+}
+
+//======================================================================
 void GridEditor::connectSlots()
 {
     QObject::connect(ui->tableView->selectionModel(), &QItemSelectionModel::currentChanged,
@@ -108,7 +127,8 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
         return;
     }
     bool ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
-                                               pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
+                                                    pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
+    assert(ok);
     if(!caseData || (caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER))
     {
         m_tableModel->setIdData(index, CaseData{m_currentElementType,
@@ -131,7 +151,6 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
     {
         caseData->m_wallShapeNum = {};
     }
-    assert(ok);
 }
 
 //======================================================================
@@ -1205,6 +1224,75 @@ GridEditor::~GridEditor()
     {
         delete m_backgroundForm;
     }
+}
+
+//======================================================================
+bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
+{
+    LevelData const *existingLevel = m_levelDataManager.getExistingLevel();
+    m_currentElementType = elementType;
+    std::map<QString, QPair<int, int>> const *currentContainer = nullptr;
+    switch(m_currentElementType)
+    {
+    case LevelElement_e::BARREL:
+    {
+        currentContainer = &existingLevel->m_barrelsData;
+        break;
+    }
+    case LevelElement_e::DOOR:
+    {
+        currentContainer = &existingLevel->m_doorsData;
+        break;
+    }
+    case LevelElement_e::ENEMY:
+    {
+        currentContainer = &existingLevel->m_enemiesData;
+        break;
+    }
+    case LevelElement_e::EXIT:
+    {
+        currentContainer = &existingLevel->m_exitData;
+        break;
+    }
+    case LevelElement_e::OBJECT:
+    {
+        currentContainer = &existingLevel->m_objectsData;
+        break;
+    }
+    case LevelElement_e::STATIC_CEILING:
+    {
+        currentContainer = &existingLevel->m_ceilingElementsData;
+        break;
+    }
+    case LevelElement_e::STATIC_GROUND:
+    {
+        currentContainer = &existingLevel->m_groundElementsData;
+        break;
+    }
+    case LevelElement_e::TELEPORT:
+    case LevelElement_e::TARGET_TELEPORT:
+    case LevelElement_e::WALL:
+    case LevelElement_e::TRIGGER:
+    case LevelElement_e::GROUND_TRIGGER:
+    case LevelElement_e::PLAYER_DEPARTURE:
+    case LevelElement_e::DELETE:
+    case LevelElement_e::SELECTION:
+    case LevelElement_e::TOTAL:
+        assert(false);
+    }
+    for(std::map<QString, QPair<int, int>>::const_iterator it = currentContainer->begin(); it != currentContainer->end(); ++it)
+    {
+        m_currentSelection = m_mapElementID[m_currentElementType].indexOf(it->first);
+        if(m_currentSelection == -1)
+        {
+            return false;
+        }
+        QModelIndex index = m_tableModel->index(it->second.second, it->second.first, QModelIndex());
+        setCaseIcon(it->second.first, it->second.second, -1);
+        m_tableModel->setIdData(index, CaseData{m_currentElementType,
+                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}});
+    }
+    return true;
 }
 
 //======================================================================

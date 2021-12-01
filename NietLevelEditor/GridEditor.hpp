@@ -65,11 +65,13 @@ class GridEditor : public QDialog
 public:
     explicit GridEditor(QWidget *parent = nullptr);
     bool loadMainInstallDirData(const QString &installDir);
-    bool loadExistingLevel(const QString &levelFilePath);
+    bool loadExistingLevelINI(const QString &levelFilePath);
     void initGrid(const QString &installDir, int levelWidth, int levelHeight);
     std::optional<QPair<int, int>> getLoadedLevelSize()const;
+    bool loadExistingLevelGrid();
     ~GridEditor();
 private:
+    bool loadStandardExistingLevelGrid(LevelElement_e elementType);
     void connectSlots();
     void setStdTableSize();
     void initSelectableWidgets();
