@@ -72,6 +72,7 @@ public:
     ~GridEditor();
 private:
     bool loadStandardExistingLevelGrid(LevelElement_e elementType);
+    bool loadTeleportExistingLevelGrid();
     void connectSlots();
     void setStdTableSize();
     void initSelectableWidgets();

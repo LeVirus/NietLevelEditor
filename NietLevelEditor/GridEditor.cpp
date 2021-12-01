@@ -96,6 +96,7 @@ bool GridEditor::loadExistingLevelGrid()
     {
         return false;
     }
+    loadTeleportExistingLevelGrid();
     loadStandardExistingLevelGrid(LevelElement_e::BARREL);
     loadStandardExistingLevelGrid(LevelElement_e::DOOR);
     loadStandardExistingLevelGrid(LevelElement_e::ENEMY);
@@ -1299,6 +1300,33 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
         setCaseIcon(it->second.first, it->second.second, -1);
         m_tableModel->setIdData(index, CaseData{m_currentElementType,
                                                 m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}});
+    }
+    return true;
+}
+
+//======================================================================
+bool GridEditor::loadTeleportExistingLevelGrid()
+{
+    const std::multimap<QString, TeleportData> &teleportData = m_levelDataManager.getExistingLevel()->m_teleportData;
+    for(std::multimap<QString, TeleportData>::const_iterator it = teleportData.begin(); it != teleportData.end(); ++it)
+    {
+        //TELEPORTER
+        m_currentElementType = LevelElement_e::TELEPORT;
+        QModelIndex index = m_tableModel->index(it->second.m_teleporterPos.first, it->second.m_teleporterPos.second, QModelIndex());
+        m_currentSelection = m_mapElementID[m_currentElementType].indexOf(it->first);
+        setCaseIcon(it->second.m_teleporterPos.first, it->second.m_teleporterPos.second, -1);
+        m_tableModel->setIdData(index, CaseData{m_currentElementType,
+                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}});
+        m_lastPositionAdded = it->second.m_teleporterPos;
+        //TARGET
+        m_currentElementType = LevelElement_e::TARGET_TELEPORT;
+        QModelIndex indexx = m_tableModel->index(it->second.m_targetPos.first, it->second.m_targetPos.second, QModelIndex());
+        m_tableModel->setTargetTeleport(m_lastPositionAdded, indexx);
+        m_currentElementType = LevelElement_e::TELEPORT;
+        setLineSelectableEnabled(true);
+        int teleportIndex = static_cast<int>(LevelElement_e::TELEPORT);
+        m_tableModel->memTeleportElement(m_lastPositionAdded, {indexx.column(), indexx.row()},
+                                         m_drawData[teleportIndex][m_currentSelection].m_elementSectionName);
     }
     return true;
 }
