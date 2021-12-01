@@ -131,7 +131,7 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
 //======================================================================
 bool LevelDataManager::loadStandardElementLevel(const QSettings &ini, StandardElement_e elementType)
 {
-    std::map<QString, QPair<int, int>> *currentMap;
+    std::multimap<QString, QPair<int, int>> *currentMap;
     QString str;
     switch(elementType)
     {

@@ -1239,7 +1239,7 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
 {
     LevelData const *existingLevel = m_levelDataManager.getExistingLevel();
     m_currentElementType = elementType;
-    std::map<QString, QPair<int, int>> const *currentContainer = nullptr;
+    std::multimap<QString, QPair<int, int>> const *currentContainer = nullptr;
     switch(m_currentElementType)
     {
     case LevelElement_e::BARREL:

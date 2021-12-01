@@ -54,7 +54,7 @@ struct LevelData
     QPair<int, int> m_playerDeparture;
     Direction_e m_playerDirection;
     std::map<QString, WallDataINI> m_wallsData;
-    std::map<QString, QPair<int, int>> m_exitData, m_barrelsData, m_groundElementsData, m_ceilingElementsData,
+    std::multimap<QString, QPair<int, int>> m_exitData, m_barrelsData, m_groundElementsData, m_ceilingElementsData,
     m_enemiesData, m_objectsData, m_doorsData;
 };
 
