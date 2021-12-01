@@ -38,15 +38,10 @@ ConfNewLevelForm::~ConfNewLevelForm()
 //======================================================================
 void ConfNewLevelForm::linkButtons()
 {
-    QPushButton *okButton = findChild<QPushButton*>("okButton"), *cancelButton = findChild<QPushButton*>("cancelButton"),
-            *browseButton = findChild<QPushButton*>("browseButton");
-    assert(okButton);
-    assert(cancelButton);
-    assert(browseButton);
-    QObject::connect(browseButton, SIGNAL(clicked()), this, SLOT(onBrowseIniFileClicked()));
+    QObject::connect(ui->browseButton, SIGNAL(clicked()), this, SLOT(onBrowseIniFileClicked()));
     QObject::connect(ui->browseExistingLevel, SIGNAL(clicked()), this, SLOT(openExistingLevel()));
-    QObject::connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
-    QObject::connect(okButton, SIGNAL(clicked()), this, SLOT(onOkButtonClicked()));
+    QObject::connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(close()));
+    QObject::connect(ui->okButton, SIGNAL(clicked()), this, SLOT(onOkButtonClicked()));
     QObject::connect(ui->radioNewLevel, SIGNAL(toggled(bool)), this, SLOT(toggleNewLevel(bool)));
     QObject::connect(ui->radioExistingLevel, SIGNAL(toggled(bool)), this, SLOT(toggleLoadLevel(bool)));
 }

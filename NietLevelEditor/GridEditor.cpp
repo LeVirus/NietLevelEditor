@@ -58,9 +58,6 @@ void GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     {
         loadSpritesForBackgroundForm();
     }
-    initSelectableWidgets();
-    initMusicDir(installDir);
-    initButtons();
     QTableView *tableView = findChild<QTableView*>("tableView");
     assert(tableView);
     if(!m_tableModel)
@@ -73,9 +70,16 @@ void GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     }
     m_tableModel->setLevelSize(levelWidth, levelHeight);
     tableView->setModel(m_tableModel);
-    connectSlots();
     setStdTableSize();
     m_displayPreview = false;
+    if(!m_widgetInit)
+    {
+        initSelectableWidgets();
+        initButtons();
+        connectSlots();
+    }
+    initMusicDir(installDir, m_widgetInit);
+    m_widgetInit = true;
 }
 
 //======================================================================
@@ -300,7 +304,7 @@ void GridEditor::initButtons()
 }
 
 //======================================================================
-void GridEditor::initMusicDir(const QString &installDir)
+void GridEditor::initMusicDir(const QString &installDir, bool widgetInit)
 {
     m_musicWidget = new QComboBox();
     QString musicDir = installDir + "/Ressources/Audio/Music/";
@@ -308,6 +312,7 @@ void GridEditor::initMusicDir(const QString &installDir)
     assert(dir.exists());
     QFileInfoList list = dir.entryInfoList();
     QFileInfo fileInfo;
+    m_musicWidget->clear();
     m_musicWidget->addItem("None");
     for(int i = 0; i < list.size(); ++i)
     {
@@ -317,8 +322,11 @@ void GridEditor::initMusicDir(const QString &installDir)
             m_musicWidget->addItem(fileInfo.fileName());
         }
     }
-    ui->SelectableLayout->addWidget(new QLabel("Music"));
-    ui->SelectableLayout->addWidget(m_musicWidget);
+    if(!widgetInit)
+    {
+        ui->SelectableLayout->addWidget(new QLabel("Music"));
+        ui->SelectableLayout->addWidget(m_musicWidget);
+    }
 }
 
 //======================================================================

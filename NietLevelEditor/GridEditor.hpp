@@ -76,7 +76,7 @@ private:
     void setStdTableSize();
     void initSelectableWidgets();
     void initButtons();
-    void initMusicDir(const QString &installDir);
+    void initMusicDir(const QString &installDir, bool widgetInit);
     void loadIconPictures(const QString &installDir);
     void loadSpritesForBackgroundForm();
     void loadWallsPictures(const QString &installDir);
@@ -140,6 +140,7 @@ private:
     QPushButton *m_generateButton;
     QComboBox *m_musicWidget;
     Direction_e m_memPlayerDirection = Direction_e::NORTH;
+    bool m_widgetInit = false;
 };
 
 Direction_e getDirEnumFromQString(const QString &str);
