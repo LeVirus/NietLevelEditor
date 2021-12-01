@@ -90,6 +90,11 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     {
         return false;
     }
+    //Teleport
+    if(!loadTeleportLevel(levelFile))
+    {
+        return false;
+    }
     //Barrel
     if(!loadStandardElementLevel(levelFile, StandardElement_e::BARREL))
     {
@@ -242,14 +247,39 @@ bool LevelDataManager::loadWallLevel(const QSettings &ini)
                 {
                     m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerINISectionName =
                             ini.value(keys[i] + "/TriggerDisplayID", "").toString();
-                    listDir = ini.value(keys[i] + "/TriggerGamePosition", "").toStringList();
-                    if(listDir.size() != 3)
+                    QString str = ini.value(keys[i] + "/TriggerGamePosition", "").toString();
+                    listDir = str.split(' ');
+                    if(listDir.size() != 2)
                     {
                         return false;
                     }
                     m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerPos = {listDir[0].toInt(), listDir[1].toInt()};
                 }
             }
+        }
+    }
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadTeleportLevel(const QSettings &ini)
+{
+    QStringList keys = ini.childGroups(), teleportPos, targetPos;
+    QString teleportPosStr, targetPosStr;
+    for(int i = 0; i < keys.size(); ++i)
+    {
+        if(keys[i].contains("Teleport"))
+        {
+            teleportPosStr = ini.value(keys[i] + "/PosA", "").toString();
+            teleportPos = teleportPosStr.split(' ');
+            targetPosStr = ini.value(keys[i] + "/PosB", "").toString();
+            targetPos = targetPosStr.split(' ');
+            if(teleportPos.size() != 2 || targetPos.size() != 2)
+            {
+                return false;
+            }
+            m_existingLevelData->m_teleportData.insert({keys[i], {{teleportPos[0].toInt(), teleportPos[1].toInt()},
+                                                                  {targetPos[0].toInt(), targetPos[1].toInt()}}});
         }
     }
     return true;
