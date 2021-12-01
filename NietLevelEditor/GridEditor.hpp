@@ -67,6 +67,7 @@ public:
     bool loadMainInstallDirData(const QString &installDir);
     bool loadExistingLevel(const QString &levelFilePath);
     void initGrid(const QString &installDir, int levelWidth, int levelHeight);
+    std::optional<QPair<int, int>> getLoadedLevelSize()const;
     ~GridEditor();
 private:
     void connectSlots();

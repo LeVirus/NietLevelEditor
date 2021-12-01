@@ -79,6 +79,12 @@ void GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
 }
 
 //======================================================================
+std::optional<QPair<int, int>> GridEditor::getLoadedLevelSize()const
+{
+    return m_levelDataManager.getLoadedLevelSize();
+}
+
+//======================================================================
 void GridEditor::connectSlots()
 {
     QObject::connect(ui->tableView->selectionModel(), &QItemSelectionModel::currentChanged,

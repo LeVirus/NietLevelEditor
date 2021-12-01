@@ -39,6 +39,7 @@ struct DoorData
 struct WallDataINI
 {
     QString m_position, m_removePosition;
+    std::unique_ptr<QVector<QPair<WallDrawShape_e, WallShapeData>>> m_pos, m_rem;
     //Moveable data
     std::optional<QString> m_iniID;
     std::unique_ptr<MoveWallData> m_moveableData;
@@ -113,12 +114,14 @@ public:
         return m_memPictureElement;
     }
     std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
+    std::optional<QPair<int, int>> getLoadedLevelSize()const;
     void generateLevel(const TableModel &tableModel, const QString &musicFilename,
                        const BackgroundPairData_t &backgroundData, Direction_e playerDirection);    
 private:
     bool loadBackgroundLevel(bool ground, const QSettings &ini);
     bool loadStandardElementLevel(const QSettings &ini, StandardElement_e elementType);
     bool loadWallLevel(const QSettings &ini);
+    bool generateStructPosWall(const QString &key, bool positionMode);
     void generateWallsIniLevel(const TableModel &tableModel);
     void generateDoorsIniLevel(const TableModel &tableModel);
     void generateTeleportsIniLevel(const TableModel &tableModel);

@@ -133,7 +133,9 @@ void ConfNewLevelForm::onOkButtonClicked()
             QMessageBox::warning(this, "Error", "Error while loading level.");
             return;
         }
-        m_gridEditorForm.initGrid(m_installDirectory, widthLevelspinBox->value(), heightLevelspinBox->value());
+        std::optional<QPair<int, int>> levelSize = m_gridEditorForm.getLoadedLevelSize();
+        assert(levelSize);
+        m_gridEditorForm.initGrid(m_installDirectory, levelSize->first, levelSize->second);
     }
     m_existingLevelFile.clear();
     m_gridEditorForm.exec();

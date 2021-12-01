@@ -204,6 +204,8 @@ bool LevelDataManager::loadWallLevel(const QSettings &ini)
             m_existingLevelData->m_wallsData.insert({keys[i], WallDataINI()});
             m_existingLevelData->m_wallsData[keys[i]].m_position = ini.value(keys[i] + "/GamePosition", "").toString();
             m_existingLevelData->m_wallsData[keys[i]].m_removePosition = ini.value(keys[i] + "/RemovePosition", "").toString();
+            generateStructPosWall(keys[i], true);
+            generateStructPosWall(keys[i], false);
             if(m_existingLevelData->m_wallsData[keys[i]].m_position.isEmpty())
             {
                 return false;
@@ -250,6 +252,97 @@ bool LevelDataManager::loadWallLevel(const QSettings &ini)
 }
 
 //======================================================================
+bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMode)
+{
+    QString baseStr = m_existingLevelData->m_wallsData[key].m_position;
+    QVector<QPair<WallDrawShape_e, WallShapeData>> *currentContainer;
+    if(positionMode)
+    {
+        baseStr = m_existingLevelData->m_wallsData[key].m_position;
+        m_existingLevelData->m_wallsData[key].m_pos = std::make_unique<QVector<QPair<WallDrawShape_e, WallShapeData>>>();
+        currentContainer = m_existingLevelData->m_wallsData[key].m_pos.get();
+    }
+    else
+    {
+        baseStr = m_existingLevelData->m_wallsData[key].m_removePosition;
+        m_existingLevelData->m_wallsData[key].m_rem = std::make_unique<QVector<QPair<WallDrawShape_e, WallShapeData>>>();
+        currentContainer = m_existingLevelData->m_wallsData[key].m_rem.get();
+    }
+    if(baseStr.isEmpty())
+    {
+        return false;
+    }
+    QStringList listA = baseStr.split("  "), listB;
+    currentContainer->reserve(listA.size());
+    for(int i = 0; i < listA.size(); ++i)
+    {
+        currentContainer->push_back({});
+        listB = listA[i].split(' ');
+        QPair<WallDrawShape_e, WallShapeData> &currentPair = currentContainer->back();
+        currentPair.second.m_iniId = key;
+        //Origin
+        currentPair.second.m_gridCoordTopLeft = {listB[1].toInt(), listB[2].toInt()};
+        switch(listB[0].toUInt())
+        {
+        //Rect
+        case 0:
+        {
+            currentPair.first = WallDrawShape_e::LINE_AND_RECT;
+            currentPair.second.m_gridCoordBottomRight = {listB[3].toInt(), listB[4].toInt()};
+            break;
+        }
+        //Vertical Line
+        case 1:
+        {
+            currentPair.first = WallDrawShape_e::LINE_AND_RECT;
+            currentPair.second.m_wallCount = listB[3].toInt();
+            break;
+        }
+        //Horizontal Line
+        case 2:
+        {
+            currentPair.first = WallDrawShape_e::LINE_AND_RECT;
+            currentPair.second.m_wallCount = listB[3].toInt();
+            break;
+        }
+        //Point
+        case 3:
+        {
+            currentPair.first = WallDrawShape_e::LINE_AND_RECT;
+            currentPair.second.m_wallCount = 1;
+            break;
+        }
+        //diag rect
+        case 4:
+        {
+            currentPair.first = WallDrawShape_e::DIAGONAL_RECT;
+            currentPair.second.m_wallCount = listB[3].toInt() * 2 - 2;
+            break;
+        }
+        //diag origins up left
+        case 5:
+        {
+            currentPair.second.m_diagCaseUp = true;
+            currentPair.first = WallDrawShape_e::DIAGONAL_LINE;
+            currentPair.second.m_wallCount = listB[3].toInt();
+            break;
+        }
+        //diag origins down left
+        case 6:
+        {
+            currentPair.second.m_diagCaseUp = false;
+            currentPair.first = WallDrawShape_e::DIAGONAL_LINE;
+            currentPair.second.m_wallCount = listB[3].toInt();
+            break;
+        }
+        default:
+            return false;
+        }
+    }
+    return true;
+}
+
+//======================================================================
 std::optional<ArrayFloat_t> LevelDataManager::getPictureData(const QString &sprite)const
 {
     std::map<QString, ArrayFloat_t>::const_iterator it = m_memPictureElement.find(sprite);
@@ -258,6 +351,16 @@ std::optional<ArrayFloat_t> LevelDataManager::getPictureData(const QString &spri
         return it->second;
     }
     return {};
+}
+
+//======================================================================
+std::optional<QPair<int, int>> LevelDataManager::getLoadedLevelSize()const
+{
+    if(!m_existingLevelData)
+    {
+        return {};
+    }
+    return m_existingLevelData->m_levelSize;
 }
 
 //======================================================================
@@ -393,13 +496,13 @@ void LevelDataManager::generateWallsIniLevel(const TableModel &tableModel)
         {
             if(wallData[i].second.m_memMoveData)
             {
-                memWallData.insert({key, WallDataINI{gamePos, removePos, wallData[i].second.m_iniId,
+                memWallData.insert({key, WallDataINI{gamePos, removePos, nullptr, nullptr, wallData[i].second.m_iniId,
                                                      std::make_unique<MoveWallData>()}});
                 *memWallData[key].m_moveableData = *wallData[i].second.m_memMoveData;
             }
             else
             {
-                memWallData.insert({key, WallDataINI{gamePos, removePos, {}, {}}});
+                memWallData.insert({key, WallDataINI{gamePos, removePos, nullptr, nullptr, {}, {}}});
             }
         }
         else
