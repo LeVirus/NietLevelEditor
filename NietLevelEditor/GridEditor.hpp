@@ -105,6 +105,7 @@ private:
     void setLineSelectableEnabled(bool enable);
     void treatWallDrawing();
     void treatElementsDrawing();
+    void setPlayerDeparture(const QModelIndex &caseIndex);
     void confNewTriggerData(const QModelIndex &caseIndex);
 private slots:
     void execConfCeilingBackground();

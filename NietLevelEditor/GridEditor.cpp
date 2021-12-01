@@ -96,6 +96,9 @@ bool GridEditor::loadExistingLevelGrid()
     {
         return false;
     }
+    QModelIndex caseIndex = m_tableModel->index(m_levelDataManager.getExistingLevel()->m_playerDeparture.second,
+                                                m_levelDataManager.getExistingLevel()->m_playerDeparture.first, QModelIndex());
+    setPlayerDeparture(caseIndex);
     loadTeleportExistingLevelGrid();
     loadStandardExistingLevelGrid(LevelElement_e::BARREL);
     loadStandardExistingLevelGrid(LevelElement_e::DOOR);
@@ -1066,12 +1069,7 @@ void GridEditor::treatElementsDrawing()
     int index = static_cast<int>(m_currentElementType);
     if(m_currentElementType == LevelElement_e::PLAYER_DEPARTURE)
     {
-        std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(caseIndex);
-        if(caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER)
-        {
-            m_tableModel->removeData(caseIndex);
-        }
-        setColorCaseData(caseIndex.column(), caseIndex.row(), m_currentElementType);
+        setPlayerDeparture(caseIndex);
         return;
     }
     if(m_currentElementType == LevelElement_e::GROUND_TRIGGER)
@@ -1112,6 +1110,17 @@ void GridEditor::treatElementsDrawing()
     {
         confNewTriggerData(caseIndex);
     }
+}
+
+//======================================================================
+void GridEditor::setPlayerDeparture(const QModelIndex &caseIndex)
+{
+    std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(caseIndex);
+    if(caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER)
+    {
+        m_tableModel->removeData(caseIndex);
+    }
+    setColorCaseData(caseIndex.column(), caseIndex.row(), LevelElement_e::PLAYER_DEPARTURE);
 }
 
 //======================================================================
