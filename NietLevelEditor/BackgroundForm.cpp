@@ -121,6 +121,25 @@ void BackgroundForm::confirmForm()
 }
 
 //======================================================================
+void BackgroundForm::setBackgroundData(const BackgroundData &background, bool ground)
+{
+    BackgroundData &currentBackground = (ground) ? m_groundBackground : m_ceilingBackground;
+    currentBackground = background;
+    if(background.m_colorData)
+    {
+        currentBackground.m_colorData = *background.m_colorData;
+    }
+    if(ground)
+    {
+        m_groundSet = true;
+    }
+    else
+    {
+        m_ceilingSet = true;
+    }
+}
+
+//======================================================================
 void BackgroundForm::memColorCase(const QObject *widget)
 {
     int firstIndex, secondIndex;

@@ -73,6 +73,8 @@ public:
 private:
     bool loadStandardExistingLevelGrid(LevelElement_e elementType);
     bool loadTeleportExistingLevelGrid();
+    bool loadBackgroundGeneralExistingLevelGrid();
+    bool loadWallExistingLevelGrid();
     void connectSlots();
     void setStdTableSize();
     void initSelectableWidgets();
@@ -105,8 +107,10 @@ private:
     void setLineSelectableEnabled(bool enable);
     void treatWallDrawing();
     void treatElementsDrawing();
-    void setPlayerDeparture(const QModelIndex &caseIndex);
     void confNewTriggerData(const QModelIndex &caseIndex);
+    void setTargetTeleport(const QModelIndex &caseIndex);
+    void setPlayerDeparture(const QModelIndex &caseIndex);
+    void setTeleporter(const QModelIndex &caseIndex);
 private slots:
     void execConfCeilingBackground();
     void execConfGroundBackground();

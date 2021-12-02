@@ -45,6 +45,7 @@ public:
     void modifBackgroundDisplayMode(BackgroundDisplayMode_e mode);
     void unckeckAll();
     bool backgroundSetted();
+    void setBackgroundData(const BackgroundData &background, bool ground);
     ~BackgroundForm();
 private slots:
     void modifDisplayModeColor(bool toggled);

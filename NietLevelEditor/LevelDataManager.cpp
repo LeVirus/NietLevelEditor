@@ -463,22 +463,24 @@ bool LevelDataManager::loadBackgroundLevel(bool ground, const QSettings &ini)
     {
         //COLOR
         varA = ini.value("Color" + id + "Background/colorR");
-        if(!varA.isNull())
+        if(varA.isNull())
         {
-            QVariant varB = ini.value("Color" + id + "Background/colorG"), varC = ini.value("Color" + id + "Background/colorB");
-            QStringList listA = varA.toString().split(' '), listB = varB.toString().split(' '), listC = varC.toString().split(' ');
-            if(listA.size() != 4 || listB.size() != 4 || listC.size() != 4)
-            {
-                return false;
-            }
-            for(int i = 0; i < 4; ++i)
-            {
-                currentBackground.m_colorData->operator[](0)[i] = listA[i].toFloat();
-                currentBackground.m_colorData->operator[](1)[i] = listB[i].toFloat();
-                currentBackground.m_colorData->operator[](2)[i] = listC[i].toFloat();
-            }
-            mode = BackgroundDisplayMode_e::COLOR;
+            return false;
         }
+        QVariant varB = ini.value("Color" + id + "Background/colorG"), varC = ini.value("Color" + id + "Background/colorB");
+        QStringList listA = varA.toString().split(' '), listB = varB.toString().split(' '), listC = varC.toString().split(' ');
+        if(listA.size() != 4 || listB.size() != 4 || listC.size() != 4)
+        {
+            return false;
+        }
+        currentBackground.m_colorData = std::array<std::array<float, 4>, 4>();
+        for(int i = 0; i < 4; ++i)
+        {
+            currentBackground.m_colorData->operator[](0)[i] = listA[i].toFloat();
+            currentBackground.m_colorData->operator[](1)[i] = listB[i].toFloat();
+            currentBackground.m_colorData->operator[](2)[i] = listC[i].toFloat();
+        }
+        mode = BackgroundDisplayMode_e::COLOR;
     }
     //TILED
     varA = ini.value("TiledTexture" + id + "Background/sprite");

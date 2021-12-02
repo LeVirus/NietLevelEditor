@@ -99,6 +99,8 @@ bool GridEditor::loadExistingLevelGrid()
     QModelIndex caseIndex = m_tableModel->index(m_levelDataManager.getExistingLevel()->m_playerDeparture.second,
                                                 m_levelDataManager.getExistingLevel()->m_playerDeparture.first, QModelIndex());
     setPlayerDeparture(caseIndex);
+    loadWallExistingLevelGrid();
+    loadBackgroundGeneralExistingLevelGrid();
     loadTeleportExistingLevelGrid();
     loadStandardExistingLevelGrid(LevelElement_e::BARREL);
     loadStandardExistingLevelGrid(LevelElement_e::DOOR);
@@ -1082,12 +1084,7 @@ void GridEditor::treatElementsDrawing()
     }
     else if(m_currentElementType == LevelElement_e::TARGET_TELEPORT)
     {
-        m_tableModel->setTargetTeleport(m_lastPositionAdded, caseIndex);
-        m_currentElementType = LevelElement_e::TELEPORT;
-        setLineSelectableEnabled(true);
-        int teleportIndex = static_cast<int>(LevelElement_e::TELEPORT);
-        m_tableModel->memTeleportElement(m_lastPositionAdded, {caseIndex.column(), caseIndex.row()},
-                                         m_drawData[teleportIndex][m_currentSelection].m_elementSectionName);
+        setTargetTeleport(caseIndex);
         return;
     }
     else if(m_currentElementType == LevelElement_e::SELECTION)
@@ -1097,7 +1094,8 @@ void GridEditor::treatElementsDrawing()
     }
     if(!deleteMode)
     {
-        m_tableModel->memStdElement({caseIndex.column(), caseIndex.row()}, m_currentElementType, m_drawData[index][m_currentSelection].m_elementSectionName);
+        m_tableModel->memStdElement({caseIndex.column(), caseIndex.row()}, m_currentElementType,
+                                    m_drawData[index][m_currentSelection].m_elementSectionName);
     }
     setCaseIcon(caseIndex.column(), caseIndex.row(), -1, deleteMode);
     if(m_currentElementType == LevelElement_e::TELEPORT)
@@ -1110,6 +1108,17 @@ void GridEditor::treatElementsDrawing()
     {
         confNewTriggerData(caseIndex);
     }
+}
+
+//======================================================================
+void GridEditor::setTargetTeleport(const QModelIndex &caseIndex)
+{
+    m_tableModel->setTargetTeleport(m_lastPositionAdded, caseIndex);
+    m_currentElementType = LevelElement_e::TELEPORT;
+    setLineSelectableEnabled(true);
+    int teleportIndex = static_cast<int>(LevelElement_e::TELEPORT);
+    m_tableModel->memTeleportElement(m_lastPositionAdded, {caseIndex.column(), caseIndex.row()},
+                                     m_drawData[teleportIndex][m_currentSelection].m_elementSectionName);
 }
 
 //======================================================================
@@ -1330,12 +1339,31 @@ bool GridEditor::loadTeleportExistingLevelGrid()
         //TARGET
         m_currentElementType = LevelElement_e::TARGET_TELEPORT;
         QModelIndex indexx = m_tableModel->index(it->second.m_targetPos.first, it->second.m_targetPos.second, QModelIndex());
-        m_tableModel->setTargetTeleport(m_lastPositionAdded, indexx);
-        m_currentElementType = LevelElement_e::TELEPORT;
-        setLineSelectableEnabled(true);
-        int teleportIndex = static_cast<int>(LevelElement_e::TELEPORT);
-        m_tableModel->memTeleportElement(m_lastPositionAdded, {indexx.column(), indexx.row()},
-                                         m_drawData[teleportIndex][m_currentSelection].m_elementSectionName);
+        setTargetTeleport(indexx);
+    }
+    return true;
+}
+
+//======================================================================
+bool GridEditor::loadBackgroundGeneralExistingLevelGrid()
+{
+    QPair<BackgroundData, BackgroundData> const *backgroundData = m_levelDataManager.getExistingLevel()->m_backgroundData.get();
+    if(!backgroundData)
+    {
+        return false;
+    }
+    m_backgroundForm->setBackgroundData(backgroundData->first, true);
+    m_backgroundForm->setBackgroundData(backgroundData->second, false);
+    return true;
+}
+
+//======================================================================
+bool GridEditor::loadWallExistingLevelGrid()
+{
+    const std::map<QString, WallDataINI> &wallsData = m_levelDataManager.getExistingLevel()->m_wallsData;
+    for(std::map<QString, WallDataINI>::const_iterator it = wallsData.begin(); it != wallsData.end(); ++it)
+    {
+
     }
     return true;
 }
