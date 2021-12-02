@@ -1074,7 +1074,7 @@ void GridEditor::treatElementsDrawing()
         setPlayerDeparture(caseIndex);
         return;
     }
-    if(m_currentElementType == LevelElement_e::GROUND_TRIGGER)
+    else if(m_currentElementType == LevelElement_e::GROUND_TRIGGER)
     {
         setColorCaseData(caseIndex.column(), caseIndex.row(), m_currentElementType);
         m_currentElementType = LevelElement_e::WALL;
@@ -1317,8 +1317,6 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
         }
         QModelIndex index = m_tableModel->index(it->second.second, it->second.first, QModelIndex());
         setCaseIcon(it->second.first, it->second.second, -1);
-        m_tableModel->setIdData(index, CaseData{m_currentElementType,
-                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}});
         m_tableModel->memStdElement({index.column(), index.row()}, m_currentElementType,
                                     m_drawData[elementTypeInt][m_currentSelection].m_elementSectionName);
     }

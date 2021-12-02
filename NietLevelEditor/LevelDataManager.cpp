@@ -154,7 +154,7 @@ bool LevelDataManager::loadStandardElementLevel(const QSettings &ini, StandardEl
         break;
     case StandardElement_e::EXIT:
         str = "Exit";
-        currentMap = &m_existingLevelData->m_enemiesData;
+        currentMap = &m_existingLevelData->m_exitData;
         break;
     case StandardElement_e::OBJECT:
         str = "Object";
