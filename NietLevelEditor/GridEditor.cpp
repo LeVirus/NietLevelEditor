@@ -1307,6 +1307,7 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
     case LevelElement_e::TOTAL:
         assert(false);
     }
+    int elementTypeInt = static_cast<int>(m_currentElementType);
     for(std::map<QString, QPair<int, int>>::const_iterator it = currentContainer->begin(); it != currentContainer->end(); ++it)
     {
         m_currentSelection = m_mapElementID[m_currentElementType].indexOf(it->first);
@@ -1318,6 +1319,8 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
         setCaseIcon(it->second.first, it->second.second, -1);
         m_tableModel->setIdData(index, CaseData{m_currentElementType,
                                                 m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}});
+        m_tableModel->memStdElement({index.column(), index.row()}, m_currentElementType,
+                                    m_drawData[elementTypeInt][m_currentSelection].m_elementSectionName);
     }
     return true;
 }
