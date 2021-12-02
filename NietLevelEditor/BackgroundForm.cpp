@@ -88,7 +88,6 @@ void BackgroundForm::confirmForm()
     currentBackground.m_displayMode = m_displayMode;
     if(ui->colorContainer->isEnabled())
     {
-        currentBackground.m_colorData = std::array<std::array<float, 4>, 4>();
         for(int i = 0; i < ui->colorContainer->children().size(); ++i)
         {
             if(ui->colorContainer->children()[i]->objectName() == "layoutWidget")
@@ -125,10 +124,6 @@ void BackgroundForm::setBackgroundData(const BackgroundData &background, bool gr
 {
     BackgroundData &currentBackground = (ground) ? m_groundBackground : m_ceilingBackground;
     currentBackground = background;
-    if(background.m_colorData)
-    {
-        currentBackground.m_colorData = *background.m_colorData;
-    }
     if(ground)
     {
         m_groundSet = true;
@@ -184,7 +179,7 @@ void BackgroundForm::memColorCase(const QObject *widget)
         return;
     }
     BackgroundData &currentBackground = (m_ceilingMode) ? m_ceilingBackground : m_groundBackground;
-    (*currentBackground.m_colorData)[firstIndex][secondIndex] = qobject_cast<const QDoubleSpinBox*>(widget)->value();
+    currentBackground.m_colorData[firstIndex][secondIndex] = qobject_cast<const QDoubleSpinBox*>(widget)->value();
 }
 
 //======================================================================

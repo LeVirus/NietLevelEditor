@@ -473,12 +473,11 @@ bool LevelDataManager::loadBackgroundLevel(bool ground, const QSettings &ini)
         {
             return false;
         }
-        currentBackground.m_colorData = std::array<std::array<float, 4>, 4>();
         for(int i = 0; i < 4; ++i)
         {
-            currentBackground.m_colorData->operator[](0)[i] = listA[i].toFloat();
-            currentBackground.m_colorData->operator[](1)[i] = listB[i].toFloat();
-            currentBackground.m_colorData->operator[](2)[i] = listC[i].toFloat();
+            currentBackground.m_colorData[0][i] = listA[i].toFloat();
+            currentBackground.m_colorData[1][i] = listB[i].toFloat();
+            currentBackground.m_colorData[2][i] = listC[i].toFloat();
         }
         mode = BackgroundDisplayMode_e::COLOR;
     }
@@ -720,14 +719,13 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
     //COLOR
     if(mode == BackgroundDisplayMode_e::COLOR || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE)
     {
-        assert(backgroundData.first->m_colorData);
         QString colorR, colorG, colorB;
         for(uint32_t i = 0; i < 4; ++i)
         {
-            QString::number((*backgroundData.first->m_colorData)[0][i]);
-            colorR += QString::number((*backgroundData.first->m_colorData)[i][0]) + " ";
-            colorG += QString::number((*backgroundData.first->m_colorData)[i][1]) + " ";
-            colorB += QString::number((*backgroundData.first->m_colorData)[i][2]) + " ";
+            QString::number(backgroundData.second->m_colorData[0][i]);
+            colorR += QString::number(backgroundData.second->m_colorData[i][0]) + " ";
+            colorG += QString::number(backgroundData.second->m_colorData[i][1]) + " ";
+            colorB += QString::number(backgroundData.second->m_colorData[i][2]) + " ";
         }
         m_INIFile->setValue("ColorGroundBackground/colorR", colorR);
         m_INIFile->setValue("ColorGroundBackground/colorG", colorG);
@@ -750,14 +748,13 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
     //COLOR
     if(mode == BackgroundDisplayMode_e::COLOR || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE)
     {
-        assert(backgroundData.second->m_colorData);
         QString colorR, colorG, colorB;
         for(uint32_t i = 0; i < 4; ++i)
         {
-            QString::number((*backgroundData.second->m_colorData)[0][i]);
-            colorR += QString::number((*backgroundData.second->m_colorData)[i][0]) + " ";
-            colorG += QString::number((*backgroundData.second->m_colorData)[i][1]) + " ";
-            colorB += QString::number((*backgroundData.second->m_colorData)[i][2]) + " ";
+            QString::number(backgroundData.second->m_colorData[0][i]);
+            colorR += QString::number(backgroundData.second->m_colorData[i][0]) + " ";
+            colorG += QString::number(backgroundData.second->m_colorData[i][1]) + " ";
+            colorB += QString::number(backgroundData.second->m_colorData[i][2]) + " ";
         }
         m_INIFile->setValue("ColorCeilingBackground/colorR", colorR);
         m_INIFile->setValue("ColorCeilingBackground/colorG", colorG);

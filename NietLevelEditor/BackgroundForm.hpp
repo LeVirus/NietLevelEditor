@@ -20,7 +20,7 @@ enum class BackgroundDisplayMode_e
 struct BackgroundData
 {
     //order :: top left, top right, bottom right, bottom left
-    std::optional<std::array<std::array<float, 4>, 4>> m_colorData;
+    std::array<std::array<float, 4>, 4> m_colorData;
     QString m_simpleTexture, m_tiledTexture;
     BackgroundDisplayMode_e m_displayMode;
 };
