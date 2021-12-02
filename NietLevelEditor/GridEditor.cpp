@@ -58,18 +58,16 @@ void GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     {
         loadSpritesForBackgroundForm();
     }
-    QTableView *tableView = findChild<QTableView*>("tableView");
-    assert(tableView);
     if(!m_tableModel)
     {
-        m_tableModel = new TableModel(tableView);
+        m_tableModel = new TableModel(ui->tableView);
     }
     else
     {
         m_tableModel->clearModel();
     }
     m_tableModel->setLevelSize(levelWidth, levelHeight);
-    tableView->setModel(m_tableModel);
+    ui->tableView->setModel(m_tableModel);
     setStdTableSize();
     m_displayPreview = false;
     if(!m_widgetInit)
@@ -98,6 +96,17 @@ bool GridEditor::loadExistingLevelGrid()
     }
     QModelIndex caseIndex = m_tableModel->index(m_levelDataManager.getExistingLevel()->m_playerDeparture.second,
                                                 m_levelDataManager.getExistingLevel()->m_playerDeparture.first, QModelIndex());
+    if(m_levelDataManager.getExistingLevel()->m_music)
+    {
+        for(int i = 0; i < m_musicWidget->count(); ++i)
+        {
+            if(m_musicWidget->itemText(i) == *m_levelDataManager.getExistingLevel()->m_music)
+            {
+                m_musicWidget->setCurrentIndex(i);
+                break;
+            }
+        }
+    }
     setPlayerDeparture(caseIndex);
     loadWallExistingLevelGrid();
     loadBackgroundGeneralExistingLevelGrid();
