@@ -475,9 +475,10 @@ bool LevelDataManager::loadBackgroundLevel(bool ground, const QSettings &ini)
         }
         for(int i = 0; i < 4; ++i)
         {
-            currentBackground.m_colorData[0][i] = listA[i].toFloat();
-            currentBackground.m_colorData[1][i] = listB[i].toFloat();
-            currentBackground.m_colorData[2][i] = listC[i].toFloat();
+            currentBackground.m_colorData[i][0] = listA[i].toFloat();
+            currentBackground.m_colorData[i][1] = listB[i].toFloat();
+            currentBackground.m_colorData[i][2] = listC[i].toFloat();
+            currentBackground.m_colorData[i][3] = 0.0f;
         }
         mode = BackgroundDisplayMode_e::COLOR;
     }
