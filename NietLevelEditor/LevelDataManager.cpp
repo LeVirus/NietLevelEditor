@@ -463,24 +463,23 @@ bool LevelDataManager::loadBackgroundLevel(bool ground, const QSettings &ini)
     {
         //COLOR
         varA = ini.value("Color" + id + "Background/colorR");
-        if(varA.isNull())
+        if(!varA.isNull())
         {
-            return false;
+            QVariant varB = ini.value("Color" + id + "Background/colorG"), varC = ini.value("Color" + id + "Background/colorB");
+            QStringList listA = varA.toString().split(' '), listB = varB.toString().split(' '), listC = varC.toString().split(' ');
+            if(listA.size() != 4 || listB.size() != 4 || listC.size() != 4)
+            {
+                return false;
+            }
+            for(int i = 0; i < 4; ++i)
+            {
+                currentBackground.m_colorData[i][0] = listA[i].toFloat();
+                currentBackground.m_colorData[i][1] = listB[i].toFloat();
+                currentBackground.m_colorData[i][2] = listC[i].toFloat();
+                currentBackground.m_colorData[i][3] = 0.0f;
+            }
+            mode = BackgroundDisplayMode_e::COLOR;
         }
-        QVariant varB = ini.value("Color" + id + "Background/colorG"), varC = ini.value("Color" + id + "Background/colorB");
-        QStringList listA = varA.toString().split(' '), listB = varB.toString().split(' '), listC = varC.toString().split(' ');
-        if(listA.size() != 4 || listB.size() != 4 || listC.size() != 4)
-        {
-            return false;
-        }
-        for(int i = 0; i < 4; ++i)
-        {
-            currentBackground.m_colorData[i][0] = listA[i].toFloat();
-            currentBackground.m_colorData[i][1] = listB[i].toFloat();
-            currentBackground.m_colorData[i][2] = listC[i].toFloat();
-            currentBackground.m_colorData[i][3] = 0.0f;
-        }
-        mode = BackgroundDisplayMode_e::COLOR;
     }
     //TILED
     varA = ini.value("TiledTexture" + id + "Background/sprite");
