@@ -604,7 +604,7 @@ void GridEditor::loadExitsPictures(const QString &installDir)
 }
 
 //======================================================================
-bool GridEditor::setWallShape(bool preview)
+bool GridEditor::setWallShape(bool preview, bool loadFromIni)
 {
     if(preview)
     {
@@ -623,7 +623,10 @@ bool GridEditor::setWallShape(bool preview)
     {
         m_tableModel->clearPreview();
     }
-    memStdWallMove();
+    if(!loadFromIni)
+    {
+        memStdWallMove();
+    }
     int shapeNum = -1;
     QPair<int, int> topLeftPos = {minX, minY}, bottomRight = {maxX, maxY};
     if(!preview)
@@ -1387,11 +1390,18 @@ bool GridEditor::loadWallExistingLevelGrid()
                                                        (*it->second.m_vectPos)[i].second.m_gridCoordTopLeft.first);
             m_secondCaseSelection = m_tableModel->index((*it->second.m_vectPos)[i].second.m_gridCoordBottomRight.second,
                                                        (*it->second.m_vectPos)[i].second.m_gridCoordBottomRight.first);
-            treatWallDrawing();
-        }
-        if(it->second.m_moveableData)
-        {
-
+            if(it->second.m_moveableData)
+            {
+                m_wallMoveableMode = true;
+                if(!m_memcurrentMoveWallData)
+                {
+                    m_memcurrentMoveWallData = std::make_unique<MoveWallData>();
+                }
+                m_memcurrentMoveWallData->clear();
+                *m_memcurrentMoveWallData = (*it->second.m_moveableData);
+            }
+            setWallShape(false, true);
+            m_wallMoveableMode = false;
         }
     }
     return true;

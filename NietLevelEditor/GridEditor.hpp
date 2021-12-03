@@ -91,7 +91,7 @@ private:
     void loadStaticGroundElementPictures(const QString &installDir);
     void loadBarrelsPictures(const QString &installDir);
     void loadExitsPictures(const QString &installDir);
-    bool setWallShape(bool preview = false);
+    bool setWallShape(bool preview = false, bool loadFromIni = false);
     void setWallDiagCaseConf();
     void setWallDiagRectCaseConf();
     void setDeletionZone(bool preview = false);

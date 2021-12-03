@@ -228,7 +228,10 @@ bool LevelDataManager::loadWallLevel(const QSettings &ini)
                 m_existingLevelData->m_wallsData[keys[i]].m_iniID = ini.value(keys[i] + "/WallDisplayID", "").toString();
                 QVariant varA = ini.value(keys[i] + "/Direction", ""),
                         varB = ini.value(keys[i] + "/NumberOfMove", "");
-                QStringList listDir = varA.toStringList(), listMoveNumber = varB.toStringList();
+                QStringList listDir, listMoveNumber;
+                QString strDir = varA.toString(), strMoveNumber = varB.toString();
+                listDir = strDir.split(' ');
+                listMoveNumber= strMoveNumber.split(' ');
                 if(listDir.isEmpty() || listMoveNumber.isEmpty() || listDir.size() != listMoveNumber.size())
                 {
                     return false;
