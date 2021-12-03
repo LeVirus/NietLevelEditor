@@ -69,6 +69,7 @@ public:
     void initGrid(const QString &installDir, int levelWidth, int levelHeight);
     std::optional<QPair<int, int>> getLoadedLevelSize()const;
     bool loadExistingLevelGrid();
+    void unselectAllRadioButtons();
     ~GridEditor();
 private:
     bool loadStandardExistingLevelGrid(LevelElement_e elementType);

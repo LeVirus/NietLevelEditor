@@ -100,6 +100,14 @@ void SelectableLineLayout::setRadioButtonEnabled(bool enable)
 }
 
 //======================================================================
+void SelectableLineLayout::uncheckRadioButton()
+{
+    m_radio->setAutoExclusive(false);
+    m_radio->setChecked(false);
+    m_radio->setAutoExclusive(true);
+}
+
+//======================================================================
 void SelectableLineLayout::selectedIndex(int currentIndex)
 {
     emit lineSelected(m_elementType, currentIndex);

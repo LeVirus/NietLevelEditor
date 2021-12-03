@@ -20,6 +20,7 @@ public:
     void setWallWidgetsEnabled(bool enable);
     std::optional<int> getSelected();
     void setRadioButtonEnabled(bool enable);
+    void uncheckRadioButton();
     Q_SIGNAL void lineSelected(LevelElement_e, int);
 private slots:
     void selected();

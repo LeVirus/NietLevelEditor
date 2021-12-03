@@ -67,6 +67,7 @@ void GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
         m_tableModel->clearModel();
     }
     m_tableModel->setLevelSize(levelWidth, levelHeight);
+    ui->tableView->reset();
     ui->tableView->setModel(m_tableModel);
     setStdTableSize();
     m_displayPreview = false;
@@ -120,6 +121,18 @@ bool GridEditor::loadExistingLevelGrid()
     loadStandardExistingLevelGrid(LevelElement_e::OBJECT);
     updateGridView();
     return true;
+}
+
+//======================================================================
+void GridEditor::unselectAllRadioButtons()
+{
+    const QObjectList &children = ui->SelectableLayout->children();
+    for(int i = 0; i < children.size(); ++i)
+    {
+        static_cast<SelectableLineLayout*>(children[i])->uncheckRadioButton();
+    }
+    m_currentSelection = 0;
+    m_currentElementType = LevelElement_e::SELECTION;
 }
 
 //======================================================================
