@@ -146,7 +146,7 @@ private:
     QPushButton *m_generateButton;
     QComboBox *m_musicWidget;
     Direction_e m_memPlayerDirection = Direction_e::NORTH;
-    bool m_widgetInit = false;
+    bool m_widgetInit = false, m_loadingExistingLevelMode = false, m_loadingDistantTriggerMode = false;
 };
 
 Direction_e getDirEnumFromQString(const QString &str);

@@ -158,8 +158,9 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
         caseData->m_wallShapeNum = wallShapeNum;
         if(m_wallMoveableMode)
         {
-            if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH ||
-                    m_moveableWallForm->getTriggerType() == TriggerType_e::GROUND)
+            if((!m_loadingExistingLevelMode && (m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH ||
+                    m_moveableWallForm->getTriggerType() == TriggerType_e::GROUND)) ||
+                    (m_loadingExistingLevelMode && m_loadingDistantTriggerMode))
             {
                 m_memCurrentLinkTriggerWall.insert({x, y});
             }
@@ -1378,6 +1379,9 @@ bool GridEditor::loadWallExistingLevelGrid()
     const std::map<QString, WallDataINI> &wallsData = m_levelDataManager.getExistingLevel()->m_wallsData;
     QString currentINIID;
     m_currentElementType = LevelElement_e::WALL;
+    QPair<int, int> currentCoord;
+    m_loadingExistingLevelMode = true;
+    m_memCurrentLinkTriggerWall.clear();
     for(std::map<QString, WallDataINI>::const_iterator it = wallsData.begin(); it != wallsData.end(); ++it)
     {
         assert(it->second.m_vectPos);
@@ -1399,11 +1403,31 @@ bool GridEditor::loadWallExistingLevelGrid()
                 }
                 m_memcurrentMoveWallData->clear();
                 *m_memcurrentMoveWallData = (*it->second.m_moveableData);
+                m_loadingDistantTriggerMode = true;
             }
             setWallShape(false, true);
             m_wallMoveableMode = false;
+            if(it->second.m_moveableData && it->second.m_moveableData->m_triggerBehaviour != TriggerBehaviourType_e::AUTO)
+            {
+                currentCoord = {it->second.m_moveableData->m_triggerPos->first, it->second.m_moveableData->m_triggerPos->second};
+                if(it->second.m_moveableData->m_triggerType == TriggerType_e::DISTANT_SWITCH)
+                {
+                    m_currentElementType = LevelElement_e::TRIGGER;
+                    m_currentSelection = m_mapElementID[m_currentElementType].indexOf(it->second.m_moveableData->m_triggerINISectionName);
+                    setCaseIcon(currentCoord.first, currentCoord.second, -1);
+                }
+                else if(it->second.m_moveableData->m_triggerType == TriggerType_e::GROUND)
+                {
+                    m_currentElementType = LevelElement_e::GROUND_TRIGGER;
+                    setColorCaseData(currentCoord.first, currentCoord.second, m_currentElementType);
+                }
+                confNewTriggerData(m_tableModel->index(currentCoord.second, currentCoord.first));
+                m_memCurrentLinkTriggerWall.clear();
+            }
         }
     }
+    m_loadingExistingLevelMode = false;
+    m_loadingDistantTriggerMode = false;
     return true;
 }
 
