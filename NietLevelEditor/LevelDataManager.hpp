@@ -42,7 +42,7 @@ struct DoorData
 struct WallDataINI
 {
     QString m_position, m_removePosition;
-    std::unique_ptr<QVector<QPair<WallDrawShape_e, WallShapeData>>> m_pos, m_rem;
+    std::unique_ptr<QVector<QPair<WallDrawShape_e, WallShapeData>>> m_vectPos, m_vectRem;
     //Moveable data
     std::optional<QString> m_iniID;
     std::unique_ptr<MoveWallData> m_moveableData;

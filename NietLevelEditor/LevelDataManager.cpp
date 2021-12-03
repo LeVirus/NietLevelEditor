@@ -213,7 +213,10 @@ bool LevelDataManager::loadWallLevel(const QSettings &ini)
             m_existingLevelData->m_wallsData.insert({keys[i], WallDataINI()});
             m_existingLevelData->m_wallsData[keys[i]].m_position = ini.value(keys[i] + "/GamePosition", "").toString();
             m_existingLevelData->m_wallsData[keys[i]].m_removePosition = ini.value(keys[i] + "/RemovePosition", "").toString();
-            generateStructPosWall(keys[i], true);
+            if(!generateStructPosWall(keys[i], true))
+            {
+                return false;
+            }
             generateStructPosWall(keys[i], false);
             if(m_existingLevelData->m_wallsData[keys[i]].m_position.isEmpty())
             {
@@ -293,27 +296,47 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
     if(positionMode)
     {
         baseStr = m_existingLevelData->m_wallsData[key].m_position;
-        m_existingLevelData->m_wallsData[key].m_pos = std::make_unique<QVector<QPair<WallDrawShape_e, WallShapeData>>>();
-        currentContainer = m_existingLevelData->m_wallsData[key].m_pos.get();
+        m_existingLevelData->m_wallsData[key].m_vectPos = std::make_unique<QVector<QPair<WallDrawShape_e, WallShapeData>>>();
+        currentContainer = m_existingLevelData->m_wallsData[key].m_vectPos.get();
     }
     else
     {
         baseStr = m_existingLevelData->m_wallsData[key].m_removePosition;
-        m_existingLevelData->m_wallsData[key].m_rem = std::make_unique<QVector<QPair<WallDrawShape_e, WallShapeData>>>();
-        currentContainer = m_existingLevelData->m_wallsData[key].m_rem.get();
+        m_existingLevelData->m_wallsData[key].m_vectRem = std::make_unique<QVector<QPair<WallDrawShape_e, WallShapeData>>>();
+        currentContainer = m_existingLevelData->m_wallsData[key].m_vectRem.get();
     }
     if(baseStr.isEmpty())
     {
+        if(positionMode)
+        {
+            QMessageBox::warning(nullptr, "Error", "Wall loading failed : baseStr.isEmpty. ");
+        }
         return false;
     }
     QStringList listA = baseStr.split("  "), listB;
+    if(listA.empty())
+    {
+        QMessageBox::warning(nullptr, "Error", "Wall loading failed : listA.empty.");
+        return false;
+    }
     currentContainer->reserve(listA.size());
     for(int i = 0; i < listA.size(); ++i)
     {
         currentContainer->push_back({});
         listB = listA[i].split(' ');
+        if(listB.empty())
+        {
+            QMessageBox::warning(nullptr, "Error", "Wall loading failed : listB.empty.");
+            return false;
+        }
         QPair<WallDrawShape_e, WallShapeData> &currentPair = currentContainer->back();
         currentPair.second.m_iniId = key;
+        if(listB.size() < 3)
+        {
+            std::cerr << !positionMode << "  " << listB.size() << "\n";;
+            QMessageBox::warning(nullptr, "Error", "Wall loading failed : listB.size() < 3.");
+            return false;
+        }
         //Origin
         currentPair.second.m_gridCoordTopLeft = {listB[1].toInt(), listB[2].toInt()};
         switch(listB[0].toUInt())
@@ -322,7 +345,7 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         case 0:
         {
             currentPair.first = WallDrawShape_e::LINE_AND_RECT;
-            currentPair.second.m_gridCoordBottomRight = {listB[3].toInt(), listB[4].toInt()};
+            currentPair.second.m_gridCoordBottomRight = {listB[1].toInt() + listB[3].toInt() - 1, listB[2].toInt() + listB[4].toInt() - 1};
             break;
         }
         //Vertical Line
@@ -330,6 +353,7 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         {
             currentPair.first = WallDrawShape_e::LINE_AND_RECT;
             currentPair.second.m_wallCount = listB[3].toInt();
+            currentPair.second.m_gridCoordBottomRight = {listB[1].toInt(), listB[2].toInt() + listB[3].toInt() - 1};
             break;
         }
         //Horizontal Line
@@ -337,6 +361,7 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         {
             currentPair.first = WallDrawShape_e::LINE_AND_RECT;
             currentPair.second.m_wallCount = listB[3].toInt();
+            currentPair.second.m_gridCoordBottomRight = {listB[1].toInt() + listB[3].toInt() - 1, listB[2].toInt()};
             break;
         }
         //Point
@@ -344,12 +369,14 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         {
             currentPair.first = WallDrawShape_e::LINE_AND_RECT;
             currentPair.second.m_wallCount = 1;
+            currentPair.second.m_gridCoordBottomRight = currentPair.second.m_gridCoordTopLeft;
             break;
         }
         //diag rect
         case 4:
         {
             currentPair.first = WallDrawShape_e::DIAGONAL_RECT;
+            currentPair.second.m_gridCoordBottomRight = {listB[1].toInt() + listB[3].toInt() - 1, listB[2].toInt() + listB[3].toInt() - 1};
             currentPair.second.m_wallCount = listB[3].toInt() * 2 - 2;
             break;
         }
@@ -358,6 +385,7 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         {
             currentPair.second.m_diagCaseUp = true;
             currentPair.first = WallDrawShape_e::DIAGONAL_LINE;
+            currentPair.second.m_gridCoordBottomRight = {listB[1].toInt() + listB[3].toInt() - 1, listB[2].toInt() + listB[3].toInt() - 1};
             currentPair.second.m_wallCount = listB[3].toInt();
             break;
         }
@@ -366,6 +394,7 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         {
             currentPair.second.m_diagCaseUp = false;
             currentPair.first = WallDrawShape_e::DIAGONAL_LINE;
+            currentPair.second.m_gridCoordBottomRight = {listB[1].toInt() + listB[3].toInt() - 1, listB[2].toInt() - (listB[3].toInt() - 1)};
             currentPair.second.m_wallCount = listB[3].toInt();
             break;
         }

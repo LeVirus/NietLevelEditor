@@ -1008,6 +1008,8 @@ void GridEditor::mouseReleaseSelection()
     }
     if(m_currentElementType == LevelElement_e::WALL)
     {
+        assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
+        m_secondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
         treatWallDrawing();
     }
     else if(m_currentElementType == LevelElement_e::DELETE)
@@ -1028,8 +1030,6 @@ void GridEditor::mouseReleaseSelection()
 //======================================================================
 void GridEditor::treatWallDrawing()
 {
-    assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
-    m_secondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
     m_memCurrentLinkTriggerWall.clear();
     if(m_wallMoveableMode)
     {
@@ -1362,7 +1362,9 @@ bool GridEditor::loadBackgroundGeneralExistingLevelGrid()
     {
         return false;
     }
+    //GROUND
     m_backgroundForm->setBackgroundData(backgroundData->first, true);
+    //CEILING
     m_backgroundForm->setBackgroundData(backgroundData->second, false);
     return true;
 }
@@ -1371,9 +1373,26 @@ bool GridEditor::loadBackgroundGeneralExistingLevelGrid()
 bool GridEditor::loadWallExistingLevelGrid()
 {
     const std::map<QString, WallDataINI> &wallsData = m_levelDataManager.getExistingLevel()->m_wallsData;
+    QString currentINIID;
+    m_currentElementType = LevelElement_e::WALL;
     for(std::map<QString, WallDataINI>::const_iterator it = wallsData.begin(); it != wallsData.end(); ++it)
     {
+        assert(it->second.m_vectPos);
+        currentINIID = it->second.m_moveableData ? (*it->second.m_iniID) : it->first;
+        m_currentSelection = m_mapElementID[m_currentElementType].indexOf(currentINIID);
+        for(int32_t i = 0; i < it->second.m_vectPos->size(); ++i)
+        {
+            m_wallDrawMode = (*it->second.m_vectPos)[i].first;
+            m_firstCaseSelection = m_tableModel->index((*it->second.m_vectPos)[i].second.m_gridCoordTopLeft.second,
+                                                       (*it->second.m_vectPos)[i].second.m_gridCoordTopLeft.first);
+            m_secondCaseSelection = m_tableModel->index((*it->second.m_vectPos)[i].second.m_gridCoordBottomRight.second,
+                                                       (*it->second.m_vectPos)[i].second.m_gridCoordBottomRight.first);
+            treatWallDrawing();
+        }
+        if(it->second.m_moveableData)
+        {
 
+        }
     }
     return true;
 }
