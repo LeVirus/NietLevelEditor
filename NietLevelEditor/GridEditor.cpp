@@ -353,8 +353,11 @@ void GridEditor::initMusicDir(const QString &installDir, bool widgetInit)
     }
     if(!widgetInit)
     {
-        ui->SelectableLayout->addWidget(new QLabel("Music"));
-        ui->SelectableLayout->addWidget(m_musicWidget);
+        QVBoxLayout *layout = new QVBoxLayout();
+        layout->addWidget(new QLabel("Music"));
+        layout->addWidget(m_musicWidget);
+        layout->setAlignment(Qt::AlignmentFlag::AlignTop);
+        ui->SelectableLayout->addLayout(layout);
     }
 }
 
