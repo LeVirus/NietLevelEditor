@@ -156,6 +156,7 @@ void TableModel::clearPreview()
 //======================================================================
 void TableModel::clearModel()
 {
+    m_exitPos.reset();
     m_memWallShape.clear();
     m_vectPic.clear();
     m_departurePlayer = {};
