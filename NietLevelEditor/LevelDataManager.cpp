@@ -519,17 +519,18 @@ bool LevelDataManager::loadBackgroundLevel(bool ground, const QSettings &ini)
         currentBackground.m_tiledTexture = varA.toString();
         if(mode == BackgroundDisplayMode_e::NONE)
         {
-            currentBackground.m_displayMode = BackgroundDisplayMode_e::TILED_TEXTURE;
+            mode = BackgroundDisplayMode_e::TILED_TEXTURE;
         }
         else if(mode == BackgroundDisplayMode_e::COLOR)
         {
-            currentBackground.m_displayMode = BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE;
+            mode = BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE;
         }
         else if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE)
         {
-            currentBackground.m_displayMode = BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE;
+            mode = BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE;
         }
     }
+    currentBackground.m_displayMode = mode;
     return true;
 }
 
