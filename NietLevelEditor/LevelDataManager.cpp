@@ -336,7 +336,6 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         currentPair.second.m_iniId = key;
         if(listB.size() < 3)
         {
-            std::cerr << !positionMode << "  " << listB.size() << "\n";;
             QMessageBox::warning(nullptr, "Error", "Wall loading failed : listB.size() < 3.");
             return false;
         }

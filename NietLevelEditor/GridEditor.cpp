@@ -127,7 +127,8 @@ bool GridEditor::loadExistingLevelGrid()
 void GridEditor::unselectAllRadioButtons()
 {
     const QObjectList &children = ui->SelectableLayout->children();
-    for(int i = 0; i < children.size(); ++i)
+    //-1 ignore music select layout
+    for(int i = 0; i < children.size() - 1; ++i)
     {
         static_cast<SelectableLineLayout*>(children[i])->uncheckRadioButton();
     }
@@ -282,7 +283,8 @@ void GridEditor::setLineSelectableEnabled(bool enable)
 {
     const QObjectList &children = ui->SelectableLayout->children();
     m_memWallSelectLayout->setWallWidgetsEnabled(enable);
-    for(int i = 0; i < children.size(); ++i)
+    //-1 ignore music select layout
+    for(int i = 0; i < children.size() - 1; ++i)
     {
         static_cast<SelectableLineLayout*>(children[i])->setRadioButtonEnabled(enable);
     }
