@@ -25,7 +25,6 @@ void ConfNewLevelForm::clearForm()
     ui->radioNewLevel->setAutoExclusive(false);
     ui->radioNewLevel->setChecked(false);
     ui->radioNewLevel->setAutoExclusive(true);
-    m_installDirectory.clear();
     m_mode = FormMode_e::UNSELECTED;
 }
 

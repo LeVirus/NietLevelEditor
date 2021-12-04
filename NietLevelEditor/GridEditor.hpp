@@ -76,6 +76,7 @@ private:
     bool loadTeleportExistingLevelGrid();
     bool loadBackgroundGeneralExistingLevelGrid();
     bool loadWallExistingLevelGrid();
+    bool loadRemovedWallExistingLevelGrid(const std::pair<const QString, WallDataINI> &currentTreat);
     void connectSlots();
     void setStdTableSize();
     void initSelectableWidgets();
@@ -97,9 +98,12 @@ private:
     void setWallDiagRectCaseConf();
     void setDeletionZone(bool preview = false);
     void memStdWallMove();
-    uint32_t setWallLineRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, int shapeNum, bool preview = false);
-    uint32_t setWallDiagLineShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, int shapeNum, bool preview = false);
-    bool setWallDiagRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex, int shapeNum, uint32_t &wallNumber, bool preview = false);
+    uint32_t setWallLineRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex,
+                                  int shapeNum, bool preview = false, bool deleteMode = false);
+    uint32_t setWallDiagLineShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex,
+                                  int shapeNum, bool preview = false, bool deleteMode = false);
+    bool setWallDiagRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex,
+                              int shapeNum, uint32_t &wallNumber, bool preview = false, bool deleteMode = false);
     void setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode = false, bool diagRectCase = false);
     void memWallMove(const QModelIndex &index);
     void setColorCaseData(int x, int y, LevelElement_e type);

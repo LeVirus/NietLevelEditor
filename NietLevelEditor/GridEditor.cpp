@@ -810,7 +810,7 @@ void GridEditor::memStdWallMove()
 
 //======================================================================
 uint32_t GridEditor::setWallLineRectShape(const QPair<int, int> &topLeftIndex,
-                                          const QPair<int, int> &bottomRightIndex, int shapeNum, bool preview)
+                                          const QPair<int, int> &bottomRightIndex, int shapeNum, bool preview, bool deleteMode)
 {
     uint32_t count = 0;
     for(int i = topLeftIndex.first; i < bottomRightIndex.first + 1; ++i)
@@ -822,11 +822,11 @@ uint32_t GridEditor::setWallLineRectShape(const QPair<int, int> &topLeftIndex,
         }
         else
         {
-            setCaseIcon(i, topLeftIndex.second, shapeNum);
+            setCaseIcon(i, topLeftIndex.second, shapeNum, deleteMode);
             ++count;
             if(topLeftIndex.second != bottomRightIndex.second)
             {
-                setCaseIcon(i, bottomRightIndex.second, shapeNum);
+                setCaseIcon(i, bottomRightIndex.second, shapeNum, deleteMode);
                 ++count;
             }
         }
@@ -840,11 +840,11 @@ uint32_t GridEditor::setWallLineRectShape(const QPair<int, int> &topLeftIndex,
         }
         else
         {
-            setCaseIcon(topLeftIndex.first, i, shapeNum);
+            setCaseIcon(topLeftIndex.first, i, shapeNum, deleteMode);
             ++count;
             if(topLeftIndex.first != bottomRightIndex.first)
             {
-                setCaseIcon(bottomRightIndex.first, i, shapeNum);
+                setCaseIcon(bottomRightIndex.first, i, shapeNum, deleteMode);
                 ++count;
             }
         }
@@ -854,7 +854,7 @@ uint32_t GridEditor::setWallLineRectShape(const QPair<int, int> &topLeftIndex,
 
 //======================================================================
 uint32_t GridEditor::setWallDiagLineShape(const QPair<int, int> &topLeftIndex,
-                                          const QPair<int, int> &bottomRightIndex, int shapeNum, bool preview)
+                                          const QPair<int, int> &bottomRightIndex, int shapeNum, bool preview, bool deleteMode)
 {
     uint32_t count = 0;
     int j = m_firstCaseSelection.row(), modY, i = m_firstCaseSelection.column();
@@ -869,7 +869,7 @@ uint32_t GridEditor::setWallDiagLineShape(const QPair<int, int> &topLeftIndex,
         }
         else
         {
-            setCaseIcon(i, j, shapeNum);
+            setCaseIcon(i, j, shapeNum, deleteMode);
             ++count;
         }
     }
@@ -879,7 +879,7 @@ uint32_t GridEditor::setWallDiagLineShape(const QPair<int, int> &topLeftIndex,
 //======================================================================
 bool GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
                                       const QPair<int, int> &bottomRightIndex, int shapeNum, uint32_t &wallNumber,
-                                      bool preview)
+                                      bool preview, bool deleteMode)
 {
     wallNumber = 0;
     bool modX = (topLeftIndex.first != m_firstCaseSelection.column()),
@@ -943,8 +943,8 @@ bool GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
         }
         else
         {
-            setCaseIcon(i, currentYA, shapeNum, false, true);
-            setCaseIcon(i, currentYB, shapeNum, false, true);
+            setCaseIcon(i, currentYA, shapeNum, deleteMode, true);
+            setCaseIcon(i, currentYB, shapeNum, deleteMode, true);
             wallNumber += 2;
         }
     }
@@ -960,8 +960,8 @@ bool GridEditor::setWallDiagRectShape(const QPair<int, int> &topLeftIndex,
         }
         else
         {
-            setCaseIcon(i, currentYA, shapeNum, false, true);
-            setCaseIcon(i, currentYB, shapeNum, false, true);
+            setCaseIcon(i, currentYA, shapeNum, deleteMode, true);
+            setCaseIcon(i, currentYB, shapeNum, deleteMode, true);
             wallNumber += 2;
         }
     }
@@ -1443,9 +1443,55 @@ bool GridEditor::loadWallExistingLevelGrid()
                 m_memCurrentLinkTriggerWall.clear();
             }
         }
+        loadRemovedWallExistingLevelGrid(*it);
     }
     m_loadingExistingLevelMode = false;
     m_loadingDistantTriggerMode = false;
+    return true;
+}
+
+//======================================================================
+bool GridEditor::loadRemovedWallExistingLevelGrid(const std::pair<const QString, WallDataINI> &currentTreat)
+{
+    if(!currentTreat.second.m_vectRem || currentTreat.second.m_vectRem->empty())
+    {
+        return true;
+    }
+    for(int32_t i = 0; i < currentTreat.second.m_vectRem->size(); ++i)
+    {
+        break;
+        QPair<int, int> origin = (*currentTreat.second.m_vectRem)[i].second.m_gridCoordTopLeft,
+                bottomRight = (*currentTreat.second.m_vectRem)[i].second.m_gridCoordTopLeft;
+        //point case
+        if((*currentTreat.second.m_vectRem)[i].second.m_gridCoordTopLeft ==
+                (*currentTreat.second.m_vectRem)[i].second.m_gridCoordBottomRight)
+        {
+            m_tableModel->removeData(m_tableModel->index(origin.second, origin.first));
+            continue;
+        }
+        switch((*currentTreat.second.m_vectRem)[i].first)
+        {
+        case WallDrawShape_e::LINE_AND_RECT:
+        {
+            setWallLineRectShape(origin, bottomRight, -1, false, true);
+            break;
+        }
+        case WallDrawShape_e::DIAGONAL_LINE:
+        {
+            setWallDiagLineShape(origin, bottomRight, -1, false, true);
+            break;
+        }
+        case WallDrawShape_e::DIAGONAL_RECT:
+        {
+            //method constraint
+            uint32_t random;
+            setWallDiagRectShape(origin, bottomRight, -1, random, false, true);
+            break;
+        }
+        default:
+            assert(false);
+        }
+    }
     return true;
 }
 

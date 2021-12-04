@@ -354,7 +354,7 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         case 1:
         {
             currentPair.first = WallDrawShape_e::LINE_AND_RECT;
-            currentPair.second.m_wallCount = listB[3].toInt();
+//            currentPair.second.m_wallCount = listB[3].toInt();
             currentPair.second.m_gridCoordBottomRight = {listB[1].toInt(), listB[2].toInt() + listB[3].toInt() - 1};
             break;
         }
@@ -362,7 +362,7 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         case 2:
         {
             currentPair.first = WallDrawShape_e::LINE_AND_RECT;
-            currentPair.second.m_wallCount = listB[3].toInt();
+//            currentPair.second.m_wallCount = listB[3].toInt();
             currentPair.second.m_gridCoordBottomRight = {listB[1].toInt() + listB[3].toInt() - 1, listB[2].toInt()};
             break;
         }
@@ -370,7 +370,7 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         case 3:
         {
             currentPair.first = WallDrawShape_e::LINE_AND_RECT;
-            currentPair.second.m_wallCount = 1;
+//            currentPair.second.m_wallCount = 1;
             currentPair.second.m_gridCoordBottomRight = currentPair.second.m_gridCoordTopLeft;
             break;
         }
@@ -379,7 +379,7 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         {
             currentPair.first = WallDrawShape_e::DIAGONAL_RECT;
             currentPair.second.m_gridCoordBottomRight = {listB[1].toInt() + listB[3].toInt() - 1, listB[2].toInt() + listB[3].toInt() - 1};
-            currentPair.second.m_wallCount = listB[3].toInt() * 2 - 2;
+//            currentPair.second.m_wallCount = listB[3].toInt() * 2 - 2;
             break;
         }
         //diag origins up left
@@ -388,7 +388,7 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
             currentPair.second.m_diagCaseUp = true;
             currentPair.first = WallDrawShape_e::DIAGONAL_LINE;
             currentPair.second.m_gridCoordBottomRight = {listB[1].toInt() + listB[3].toInt() - 1, listB[2].toInt() + listB[3].toInt() - 1};
-            currentPair.second.m_wallCount = listB[3].toInt();
+//            currentPair.second.m_wallCount = listB[3].toInt();
             break;
         }
         //diag origins down left
@@ -397,12 +397,28 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
             currentPair.second.m_diagCaseUp = false;
             currentPair.first = WallDrawShape_e::DIAGONAL_LINE;
             currentPair.second.m_gridCoordBottomRight = {listB[1].toInt() + listB[3].toInt() - 1, listB[2].toInt() - (listB[3].toInt() - 1)};
-            currentPair.second.m_wallCount = listB[3].toInt();
+//            currentPair.second.m_wallCount = listB[3].toInt();
             break;
         }
         default:
-            return false;
+            assert(false);
         }
+        if(positionMode)
+        {
+            if(listB[0].toUInt() == 3)
+            {
+                currentPair.second.m_wallCount = 1;
+            }
+            else if(listB[0].toUInt() == 4)
+            {
+                currentPair.second.m_wallCount = listB[3].toInt() * 2 - 2;
+            }
+            else
+            {
+                currentPair.second.m_wallCount = listB[3].toInt();
+            }
+        }
+        std::cerr << key.toStdString() << "  " << currentPair.second.m_wallCount << "\n";
     }
     return true;
 }
