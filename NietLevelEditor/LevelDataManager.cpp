@@ -593,9 +593,9 @@ void LevelDataManager::generateTeleportsIniLevel(const TableModel &tableModel)
         target += QString::number(it->second.m_targetPos.first) + " " + QString::number(it->second.m_targetPos.second) + "  ";
         biDirection += "0 ";
     }
-    m_INIFile->setValue(teleportData.begin()->first + "/PosA", pos);
-    m_INIFile->setValue(teleportData.begin()->first + "/PosB", target);
-    m_INIFile->setValue(teleportData.begin()->first + "/BiDirection", biDirection);
+    m_INIFile->setValue(teleportData.begin()->first + "/PosA", formatToIniFile(pos));
+    m_INIFile->setValue(teleportData.begin()->first + "/PosB", formatToIniFile(target));
+    m_INIFile->setValue(teleportData.begin()->first + "/BiDirection", formatToIniFile(biDirection));
 }
 
 //======================================================================
@@ -619,7 +619,7 @@ void LevelDataManager::generateStandardIniLevel(const std::multimap<QString, QPa
     }
     for(std::map<QString, QString>::const_iterator it = mapINI.begin(); it != mapINI.end(); ++it)
     {
-        m_INIFile->setValue(it->first + "/GamePosition", it->second + " ");
+        m_INIFile->setValue(it->first + "/GamePosition", formatToIniFile(it->second));
     }
 }
 
@@ -691,10 +691,10 @@ void LevelDataManager::writeWallData(const std::map<QString, WallDataINI> &wallD
     QString strDir, strMoveNumber;
     for(std::map<QString, WallDataINI>::const_iterator it = wallData.begin(); it != wallData.end(); ++it)
     {
-        m_INIFile->setValue(it->first + "/GamePosition", it->second.m_position);
+        m_INIFile->setValue(it->first + "/GamePosition", formatToIniFile(it->second.m_position));
         if(!it->second.m_removePosition.isEmpty())
         {
-            m_INIFile->setValue(it->first + "/RemovePosition", it->second.m_removePosition);
+            m_INIFile->setValue(it->first + "/RemovePosition", formatToIniFile(it->second.m_removePosition));
         }
         assert(it->second.m_iniID);
         m_INIFile->setValue(it->first + "/WallDisplayID", *it->second.m_iniID);
@@ -707,8 +707,8 @@ void LevelDataManager::writeWallData(const std::map<QString, WallDataINI> &wallD
                 strDir += QString::number(static_cast<int>(it->second.m_moveableData->m_memMoveWallData[i].first)) + " ";
                 strMoveNumber += QString::number(it->second.m_moveableData->m_memMoveWallData[i].second) + " ";
             }
-            m_INIFile->setValue(it->first + "/Direction", strDir);
-            m_INIFile->setValue(it->first + "/NumberOfMove", strMoveNumber);
+            m_INIFile->setValue(it->first + "/Direction", formatToIniFile(strDir));
+            m_INIFile->setValue(it->first + "/NumberOfMove", formatToIniFile(strMoveNumber));
             m_INIFile->setValue(it->first + "/Velocity", it->second.m_moveableData->m_velocity);
             m_INIFile->setValue(it->first + "/TriggerBehaviourType", static_cast<int>(it->second.m_moveableData->m_triggerBehaviour));
             if(it->second.m_moveableData->m_triggerBehaviour != TriggerBehaviourType_e::AUTO)
@@ -757,9 +757,9 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
             colorG += QString::number(backgroundData.second->m_colorData[i][1]) + " ";
             colorB += QString::number(backgroundData.second->m_colorData[i][2]) + " ";
         }
-        m_INIFile->setValue("ColorGroundBackground/colorR", colorR);
-        m_INIFile->setValue("ColorGroundBackground/colorG", colorG);
-        m_INIFile->setValue("ColorGroundBackground/colorB", colorB);
+        m_INIFile->setValue("ColorGroundBackground/colorR", formatToIniFile(colorR));
+        m_INIFile->setValue("ColorGroundBackground/colorG", formatToIniFile(colorG));
+        m_INIFile->setValue("ColorGroundBackground/colorB", formatToIniFile(colorB));
     }
     //SIMPLE TEXTURE
     if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
@@ -786,9 +786,9 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
             colorG += QString::number(backgroundData.second->m_colorData[i][1]) + " ";
             colorB += QString::number(backgroundData.second->m_colorData[i][2]) + " ";
         }
-        m_INIFile->setValue("ColorCeilingBackground/colorR", colorR);
-        m_INIFile->setValue("ColorCeilingBackground/colorG", colorG);
-        m_INIFile->setValue("ColorCeilingBackground/colorB", colorB);
+        m_INIFile->setValue("ColorCeilingBackground/colorR", formatToIniFile(colorR));
+        m_INIFile->setValue("ColorCeilingBackground/colorG", formatToIniFile(colorG));
+        m_INIFile->setValue("ColorCeilingBackground/colorB", formatToIniFile(colorB));
     }
     //SIMPLE TEXTURE
     if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
@@ -1067,4 +1067,31 @@ bool LevelDataManager::checkListSpriteExist(const QStringList &strList)const
 LevelDataManager::~LevelDataManager()
 {
     clear();
+}
+
+//======================================================================
+QString formatToIniFile(const QString &str)
+{
+    QString copy = str;
+    if(copy.isEmpty())
+    {
+        return copy;
+    }
+    while(copy.back() == ' ')
+    {
+        copy = copy.remove(copy.size() - 1, 1);
+        if(copy.isEmpty())
+        {
+            return copy;
+        }
+    }
+    while(copy[0] == ' ')
+    {
+        copy = copy.remove(0, 1);
+        if(copy.isEmpty())
+        {
+            return copy;
+        }
+    }
+    return copy;
 }

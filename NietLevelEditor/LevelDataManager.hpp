@@ -169,4 +169,4 @@ private:
     m_staticGroundElement, m_barrelElement, m_exitElement;
     std::unique_ptr<LevelData> m_existingLevelData;
 };
-
+QString formatToIniFile(const QString &str);
