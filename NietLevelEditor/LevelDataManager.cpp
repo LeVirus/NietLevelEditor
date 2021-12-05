@@ -418,7 +418,6 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
                 currentPair.second.m_wallCount = listB[3].toInt();
             }
         }
-        std::cerr << key.toStdString() << "  " << currentPair.second.m_wallCount << "\n";
     }
     return true;
 }

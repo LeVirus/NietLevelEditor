@@ -1459,7 +1459,6 @@ bool GridEditor::loadRemovedWallExistingLevelGrid(const std::pair<const QString,
     }
     for(int32_t i = 0; i < currentTreat.second.m_vectRem->size(); ++i)
     {
-        break;
         QPair<int, int> origin = (*currentTreat.second.m_vectRem)[i].second.m_gridCoordTopLeft,
                 bottomRight = (*currentTreat.second.m_vectRem)[i].second.m_gridCoordTopLeft;
         //point case
