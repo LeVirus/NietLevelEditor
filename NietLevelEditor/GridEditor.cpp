@@ -148,13 +148,13 @@ void GridEditor::connectSlots()
 }
 
 //======================================================================
-void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bool diagRectCase)
+void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bool dontMemRemovedWall)
 {
     QModelIndex index = m_tableModel->index(y, x, QModelIndex());
     std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
     if(caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER)
     {
-        m_tableModel->removeData(index, diagRectCase);
+        m_tableModel->removeData(index, dontMemRemovedWall);
     }
     if(deleteMode)
     {
@@ -1197,7 +1197,10 @@ void GridEditor::generateLevel()
 void GridEditor::confNewTriggerData(const QModelIndex &caseIndex)
 {
     std::optional<CaseData> &triggerData = m_tableModel->getDataElementCase(caseIndex);
-    assert(triggerData);
+    if(!triggerData)
+    {
+        return;
+    }
     std::optional<int> index = m_memWallSelectLayout->getSelected();
     assert(index);
     if(!triggerData->m_triggerLinkWall)

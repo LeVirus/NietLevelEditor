@@ -89,7 +89,7 @@ bool TableModel::setIdData(const QModelIndex &index, const CaseData &value)
 }
 
 //======================================================================
-void TableModel::removeData(const QModelIndex &index, bool diagRectCase)
+void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall)
 {
     if (!checkIndex(index))
     {
@@ -113,12 +113,16 @@ void TableModel::removeData(const QModelIndex &index, bool diagRectCase)
     else if(caseData->m_type == LevelElement_e::WALL)
     {
         assert(caseData->m_wallShapeNum);
-        if(!diagRectCase)
+        if(!dontMemRemovedWall)
         {
             m_memWallShape[*caseData->m_wallShapeNum].second.m_deletedWall.push_back({index.column(), index.row()});
         }
         if(caseData->m_moveWallData->m_triggerPos)
         {
+            if(dontMemRemovedWall)
+            {
+                m_memWallShape[*caseData->m_wallShapeNum].second.m_deletedWall.push_back({index.column(), index.row()});
+            }
             QModelIndex triggerIndex = this->index(caseData->m_moveWallData->m_triggerPos->second,
                                                    caseData->m_moveWallData->m_triggerPos->first);
             if(triggerIndex.isValid())

@@ -83,7 +83,7 @@ public:
     void setLevelSize(int tableWidth, int tableHeight);
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole)override;
     bool setIdData(const QModelIndex &index, const CaseData &value);
-    void removeData(const QModelIndex &index, bool diagRectCase = false);
+    void removeData(const QModelIndex &index, bool dontMemRemovedWall = false);
     inline std::optional<CaseData> &getDataElementCase(const QModelIndex &index)
     {
         return m_vectPic[index.column()][index.row()].second;
