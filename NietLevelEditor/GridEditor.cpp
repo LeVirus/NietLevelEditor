@@ -109,7 +109,10 @@ bool GridEditor::loadExistingLevelGrid()
         }
     }
     setPlayerDeparture(caseIndex);
-    loadWallExistingLevelGrid();
+    if(!loadWallExistingLevelGrid())
+    {
+        return false;
+    }
     loadBackgroundGeneralExistingLevelGrid();
     loadTeleportExistingLevelGrid();
     loadStandardExistingLevelGrid(LevelElement_e::BARREL);
@@ -1408,8 +1411,12 @@ bool GridEditor::loadWallExistingLevelGrid()
     for(std::map<QString, WallDataINI>::const_iterator it = wallsData.begin(); it != wallsData.end(); ++it)
     {
         assert(it->second.m_vectPos);
-        currentINIID = it->second.m_moveableData ? (*it->second.m_iniID) : it->first;
+        currentINIID = *it->second.m_iniID;
         m_currentSelection = m_mapElementID[m_currentElementType].indexOf(currentINIID);
+        if(m_currentSelection < 0)
+        {
+            return false;
+        }
         for(int32_t i = 0; i < it->second.m_vectPos->size(); ++i)
         {
             m_wallDrawMode = (*it->second.m_vectPos)[i].first;

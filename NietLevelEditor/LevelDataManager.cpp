@@ -208,59 +208,62 @@ bool LevelDataManager::loadWallLevel(const QSettings &ini)
     QStringList keys = ini.childGroups();
     for(int i = 0; i < keys.size(); ++i)
     {
-        if(keys[i].contains("Wall"))
+        if(keys[i].contains("MoveableWall"))
         {
             m_existingLevelData->m_wallsData.insert({keys[i], WallDataINI()});
             m_existingLevelData->m_wallsData[keys[i]].m_position = ini.value(keys[i] + "/GamePosition", "").toString();
             m_existingLevelData->m_wallsData[keys[i]].m_removePosition = ini.value(keys[i] + "/RemovePosition", "").toString();
+            //init wall
             if(!generateStructPosWall(keys[i], true))
             {
                 return false;
             }
+            //removed wall
             generateStructPosWall(keys[i], false);
             if(m_existingLevelData->m_wallsData[keys[i]].m_position.isEmpty())
             {
                 return false;
             }
-            if(keys[i].contains("MoveableWall"))
+            QVariant varA = ini.value(keys[i] + "/Direction", "");
+            m_existingLevelData->m_wallsData[keys[i]].m_iniID = ini.value(keys[i] + "/WallDisplayID", "").toString();
+            if(varA.toString().isEmpty())
             {
-                m_existingLevelData->m_wallsData[keys[i]].m_moveableData = std::make_unique<MoveWallData>();
-                m_existingLevelData->m_wallsData[keys[i]].m_iniID = ini.value(keys[i] + "/WallDisplayID", "").toString();
-                QVariant varA = ini.value(keys[i] + "/Direction", ""),
-                        varB = ini.value(keys[i] + "/NumberOfMove", "");
-                QStringList listDir, listMoveNumber;
-                QString strDir = varA.toString(), strMoveNumber = varB.toString();
-                listDir = strDir.split(' ');
-                listMoveNumber= strMoveNumber.split(' ');
-                if(listDir.isEmpty() || listMoveNumber.isEmpty() || listDir.size() != listMoveNumber.size())
+                continue;
+            }
+            m_existingLevelData->m_wallsData[keys[i]].m_moveableData = std::make_unique<MoveWallData>();
+            QVariant varB = ini.value(keys[i] + "/NumberOfMove", "");
+            QStringList listDir, listMoveNumber;
+            QString strDir = varA.toString(), strMoveNumber = varB.toString();
+            listDir = strDir.split(' ');
+            listMoveNumber= strMoveNumber.split(' ');
+            if(listDir.isEmpty() || listMoveNumber.isEmpty() || listDir.size() != listMoveNumber.size())
+            {
+                return false;
+            }
+            for(int j = 0; j < listDir.size(); ++j)
+            {
+                m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_memMoveWallData.push_back(
+                {static_cast<Direction_e>(listDir[j].toInt()), listMoveNumber[j].toInt()});
+            }
+            m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_velocity = ini.value(keys[i] + "/Velocity", -1).toInt();
+
+            m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerType =
+                    static_cast<TriggerType_e>(ini.value(keys[i] + "/TriggerType", -1).toInt());
+            m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerBehaviour =
+                    static_cast<TriggerBehaviourType_e>(ini.value(keys[i] + "/TriggerBehaviourType", -1).toInt());
+
+            if(m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerType == TriggerType_e::DISTANT_SWITCH ||
+                    m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerType == TriggerType_e::GROUND)
+            {
+                m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerINISectionName =
+                        ini.value(keys[i] + "/TriggerDisplayID", "").toString();
+                QString str = ini.value(keys[i] + "/TriggerGamePosition", "").toString();
+                listDir = str.split(' ');
+                if(listDir.size() != 2)
                 {
                     return false;
                 }
-                for(int j = 0; j < listDir.size(); ++j)
-                {
-                    m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_memMoveWallData.push_back(
-                                {static_cast<Direction_e>(listDir[j].toInt()), listMoveNumber[j].toInt()});
-                }
-                m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_velocity = ini.value(keys[i] + "/Velocity", -1).toInt();
-
-                m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerType =
-                        static_cast<TriggerType_e>(ini.value(keys[i] + "/TriggerType", -1).toInt());
-                m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerBehaviour =
-                        static_cast<TriggerBehaviourType_e>(ini.value(keys[i] + "/TriggerBehaviourType", -1).toInt());
-
-                if(m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerType == TriggerType_e::DISTANT_SWITCH ||
-                        m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerType == TriggerType_e::GROUND)
-                {
-                    m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerINISectionName =
-                            ini.value(keys[i] + "/TriggerDisplayID", "").toString();
-                    QString str = ini.value(keys[i] + "/TriggerGamePosition", "").toString();
-                    listDir = str.split(' ');
-                    if(listDir.size() != 2)
-                    {
-                        return false;
-                    }
-                    m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerPos = {listDir[0].toInt(), listDir[1].toInt()};
-                }
+                m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerPos = {listDir[0].toInt(), listDir[1].toInt()};
             }
         }
     }
@@ -557,35 +560,19 @@ void LevelDataManager::generateWallsIniLevel(const TableModel &tableModel)
         {
             continue;
         }
-        if(wallData[i].second.m_memMoveData)
-        {
-            key = "MoveableWall" + QString::number(cmpt);
-            ++cmpt;
-        }
-        else
-        {
-            key = wallData[i].second.m_iniId;
-        }
+        key = "MoveableWall" + QString::number(cmpt);
+        ++cmpt;
         gamePos = getIniWallPos(i, wallData);
         removePos = getCurrentWallRemovedINI(i, wallData);
-        std::map<QString, WallDataINI>::iterator it = memWallData.find(key);
-        if(it == memWallData.end())
+        if(wallData[i].second.m_memMoveData)
         {
-            if(wallData[i].second.m_memMoveData)
-            {
-                memWallData.insert({key, WallDataINI{gamePos, removePos, nullptr, nullptr, wallData[i].second.m_iniId,
-                                                     std::make_unique<MoveWallData>()}});
-                *memWallData[key].m_moveableData = *wallData[i].second.m_memMoveData;
-            }
-            else
-            {
-                memWallData.insert({key, WallDataINI{gamePos, removePos, nullptr, nullptr, {}, {}}});
-            }
+            memWallData.insert({key, WallDataINI{gamePos, removePos, nullptr, nullptr, wallData[i].second.m_iniId,
+                                                 std::make_unique<MoveWallData>()}});
+            *memWallData[key].m_moveableData = *wallData[i].second.m_memMoveData;
         }
         else
         {
-            memWallData[key].m_position += gamePos;
-            memWallData[key].m_removePosition += removePos;
+            memWallData.insert({key, WallDataINI{gamePos, removePos, nullptr, nullptr, wallData[i].second.m_iniId, {}}});
         }
     }
     writeWallData(memWallData);
@@ -709,9 +696,10 @@ void LevelDataManager::writeWallData(const std::map<QString, WallDataINI> &wallD
         {
             m_INIFile->setValue(it->first + "/RemovePosition", it->second.m_removePosition);
         }
+        assert(it->second.m_iniID);
+        m_INIFile->setValue(it->first + "/WallDisplayID", *it->second.m_iniID);
         if(it->second.m_moveableData)
         {
-            m_INIFile->setValue(it->first + "/WallDisplayID", *it->second.m_iniID);
             strDir = "";
             strMoveNumber = "";
             for(int i = 0; i < it->second.m_moveableData->m_memMoveWallData.size(); ++i)
