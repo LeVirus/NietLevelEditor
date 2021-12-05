@@ -208,7 +208,7 @@ bool LevelDataManager::loadWallLevel(const QSettings &ini)
     QStringList keys = ini.childGroups();
     for(int i = 0; i < keys.size(); ++i)
     {
-        if(keys[i].contains("MoveableWall"))
+        if(keys[i].contains("WallShape"))
         {
             m_existingLevelData->m_wallsData.insert({keys[i], WallDataINI()});
             m_existingLevelData->m_wallsData[keys[i]].m_position = ini.value(keys[i] + "/GamePosition", "").toString();
@@ -560,7 +560,7 @@ void LevelDataManager::generateWallsIniLevel(const TableModel &tableModel)
         {
             continue;
         }
-        key = "MoveableWall" + QString::number(cmpt);
+        key = "WallShape" + QString::number(cmpt);
         ++cmpt;
         gamePos = getIniWallPos(i, wallData);
         removePos = getCurrentWallRemovedINI(i, wallData);
