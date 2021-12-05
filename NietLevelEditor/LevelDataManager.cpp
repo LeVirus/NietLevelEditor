@@ -354,7 +354,6 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         case 1:
         {
             currentPair.first = WallDrawShape_e::LINE_AND_RECT;
-//            currentPair.second.m_wallCount = listB[3].toInt();
             currentPair.second.m_gridCoordBottomRight = {listB[1].toInt(), listB[2].toInt() + listB[3].toInt() - 1};
             break;
         }
@@ -362,7 +361,6 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         case 2:
         {
             currentPair.first = WallDrawShape_e::LINE_AND_RECT;
-//            currentPair.second.m_wallCount = listB[3].toInt();
             currentPair.second.m_gridCoordBottomRight = {listB[1].toInt() + listB[3].toInt() - 1, listB[2].toInt()};
             break;
         }
@@ -370,7 +368,6 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         case 3:
         {
             currentPair.first = WallDrawShape_e::LINE_AND_RECT;
-//            currentPair.second.m_wallCount = 1;
             currentPair.second.m_gridCoordBottomRight = currentPair.second.m_gridCoordTopLeft;
             break;
         }
@@ -379,7 +376,6 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         {
             currentPair.first = WallDrawShape_e::DIAGONAL_RECT;
             currentPair.second.m_gridCoordBottomRight = {listB[1].toInt() + listB[3].toInt() - 1, listB[2].toInt() + listB[3].toInt() - 1};
-//            currentPair.second.m_wallCount = listB[3].toInt() * 2 - 2;
             break;
         }
         //diag origins up left
@@ -388,7 +384,6 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
             currentPair.second.m_diagCaseUp = true;
             currentPair.first = WallDrawShape_e::DIAGONAL_LINE;
             currentPair.second.m_gridCoordBottomRight = {listB[1].toInt() + listB[3].toInt() - 1, listB[2].toInt() + listB[3].toInt() - 1};
-//            currentPair.second.m_wallCount = listB[3].toInt();
             break;
         }
         //diag origins down left
@@ -397,7 +392,6 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
             currentPair.second.m_diagCaseUp = false;
             currentPair.first = WallDrawShape_e::DIAGONAL_LINE;
             currentPair.second.m_gridCoordBottomRight = {listB[1].toInt() + listB[3].toInt() - 1, listB[2].toInt() - (listB[3].toInt() - 1)};
-//            currentPair.second.m_wallCount = listB[3].toInt();
             break;
         }
         default:
@@ -407,16 +401,17 @@ bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMo
         {
             if(listB[0].toUInt() == 3)
             {
-                currentPair.second.m_wallCount = 1;
+                currentPair.second.m_baseWallCount = 1;
             }
             else if(listB[0].toUInt() == 4)
             {
-                currentPair.second.m_wallCount = listB[3].toInt() * 2 - 2;
+                currentPair.second.m_baseWallCount = listB[3].toInt() * 2 - 2;
             }
             else
             {
-                currentPair.second.m_wallCount = listB[3].toInt();
+                currentPair.second.m_baseWallCount = listB[3].toInt();
             }
+            currentPair.second.m_currentWallCount = currentPair.second.m_baseWallCount;
         }
     }
     return true;
@@ -558,7 +553,7 @@ void LevelDataManager::generateWallsIniLevel(const TableModel &tableModel)
     uint32_t cmpt = 0;
     for(int i = 0; i < wallData.size(); ++i)
     {
-        if(wallData[i].second.m_wallCount == 0)
+        if(wallData[i].second.m_currentWallCount == 0)
         {
             continue;
         }
@@ -646,7 +641,7 @@ QString LevelDataManager::getIniWallPos(int index, const WallDataContainer_t &wa
 {
     int sizeX, sizeY;
     QString gamePos;
-    if(wallData[index].second.m_wallCount == 1 && wallData[index].second.m_gridCoordTopLeft == wallData[index].second.m_gridCoordBottomRight)
+    if(wallData[index].second.m_currentWallCount == 1 && wallData[index].second.m_gridCoordTopLeft == wallData[index].second.m_gridCoordBottomRight)
     {
         gamePos = "3 " + QString::number(wallData[index].second.m_gridCoordTopLeft.first) + " " +
                 QString::number(wallData[index].second.m_gridCoordTopLeft.second) + "  ";
@@ -657,7 +652,7 @@ QString LevelDataManager::getIniWallPos(int index, const WallDataContainer_t &wa
         {
         case WallDrawShape_e::DIAGONAL_LINE:
         {
-            sizeY = wallData[index].second.m_wallCount;
+            sizeY = wallData[index].second.m_baseWallCount;
             sizeX = sizeY;
             gamePos = wallData[index].second.m_diagCaseUp ? "6 ": "5 ";
             gamePos += QString::number(wallData[index].second.m_gridCoordTopLeft.first) + " " +
@@ -667,7 +662,7 @@ QString LevelDataManager::getIniWallPos(int index, const WallDataContainer_t &wa
         }
         case WallDrawShape_e::DIAGONAL_RECT:
         {
-            sizeX = wallData[index].second.m_wallCount / 2 + 1;
+            sizeX = wallData[index].second.m_baseWallCount / 2 + 1;
             gamePos += "4 " + QString::number(wallData[index].second.m_gridCoordTopLeft.first) + " " +
                     QString::number(wallData[index].second.m_gridCoordTopLeft.second) +
                     " " + QString::number(sizeX) + "  ";

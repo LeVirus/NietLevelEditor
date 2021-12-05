@@ -113,6 +113,7 @@ void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall)
     else if(caseData->m_type == LevelElement_e::WALL)
     {
         assert(caseData->m_wallShapeNum);
+        --m_memWallShape[*caseData->m_wallShapeNum].second.m_currentWallCount;
         if(!dontMemRemovedWall)
         {
             m_memWallShape[*caseData->m_wallShapeNum].second.m_deletedWall.push_back({index.column(), index.row()});
@@ -210,11 +211,11 @@ int TableModel::memWallShape(WallDrawShape_e wallShape, const QPair<int, int> &t
 {
     if(memMoveData)
     {
-        m_memWallShape.push_back({wallShape, {topLeftIndex, bottomRightIndex, 0, {}, iniId, *memMoveData, false}});
+        m_memWallShape.push_back({wallShape, {topLeftIndex, bottomRightIndex, 0, 0, {}, iniId, *memMoveData, false}});
     }
     else
     {
-        m_memWallShape.push_back({wallShape, {topLeftIndex, bottomRightIndex, 0, {}, iniId, {}, false}});
+        m_memWallShape.push_back({wallShape, {topLeftIndex, bottomRightIndex, 0, 0, {}, iniId, {}, false}});
     }
     return m_memWallShape.size() - 1;
 }
@@ -361,7 +362,8 @@ void TableModel::memTeleportElement(const QPair<int, int> &teleporterPos, const 
 void TableModel::updateWallNumber(uint32_t num)
 {
     assert(!m_memWallShape.empty());
-    m_memWallShape.back().second.m_wallCount = num;
+    m_memWallShape.back().second.m_baseWallCount = num;
+    m_memWallShape.back().second.m_currentWallCount = num;
 }
 
 //======================================================================

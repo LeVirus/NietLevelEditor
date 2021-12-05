@@ -59,7 +59,7 @@ struct WallShapeData
 {
     //!!!diag case top left respresent ORIGIN POINT!!!
     QPair<int, int> m_gridCoordTopLeft, m_gridCoordBottomRight;
-    uint32_t m_wallCount = 0;
+    uint32_t m_baseWallCount = 0, m_currentWallCount = 0;
     QVector<QPair<int, int>> m_deletedWall;
     QString m_iniId;
     std::optional<MoveWallData> m_memMoveData;
@@ -111,7 +111,7 @@ public:
         {
             return -1;
         }
-        return m_memWallShape.back().second.m_wallCount;
+        return m_memWallShape.back().second.m_baseWallCount;
     }
     bool checkLevelData()const;
     inline const WallDataContainer_t &getWallData()const
