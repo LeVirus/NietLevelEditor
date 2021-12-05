@@ -657,7 +657,7 @@ bool GridEditor::setWallShape(bool preview, bool loadFromIni)
                                               m_drawData[index][m_currentSelection].m_elementSectionName, memMoveData);
         if(topLeftPos == bottomRight)
         {
-            setCaseIcon(minX, minY, shapeNum);
+            setCaseIcon(minX, minY, shapeNum, false, true);
             m_tableModel->updateWallNumber(1);
             return true;
         }
@@ -811,7 +811,8 @@ void GridEditor::memStdWallMove()
 
 //======================================================================
 uint32_t GridEditor::setWallLineRectShape(const QPair<int, int> &topLeftIndex,
-                                          const QPair<int, int> &bottomRightIndex, int shapeNum, bool preview, bool deleteMode)
+                                          const QPair<int, int> &bottomRightIndex,
+                                          int shapeNum, bool preview, bool deleteMode)
 {
     uint32_t count = 0;
     for(int i = topLeftIndex.first; i < bottomRightIndex.first + 1; ++i)
@@ -823,11 +824,11 @@ uint32_t GridEditor::setWallLineRectShape(const QPair<int, int> &topLeftIndex,
         }
         else
         {
-            setCaseIcon(i, topLeftIndex.second, shapeNum, deleteMode);
+            setCaseIcon(i, topLeftIndex.second, shapeNum, deleteMode, true);
             ++count;
             if(topLeftIndex.second != bottomRightIndex.second)
             {
-                setCaseIcon(i, bottomRightIndex.second, shapeNum, deleteMode);
+                setCaseIcon(i, bottomRightIndex.second, shapeNum, deleteMode, true);
                 ++count;
             }
         }
@@ -841,11 +842,11 @@ uint32_t GridEditor::setWallLineRectShape(const QPair<int, int> &topLeftIndex,
         }
         else
         {
-            setCaseIcon(topLeftIndex.first, i, shapeNum, deleteMode);
+            setCaseIcon(topLeftIndex.first, i, shapeNum, deleteMode, true);
             ++count;
             if(topLeftIndex.first != bottomRightIndex.first)
             {
-                setCaseIcon(bottomRightIndex.first, i, shapeNum, deleteMode);
+                setCaseIcon(bottomRightIndex.first, i, shapeNum, deleteMode, true);
                 ++count;
             }
         }
@@ -870,7 +871,7 @@ uint32_t GridEditor::setWallDiagLineShape(const QPair<int, int> &topLeftIndex,
         }
         else
         {
-            setCaseIcon(i, j, shapeNum, deleteMode);
+            setCaseIcon(i, j, shapeNum, deleteMode, true);
             ++count;
         }
     }
