@@ -66,7 +66,14 @@ void SelectableLineLayout::confPlayerDeparture(GridEditor *parent)
 //======================================================================
 void SelectableLineLayout::uncheckMoveableWall()
 {
+    assert(m_wallComboBox);
     m_wallCheckBox->setCheckState(Qt::CheckState::Unchecked);
+}
+
+//======================================================================
+void SelectableLineLayout::reinitWallComp()
+{
+    m_wallComboBox->setCurrentIndex(0);
 }
 
 //======================================================================

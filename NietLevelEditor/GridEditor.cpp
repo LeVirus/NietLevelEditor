@@ -134,6 +134,7 @@ void GridEditor::unselectAllRadioButtons()
     }
     m_currentSelection = 0;
     m_currentElementType = LevelElement_e::SELECTION;
+    m_memWallSelectLayout->reinitWallComp();
 }
 
 //======================================================================

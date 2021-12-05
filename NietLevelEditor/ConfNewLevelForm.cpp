@@ -135,8 +135,8 @@ void ConfNewLevelForm::onOkButtonClicked()
             QMessageBox::warning(this, "Error", "Error while loading level on grid.");
             return;
         }
-        m_gridEditorForm.unselectAllRadioButtons();
     }
+    m_gridEditorForm.unselectAllRadioButtons();
     m_existingLevelFile.clear();
     m_gridEditorForm.exec();
     close();

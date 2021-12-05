@@ -17,6 +17,7 @@ public:
     void confWallSelectWidget(GridEditor *parent);
     void confPlayerDeparture(GridEditor *parent);
     void uncheckMoveableWall();
+    void reinitWallComp();
     void setWallWidgetsEnabled(bool enable);
     std::optional<int> getSelected();
     void setRadioButtonEnabled(bool enable);
