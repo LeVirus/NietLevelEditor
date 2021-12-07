@@ -97,6 +97,8 @@ bool GridEditor::loadExistingLevelGrid()
     }
     QModelIndex caseIndex = m_tableModel->index(m_levelDataManager.getExistingLevel()->m_playerDeparture.second,
                                                 m_levelDataManager.getExistingLevel()->m_playerDeparture.first, QModelIndex());
+    m_memPlayerDirection = m_levelDataManager.getExistingLevel()->m_playerDirection;
+    m_tableModel->setPlayerDirectionDeparture(m_memPlayerDirection);
     if(m_levelDataManager.getExistingLevel()->m_music)
     {
         for(int i = 0; i < m_musicWidget->count(); ++i)
@@ -263,6 +265,7 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type)
     {
         m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
     }
+    m_tableModel->setPlayerDirectionDeparture(m_memPlayerDirection);
     m_tableModel->setData(index, QVariant(pix));
     updateGridView();
 }

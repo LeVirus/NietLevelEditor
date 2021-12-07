@@ -154,6 +154,14 @@ public:
     {
         return m_memStaticGround;
     }
+    inline Direction_e getPlayerDirectionDeparture()const
+    {
+        return m_playerDirectionDeparture;
+    }
+    inline void setPlayerDirectionDeparture(Direction_e dir)
+    {
+        m_playerDirectionDeparture = dir;
+    }
     void updateTriggerPos(const QPair<int, int> &pos);
 private:
     void rmStdElement(const QPair<int, int> &pos, LevelElement_e elementType);
@@ -166,6 +174,7 @@ private:
     QVector<QVector<QPair<QPixmap, std::optional<CaseData>>>> m_vectPic;
     QVector<QBitArray> m_vectPreview;
     std::optional<QPair<int, int>> m_departurePlayer, m_exitPos;
+    Direction_e m_playerDirectionDeparture;
 signals:
     void editCompleted(const QString &str);
 };
