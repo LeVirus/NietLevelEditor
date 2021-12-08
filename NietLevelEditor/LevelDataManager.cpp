@@ -560,7 +560,7 @@ void LevelDataManager::generateWallsIniLevel(const TableModel &tableModel)
         {
             continue;
         }
-        key = "WallShape" + QString::number(cmpt);
+        key = getWallINIKey(cmpt);
         ++cmpt;
         gamePos = getIniWallPos(i, wallData);
         removePos = getCurrentWallRemovedINI(i, wallData);
@@ -576,6 +576,30 @@ void LevelDataManager::generateWallsIniLevel(const TableModel &tableModel)
         }
     }
     writeWallData(memWallData);
+}
+
+//======================================================================
+QString getWallINIKey(int shapeWallNum)
+{
+    QString zeros;
+    if(shapeWallNum < 10)
+    {
+        zeros = "0000";
+    }
+    else if(shapeWallNum < 100)
+    {
+        zeros = "000";
+    }
+    else if(shapeWallNum < 1000)
+    {
+        zeros = "00";
+
+    }
+    else if(shapeWallNum < 10000)
+    {
+        zeros = "0";
+    }
+    return "WallShape" + zeros + QString::number(shapeWallNum);
 }
 
 //======================================================================
