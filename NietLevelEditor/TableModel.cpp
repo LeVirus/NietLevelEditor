@@ -237,6 +237,7 @@ void TableModel::memStdElement(const QPair<int, int> &pos, LevelElement_e elemen
     }
     else if(elementType == LevelElement_e::EXIT)
     {
+        m_memExit.clear();
         m_memExit.insert({iniId, pos});
     }
     else if(elementType == LevelElement_e::OBJECT)
