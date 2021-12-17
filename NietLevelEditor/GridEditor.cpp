@@ -1440,7 +1440,7 @@ bool GridEditor::loadWallExistingLevelGrid()
             }
             setWallShape(false, true);
             m_wallMoveableMode = false;
-            if(it->second.m_moveableData && it->second.m_moveableData->m_triggerBehaviour != TriggerBehaviourType_e::AUTO)
+            if(it->second.m_moveableData && it->second.m_moveableData->m_triggerType != TriggerType_e::WALL)
             {
                 currentCoord = {it->second.m_moveableData->m_triggerPos->first, it->second.m_moveableData->m_triggerPos->second};
                 if(it->second.m_moveableData->m_triggerType == TriggerType_e::DISTANT_SWITCH)
