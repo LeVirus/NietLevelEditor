@@ -157,7 +157,11 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
 {
     QModelIndex index = m_tableModel->index(y, x, QModelIndex());
     std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
-    if(caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER)
+    if(caseData->m_type == LevelElement_e::TRIGGER || caseData->m_type == LevelElement_e::GROUND_TRIGGER)
+    {
+        m_tableModel->removeTrigger(*caseData, {x, y});
+    }
+    else
     {
         m_tableModel->removeData(index, dontMemRemovedWall);
     }

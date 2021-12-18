@@ -375,6 +375,38 @@ void TableModel::updateTriggerPos(const QPair<int, int> &pos)
 }
 
 //======================================================================
+void TableModel::removeTrigger(const CaseData &triggerCase, const QPair<int, int> &triggercoord)
+{
+    if(!triggerCase.m_triggerLinkWall || triggerCase.m_triggerLinkWall->empty())
+    {
+        return;
+    }
+    QModelIndex index;
+    for(QSet<QPair<int, int>>::const_iterator it = triggerCase.m_triggerLinkWall->begin(); it != triggerCase.m_triggerLinkWall->end(); ++it)
+    {
+        index = this->index(it->second, it->first, QModelIndex());
+        if(!index.isValid())
+        {
+            continue;
+        }
+        CaseData &wallCase = *m_vectPic[index.column()][index.row()].second;
+        wallCase.m_moveWallData->clear();
+        wallCase.m_moveWallData.reset();
+        assert(!wallCase.m_moveWallData);
+        wallCase.m_moveWallData = std::nullopt;
+    }
+    for(int i = 0; i < m_memWallShape.size(); ++i)
+    {
+        if(m_memWallShape[i].second.m_memMoveData && m_memWallShape[i].second.m_memMoveData->m_triggerPos &&
+                *m_memWallShape[i].second.m_memMoveData->m_triggerPos == triggercoord)
+        {
+            m_memWallShape[i].second.m_memMoveData.reset();
+            return;
+        }
+    }
+}
+
+//======================================================================
 void TableModel::setTableDeletionZone(const QPair<int, int> &originSelectPos, const QPair<int, int> &targetSelectPos, bool preview)
 {
     int minX = std::min(originSelectPos.first, targetSelectPos.first),

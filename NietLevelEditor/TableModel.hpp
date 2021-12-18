@@ -163,6 +163,7 @@ public:
         m_playerDirectionDeparture = dir;
     }
     void updateTriggerPos(const QPair<int, int> &pos);
+    void removeTrigger(const CaseData &triggerCase, const QPair<int, int> &triggercoord);
 private:
     void rmStdElement(const QPair<int, int> &pos, LevelElement_e elementType);
 private:
