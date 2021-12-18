@@ -375,8 +375,9 @@ void TableModel::updateTriggerPos(const QPair<int, int> &pos)
 }
 
 //======================================================================
-void TableModel::removeTrigger(const CaseData &triggerCase, const QPair<int, int> &triggercoord)
+void TableModel::removeTrigger(CaseData &triggerCase, const QPair<int, int> &triggercoord)
 {
+    removeData(this->index(triggercoord.second, triggercoord.first, QModelIndex()));
     if(!triggerCase.m_triggerLinkWall || triggerCase.m_triggerLinkWall->empty())
     {
         return;
