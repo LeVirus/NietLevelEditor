@@ -58,7 +58,12 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     {
         return false;
     }
-    QSettings levelFile(levelFilePath, QSettings::NativeFormat);
+    std::optional<QTemporaryFile*> levelData = loadEncryptedINIFile(levelFilePath, ENCRYPTION_KEY_STANDARD_LEVEL);
+    if(!levelData || !(*levelData))
+    {
+        return false;
+    }
+    QSettings levelFile((*levelData)->fileName(), QSettings::IniFormat);
     //Level
     m_existingLevelData = std::make_unique<LevelData>();
     QVariant varA = levelFile.value("Level/weight", -1), varB = levelFile.value("Level/height", -1);
