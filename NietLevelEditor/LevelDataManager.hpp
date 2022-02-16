@@ -5,6 +5,7 @@
 #include <functional>
 #include <optional>
 #include <memory>
+#include <QFile>
 
 using ArrayFloat_t = std::array<float, 5>;
 class QSettings;
@@ -65,7 +66,7 @@ struct LevelData
 class LevelDataManager
 {
 public:
-    LevelDataManager();
+    LevelDataManager() = default;
     ~LevelDataManager();
     bool loadLevelData(const QString &installDir);
     bool loadExistingLevel(const QString &levelFilePath);
@@ -126,6 +127,7 @@ public:
     void generateLevel(const TableModel &tableModel, const QString &musicFilename,
                        const BackgroundPairData_t &backgroundData, Direction_e playerDirection);    
 private:
+    std::optional<QTemporaryFile *> loadEncryptedINIFile(const QString &filePath, uint32_t encryptKey);
     bool loadBackgroundLevel(bool ground, const QSettings &ini);
     bool loadStandardElementLevel(const QSettings &ini, StandardElement_e elementType);
     bool loadWallLevel(const QSettings &ini);
@@ -168,6 +170,7 @@ private:
     std::map<QString, QString> m_triggerElement, m_teleportElement, m_enemyElement, m_objectElement, m_staticCeilingElement,
     m_staticGroundElement, m_barrelElement, m_exitElement;
     std::unique_ptr<LevelData> m_existingLevelData;
+    const uint32_t ENCRYPTION_KEY_CONF_FILE = 42, ENCRYPTION_KEY_STANDARD_LEVEL = 17;
 };
 QString getWallINIKey(int shapeWallNum);
 QString formatToIniFile(const QString &str);

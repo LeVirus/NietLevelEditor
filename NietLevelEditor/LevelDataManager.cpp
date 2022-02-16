@@ -3,33 +3,43 @@
 #include <QFile>
 #include <QRegularExpression>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include "BackgroundForm.hpp"
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QTemporaryFile>
+#include <QTextStream>
 #include "TableModel.hpp"
-
-//======================================================================
-LevelDataManager::LevelDataManager()
-{
-
-}
 
 //======================================================================
 bool LevelDataManager::loadLevelData(const QString &installDir)
 {
     m_installDirectory = installDir;
     QString standardDataINI = installDir + "/Ressources/standardData.ini", pictureDataINI = installDir + "/Ressources/pictureData.ini";
-    if(!QFile::exists(standardDataINI) || !QFile::exists(pictureDataINI))
+    clear();
+    std::optional<QTemporaryFile*> standardData = loadEncryptedINIFile(standardDataINI, ENCRYPTION_KEY_CONF_FILE);
+    if(!standardData || !(*standardData))
     {
         return false;
     }
-    clear();
-    m_INIFile = new QSettings(standardDataINI, QSettings::NativeFormat);
+    m_INIFile = new QSettings((*standardData)->fileName(), QSettings::IniFormat);
+    assert(m_INIFile->childGroups().size() > 0);
     if(m_INIFile->status() != QSettings::Status::NoError)
     {
+        delete *standardData;
         return false;
     }
-    m_pictureDataINI = new QSettings(pictureDataINI, QSettings::NativeFormat);
+    std::optional<QTemporaryFile*> pictureData = loadEncryptedINIFile(pictureDataINI, ENCRYPTION_KEY_CONF_FILE);
+    if(!pictureData || !(*pictureData))
+    {
+        delete *standardData;
+        delete *pictureData;
+        return false;
+    }
+    m_pictureDataINI = new QSettings((*pictureData)->fileName(), QSettings::IniFormat);
+    delete *standardData;
+    delete *pictureData;
     if(m_pictureDataINI->status() != QSettings::Status::NoError)
     {
         return false;
@@ -486,6 +496,35 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
 }
 
 //======================================================================
+std::optional<QTemporaryFile*> LevelDataManager::loadEncryptedINIFile(const QString &filePath, uint32_t encryptKey)
+{
+    std::ifstream stream;
+    stream.open(filePath.toStdString());
+    if(stream.fail())
+    {
+        stream.close();
+        return {};
+    }
+    std::ostringstream ostringStream;
+    ostringStream << stream.rdbuf();
+    stream.close();
+    std::string dataString = ostringStream.str();
+    //decrypt
+    for(uint32_t i = 0; i < dataString.size(); ++i)
+    {
+        dataString[i] -= encryptKey;
+    }
+    QTemporaryFile *tmpFile = new QTemporaryFile(".fake.ini");
+    if(!tmpFile->open())
+    {
+        return {};
+    }
+    tmpFile->write(dataString.c_str());
+    tmpFile->close();
+    return tmpFile;
+}
+
+//======================================================================
 bool LevelDataManager::loadBackgroundLevel(bool ground, const QSettings &ini)
 {
     QString id = ground ? "Ground" : "Ceiling";
@@ -864,7 +903,7 @@ bool LevelDataManager::loadPictureDataINI()
 bool LevelDataManager::loadStandardDataINI()
 {
     const QStringList keysList = m_INIFile->childGroups();
-    bool ok;
+    bool ok = false;
     for(int32_t i = 0; i < keysList.size(); ++i)
     {
         ok = true;
