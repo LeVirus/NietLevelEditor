@@ -841,20 +841,20 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
             colorG += QString::number(backgroundData.second->m_colorData[i][1]) + " ";
             colorB += QString::number(backgroundData.second->m_colorData[i][2]) + " ";
         }
-        m_INIFile->setValue("ColorGroundBackground/colorR", formatToIniFile(colorR));
-        m_INIFile->setValue("ColorGroundBackground/colorG", formatToIniFile(colorG));
-        m_INIFile->setValue("ColorGroundBackground/colorB", formatToIniFile(colorB));
+        m_ini.setValue("ColorGroundBackground", "colorR", formatToIniFile(colorR).toStdString());
+        m_ini.setValue("ColorGroundBackground", "colorG", formatToIniFile(colorG).toStdString());
+        m_ini.setValue("ColorGroundBackground", "colorB", formatToIniFile(colorB).toStdString());
     }
     //SIMPLE TEXTURE
     if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
     {
-        m_INIFile->setValue("SimpleTextureGroundBackground/sprite", backgroundData.first->m_simpleTexture);
+        m_ini.setValue("SimpleTextureGroundBackground", "sprite", backgroundData.first->m_simpleTexture.toStdString());
     }
     //TILED TEXTURE
     if(mode == BackgroundDisplayMode_e::TILED_TEXTURE || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE ||
             mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
     {
-        m_INIFile->setValue("TiledTextureGroundBackground/sprite", backgroundData.first->m_tiledTexture);
+        m_ini.setValue("TiledTextureGroundBackground", "sprite", backgroundData.first->m_tiledTexture.toStdString());
     }
 
     //CEILING====
@@ -870,20 +870,20 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
             colorG += QString::number(backgroundData.second->m_colorData[i][1]) + " ";
             colorB += QString::number(backgroundData.second->m_colorData[i][2]) + " ";
         }
-        m_INIFile->setValue("ColorCeilingBackground/colorR", formatToIniFile(colorR));
-        m_INIFile->setValue("ColorCeilingBackground/colorG", formatToIniFile(colorG));
-        m_INIFile->setValue("ColorCeilingBackground/colorB", formatToIniFile(colorB));
+        m_ini.setValue("ColorCeilingBackground", "colorR", formatToIniFile(colorR).toStdString());
+        m_ini.setValue("ColorCeilingBackground", "colorG", formatToIniFile(colorG).toStdString());
+        m_ini.setValue("ColorCeilingBackground", "colorB", formatToIniFile(colorB).toStdString());
     }
     //SIMPLE TEXTURE
     if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
     {
-        m_INIFile->setValue("SimpleTextureCeilingBackground/sprite", backgroundData.second->m_simpleTexture);
+        m_ini.setValue("SimpleTextureCeilingBackground", "sprite", backgroundData.second->m_simpleTexture.toStdString());
     }
     //TILED TEXTURE
     if(mode == BackgroundDisplayMode_e::TILED_TEXTURE || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE ||
             mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
     {
-        m_INIFile->setValue("TiledTextureCeilingBackground/sprite", backgroundData.second->m_tiledTexture);
+        m_ini.setValue("TiledTextureCeilingBackground", "sprite", backgroundData.second->m_tiledTexture.toStdString());
     }
 }
 
