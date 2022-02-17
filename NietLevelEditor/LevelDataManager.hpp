@@ -6,6 +6,7 @@
 #include <optional>
 #include <memory>
 #include <QFile>
+#include <includeDir/iniwriter.h>
 
 using ArrayFloat_t = std::array<float, 5>;
 class QSettings;
@@ -170,7 +171,10 @@ private:
     std::map<QString, QString> m_triggerElement, m_teleportElement, m_enemyElement, m_objectElement, m_staticCeilingElement,
     m_staticGroundElement, m_barrelElement, m_exitElement;
     std::unique_ptr<LevelData> m_existingLevelData;
+    inipp::Ini<char> m_ini;
     const uint32_t ENCRYPTION_KEY_CONF_FILE = 42, ENCRYPTION_KEY_STANDARD_LEVEL = 17;
 };
+
+std::string encrypt(const std::string &str, uint32_t key);
 QString getWallINIKey(int shapeWallNum);
 QString formatToIniFile(const QString &str);

@@ -473,23 +473,19 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     {
         file.remove();
     }
-    if(m_INIFile)
-    {
-        delete m_INIFile;
-    }
-    m_INIFile = new QSettings(filename, QSettings::NativeFormat);
-    m_INIFile->setValue("Level/weight", tableModel.getTableSize().first);
-    m_INIFile->setValue("Level/height", tableModel.getTableSize().second);
+    m_ini.clear();
+    m_ini.setValue("Level", "weight", std::to_string(tableModel.getTableSize().first));
+    m_ini.setValue("Level", "height", std::to_string(tableModel.getTableSize().second));
     if(musicFilename != "None")
     {
-        m_INIFile->setValue("Level/music", musicFilename);
+        m_ini.setValue("Level", "music", musicFilename.toStdString());
     }
     loadBackgroundData(backgroundData);
-    m_INIFile->setValue("PlayerInit/playerDepartureX", tableModel.getPlayerDepartureData()->first);
-    m_INIFile->setValue("PlayerInit/playerDepartureY", tableModel.getPlayerDepartureData()->second);
-    m_INIFile->setValue("PlayerInit/PlayerOrientation", static_cast<int>(tableModel.getPlayerDirectionDeparture()));
-    m_INIFile->setValue("Exit/GamePosition", QString::number(tableModel.getExitData().begin()->second.first) + " " +
-                        QString::number(tableModel.getExitData().begin()->second.second));
+    m_ini.setValue("PlayerInit", "playerDepartureX", std::to_string(tableModel.getPlayerDepartureData()->first));
+    m_ini.setValue("PlayerInit", "playerDepartureY", std::to_string(tableModel.getPlayerDepartureData()->second));
+    m_ini.setValue("PlayerInit", "PlayerOrientation", std::to_string(static_cast<int>(playerDirection)));
+    m_ini.setValue("Exit", "GamePosition", QString::number(tableModel.getExitData().begin()->second.first).toStdString() + " " +
+                        QString::number(tableModel.getExitData().begin()->second.second).toStdString());
     generateWallsIniLevel(tableModel);
     generateTeleportsIniLevel(tableModel);
     generateStandardIniLevel(tableModel.getDoorsData());
@@ -498,6 +494,25 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     generateStandardIniLevel(tableModel.getStaticCeilingData());
     generateStandardIniLevel(tableModel.getStaticGroundData());
     generateStandardIniLevel(tableModel.getBarrelsData());
+    std::stringstream stringStream;
+    std::string str;
+    std::ofstream outputStream;
+    outputStream.open(filename.toStdString());
+    m_ini.generate(stringStream);
+    str = encrypt(stringStream.str(), ENCRYPTION_KEY_STANDARD_LEVEL);
+    outputStream << str;
+    outputStream.close();
+}
+
+//===================================================================
+std::string encrypt(const std::string &str, uint32_t key)
+{
+    std::string strR = str;
+    for(uint32_t i = 0; i < strR.size(); ++i)
+    {
+        strR[i] += key;
+    }
+    return strR;
 }
 
 //======================================================================
@@ -661,9 +676,9 @@ void LevelDataManager::generateTeleportsIniLevel(const TableModel &tableModel)
         target += QString::number(it->second.m_targetPos.first) + " " + QString::number(it->second.m_targetPos.second) + "  ";
         biDirection += "0 ";
     }
-    m_INIFile->setValue(teleportData.begin()->first + "/PosA", formatToIniFile(pos));
-    m_INIFile->setValue(teleportData.begin()->first + "/PosB", formatToIniFile(target));
-    m_INIFile->setValue(teleportData.begin()->first + "/BiDirection", formatToIniFile(biDirection));
+    m_ini.setValue(teleportData.begin()->first.toStdString(), "PosA", formatToIniFile(pos).toStdString());
+    m_ini.setValue(teleportData.begin()->first.toStdString(), "PosB", formatToIniFile(target).toStdString());
+    m_ini.setValue(teleportData.begin()->first.toStdString(), "BiDirection", formatToIniFile(biDirection).toStdString());
 }
 
 //======================================================================
@@ -687,7 +702,7 @@ void LevelDataManager::generateStandardIniLevel(const std::multimap<QString, QPa
     }
     for(std::map<QString, QString>::const_iterator it = mapINI.begin(); it != mapINI.end(); ++it)
     {
-        m_INIFile->setValue(it->first + "/GamePosition", formatToIniFile(it->second));
+        m_ini.setValue(it->first.toStdString(), "GamePosition", formatToIniFile(it->second).toStdString());
     }
 }
 
@@ -759,13 +774,13 @@ void LevelDataManager::writeWallData(const std::map<QString, WallDataINI> &wallD
     QString strDir, strMoveNumber;
     for(std::map<QString, WallDataINI>::const_iterator it = wallData.begin(); it != wallData.end(); ++it)
     {
-        m_INIFile->setValue(it->first + "/GamePosition", formatToIniFile(it->second.m_position));
+        m_ini.setValue(it->first.toStdString(), "GamePosition", formatToIniFile(it->second.m_position).toStdString());
         if(!it->second.m_removePosition.isEmpty())
         {
-            m_INIFile->setValue(it->first + "/RemovePosition", formatToIniFile(it->second.m_removePosition));
+            m_ini.setValue(it->first.toStdString(), "RemovePosition", formatToIniFile(it->second.m_removePosition).toStdString());
         }
         assert(it->second.m_iniID);
-        m_INIFile->setValue(it->first + "/WallDisplayID", *it->second.m_iniID);
+        m_ini.setValue(it->first.toStdString(), "WallDisplayID", (*it->second.m_iniID).toStdString());
         if(it->second.m_moveableData)
         {
             strDir = "";
@@ -775,21 +790,22 @@ void LevelDataManager::writeWallData(const std::map<QString, WallDataINI> &wallD
                 strDir += QString::number(static_cast<int>(it->second.m_moveableData->m_memMoveWallData[i].first)) + " ";
                 strMoveNumber += QString::number(it->second.m_moveableData->m_memMoveWallData[i].second) + " ";
             }
-            m_INIFile->setValue(it->first + "/Direction", formatToIniFile(strDir));
-            m_INIFile->setValue(it->first + "/NumberOfMove", formatToIniFile(strMoveNumber));
-            m_INIFile->setValue(it->first + "/Velocity", it->second.m_moveableData->m_velocity);
-            m_INIFile->setValue(it->first + "/TriggerBehaviourType", static_cast<int>(it->second.m_moveableData->m_triggerBehaviour));
+            m_ini.setValue(it->first.toStdString(), "/Direction", formatToIniFile(strDir).toStdString());
+            m_ini.setValue(it->first.toStdString(), "/NumberOfMove", formatToIniFile(strMoveNumber).toStdString());
+            m_ini.setValue(it->first.toStdString(), "/Velocity", std::to_string(it->second.m_moveableData->m_velocity));
+            m_ini.setValue(it->first.toStdString(), "/TriggerBehaviourType",
+                           std::to_string(static_cast<int>(it->second.m_moveableData->m_triggerBehaviour)));
             if(it->second.m_moveableData->m_triggerBehaviour != TriggerBehaviourType_e::AUTO)
             {
-                m_INIFile->setValue(it->first + "/TriggerType", static_cast<int>(it->second.m_moveableData->m_triggerType));
+                m_ini.setValue(it->first.toStdString(), "/TriggerType", std::to_string(static_cast<int>(it->second.m_moveableData->m_triggerType)));
                 if(it->second.m_moveableData->m_triggerType != TriggerType_e::WALL)
                 {
-                    m_INIFile->setValue(it->first + "/TriggerGamePosition", QString::number(it->second.m_moveableData->m_triggerPos->first) +
-                                        " " + QString::number(it->second.m_moveableData->m_triggerPos->second));
+                    m_ini.setValue(it->first.toStdString(), "/TriggerGamePosition", std::to_string(it->second.m_moveableData->m_triggerPos->first) +
+                                        " " + std::to_string(it->second.m_moveableData->m_triggerPos->second));
                 }
                 if(it->second.m_moveableData->m_triggerType == TriggerType_e::DISTANT_SWITCH)
                 {
-                    m_INIFile->setValue(it->first + "/TriggerDisplayID", it->second.m_moveableData->m_triggerINISectionName);
+                    m_ini.setValue(it->first.toStdString(), "/TriggerDisplayID", it->second.m_moveableData->m_triggerINISectionName.toStdString());
                 }
             }
         }
