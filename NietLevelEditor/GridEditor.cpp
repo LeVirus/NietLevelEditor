@@ -1087,7 +1087,8 @@ void GridEditor::treatWallDrawing()
         if(draw)
         {
             m_memWallSelectLayout->uncheckMoveableWall();
-            if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH)
+            if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH &&
+                    m_moveableWallForm->getTriggerBehaviour() != TriggerBehaviourType_e::AUTO)
             {
                 m_currentElementType = LevelElement_e::TRIGGER;
                 setLineSelectableEnabled(false);
