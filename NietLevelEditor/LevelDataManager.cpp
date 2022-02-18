@@ -772,15 +772,17 @@ QString LevelDataManager::getIniWallPos(int index, const WallDataContainer_t &wa
 void LevelDataManager::writeWallData(const std::map<QString, WallDataINI> &wallData)
 {
     QString strDir, strMoveNumber;
+    std::string section;
     for(std::map<QString, WallDataINI>::const_iterator it = wallData.begin(); it != wallData.end(); ++it)
     {
-        m_ini.setValue(it->first.toStdString(), "GamePosition", formatToIniFile(it->second.m_position).toStdString());
+        section = it->first.toStdString();
+        m_ini.setValue(section, "GamePosition", formatToIniFile(it->second.m_position).toStdString());
         if(!it->second.m_removePosition.isEmpty())
         {
-            m_ini.setValue(it->first.toStdString(), "RemovePosition", formatToIniFile(it->second.m_removePosition).toStdString());
+            m_ini.setValue(section, "RemovePosition", formatToIniFile(it->second.m_removePosition).toStdString());
         }
         assert(it->second.m_iniID);
-        m_ini.setValue(it->first.toStdString(), "WallDisplayID", (*it->second.m_iniID).toStdString());
+        m_ini.setValue(section, "WallDisplayID", (*it->second.m_iniID).toStdString());
         if(it->second.m_moveableData)
         {
             strDir = "";
@@ -790,22 +792,22 @@ void LevelDataManager::writeWallData(const std::map<QString, WallDataINI> &wallD
                 strDir += QString::number(static_cast<int>(it->second.m_moveableData->m_memMoveWallData[i].first)) + " ";
                 strMoveNumber += QString::number(it->second.m_moveableData->m_memMoveWallData[i].second) + " ";
             }
-            m_ini.setValue(it->first.toStdString(), "/Direction", formatToIniFile(strDir).toStdString());
-            m_ini.setValue(it->first.toStdString(), "/NumberOfMove", formatToIniFile(strMoveNumber).toStdString());
-            m_ini.setValue(it->first.toStdString(), "/Velocity", std::to_string(it->second.m_moveableData->m_velocity));
-            m_ini.setValue(it->first.toStdString(), "/TriggerBehaviourType",
+            m_ini.setValue(section, "Direction", formatToIniFile(strDir).toStdString());
+            m_ini.setValue(section, "NumberOfMove", formatToIniFile(strMoveNumber).toStdString());
+            m_ini.setValue(section, "Velocity", std::to_string(it->second.m_moveableData->m_velocity));
+            m_ini.setValue(section, "TriggerBehaviourType",
                            std::to_string(static_cast<int>(it->second.m_moveableData->m_triggerBehaviour)));
             if(it->second.m_moveableData->m_triggerBehaviour != TriggerBehaviourType_e::AUTO)
             {
-                m_ini.setValue(it->first.toStdString(), "/TriggerType", std::to_string(static_cast<int>(it->second.m_moveableData->m_triggerType)));
+                m_ini.setValue(section, "TriggerType", std::to_string(static_cast<int>(it->second.m_moveableData->m_triggerType)));
                 if(it->second.m_moveableData->m_triggerType != TriggerType_e::WALL)
                 {
-                    m_ini.setValue(it->first.toStdString(), "/TriggerGamePosition", std::to_string(it->second.m_moveableData->m_triggerPos->first) +
+                    m_ini.setValue(section, "TriggerGamePosition", std::to_string(it->second.m_moveableData->m_triggerPos->first) +
                                         " " + std::to_string(it->second.m_moveableData->m_triggerPos->second));
                 }
                 if(it->second.m_moveableData->m_triggerType == TriggerType_e::DISTANT_SWITCH)
                 {
-                    m_ini.setValue(it->first.toStdString(), "/TriggerDisplayID", it->second.m_moveableData->m_triggerINISectionName.toStdString());
+                    m_ini.setValue(section, "TriggerDisplayID", it->second.m_moveableData->m_triggerINISectionName.toStdString());
                 }
             }
         }
