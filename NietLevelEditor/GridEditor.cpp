@@ -117,6 +117,8 @@ bool GridEditor::loadExistingLevelGrid()
     }
     loadBackgroundGeneralExistingLevelGrid();
     loadTeleportExistingLevelGrid();
+    loadStandardColoredExistingLevelGrid(LevelElement_e::CHECKPOINT);
+    loadStandardColoredExistingLevelGrid(LevelElement_e::SECRET);
     loadStandardExistingLevelGrid(LevelElement_e::BARREL);
     loadStandardExistingLevelGrid(LevelElement_e::DOOR);
     loadStandardExistingLevelGrid(LevelElement_e::ENEMY);
@@ -1381,6 +1383,18 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
         setCaseIcon(it->second.first, it->second.second, -1);
         m_tableModel->memStdElement({index.column(), index.row()}, m_currentElementType,
                                     m_drawData[elementTypeInt][m_currentSelection].m_elementSectionName);
+    }
+    return true;
+}
+
+//======================================================================
+bool GridEditor::loadStandardColoredExistingLevelGrid(LevelElement_e elementType)
+{
+    const QVector<QPair<int, int>> &currentContainer = (elementType == LevelElement_e::CHECKPOINT) ?
+                m_levelDataManager.getExistingLevel()->m_checkpoints : m_levelDataManager.getExistingLevel()->m_secrets;
+    for(int i = 0; i < currentContainer.size(); ++i)
+    {
+        setColorCaseData(currentContainer[i].first, currentContainer[i].second, elementType);
     }
     return true;
 }

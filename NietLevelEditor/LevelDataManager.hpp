@@ -58,6 +58,7 @@ struct LevelData
     std::unique_ptr<QPair<BackgroundData, BackgroundData>> m_backgroundData;
     QPair<int, int> m_playerDeparture;
     Direction_e m_playerDirection;
+    QVector<QPair<int, int>> m_checkpoints, m_secrets;
     std::map<QString, WallDataINI> m_wallsData;
     std::multimap<QString, TeleportData> m_teleportData;
     std::multimap<QString, QPair<int, int>> m_exitData, m_barrelsData, m_groundElementsData, m_ceilingElementsData,
@@ -132,6 +133,7 @@ private:
     bool loadBackgroundLevel(bool ground, const QSettings &ini);
     bool loadStandardElementLevel(const QSettings &ini, StandardElement_e elementType);
     bool loadWallLevel(const QSettings &ini);
+    bool loadBasicColorElementLevel(const QSettings &ini, LevelElement_e type);
     bool loadTeleportLevel(const QSettings &ini);
     bool generateStructPosWall(const QString &key, bool positionMode);
     void generateWallsIniLevel(const TableModel &tableModel);

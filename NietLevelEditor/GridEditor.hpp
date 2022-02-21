@@ -75,6 +75,7 @@ public:
     ~GridEditor();
 private:
     bool loadStandardExistingLevelGrid(LevelElement_e elementType);
+    bool loadStandardColoredExistingLevelGrid(LevelElement_e elementType);
     bool loadTeleportExistingLevelGrid();
     bool loadBackgroundGeneralExistingLevelGrid();
     bool loadWallExistingLevelGrid();

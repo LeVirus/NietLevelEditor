@@ -100,6 +100,16 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
         return false;
     }
     m_existingLevelData->m_playerDirection = static_cast<Direction_e>(playerOrientation);
+    //Checkpoint
+    if(!loadBasicColorElementLevel(levelFile, LevelElement_e::CHECKPOINT))
+    {
+        return false;
+    }
+    //Secret
+    if(!loadBasicColorElementLevel(levelFile, LevelElement_e::SECRET))
+    {
+        return false;
+    }
     //Wall
     if(!loadWallLevel(levelFile))
     {
@@ -280,6 +290,33 @@ bool LevelDataManager::loadWallLevel(const QSettings &ini)
                 }
                 m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerPos = {listDir[0].toInt(), listDir[1].toInt()};
             }
+        }
+    }
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadBasicColorElementLevel(const QSettings &ini, LevelElement_e type)
+{
+    QStringList keys = ini.childGroups(), posList;
+    QString pos, iniId = (type == LevelElement_e::CHECKPOINT) ? "Checkpoints" : "Secrets";
+    QVector<QPair<int, int>> &currentContainer = (type == LevelElement_e::CHECKPOINT) ? m_existingLevelData->m_checkpoints :
+                                                                                        m_existingLevelData->m_secrets;
+    for(int i = 0; i < keys.size(); ++i)
+    {
+        if(keys[i].contains(iniId))
+        {
+            pos = ini.value(keys[i] + "/GamePosition", "").toString();
+            posList = pos.split(' ');
+            if(posList.size() % 2 != 0)
+            {
+                return false;
+            }
+            for(int j = 0; j < posList.size(); j += 2)
+            {
+                currentContainer.push_back({posList[j].toInt(), posList[j + 1].toInt()});
+            }
+            break;
         }
     }
     return true;
@@ -714,7 +751,7 @@ void LevelDataManager::generateColorElementsIniLevel(const QVector<QPair<int, in
     std::string pos, iniId = (type == LevelElement_e::CHECKPOINT) ? "Checkpoints" : "Secrets";
     for(int i = 0; i < datas.size(); ++i)
     {
-        pos = std::to_string(datas[i].first) + " " + std::to_string(datas[i].second) + "  ";
+        pos += std::to_string(datas[i].first) + " " + std::to_string(datas[i].second) + " ";
     }
     m_ini.setValue(iniId, "GamePosition", pos);
 }
