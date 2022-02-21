@@ -110,7 +110,7 @@ bool GridEditor::loadExistingLevelGrid()
             }
         }
     }
-    setPlayerDeparture(caseIndex);
+    setColorElement(caseIndex, LevelElement_e::PLAYER_DEPARTURE);
     if(!loadWallExistingLevelGrid())
     {
         return false;
@@ -260,16 +260,28 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type)
     if(type == LevelElement_e::PLAYER_DEPARTURE)
     {
         pix.fill(Qt::darkBlue);
+        m_tableModel->setPlayerDirectionDeparture(m_memPlayerDirection);
     }
-    else
+    else if(type == LevelElement_e::GROUND_TRIGGER)
     {
         pix.fill(Qt::magenta);
+    }
+    else if(type == LevelElement_e::CHECKPOINT)
+    {
+        pix.fill(Qt::white);
+        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
+        m_tableModel->addCheckpoint({x, y});
+    }
+    else if(type == LevelElement_e::SECRET)
+    {
+        pix.fill(Qt::darkRed);
+        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
+        m_tableModel->addSecret({x, y});
     }
     if(type == LevelElement_e::PLAYER_DEPARTURE || !m_tableModel->getDataElementCase(index))
     {
         m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
     }
-    m_tableModel->setPlayerDirectionDeparture(m_memPlayerDirection);
     m_tableModel->setData(index, QVariant(pix));
     updateGridView();
 }
@@ -1113,9 +1125,10 @@ void GridEditor::treatElementsDrawing()
     bool deleteMode = m_currentElementType == LevelElement_e::DELETE;
     QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
     int index = static_cast<int>(m_currentElementType);
-    if(m_currentElementType == LevelElement_e::PLAYER_DEPARTURE)
+    if(m_currentElementType == LevelElement_e::PLAYER_DEPARTURE || m_currentElementType == LevelElement_e::CHECKPOINT ||
+            m_currentElementType == LevelElement_e::SECRET)
     {
-        setPlayerDeparture(caseIndex);
+        setColorElement(caseIndex, m_currentElementType);
         return;
     }
     else if(m_currentElementType == LevelElement_e::GROUND_TRIGGER)
@@ -1163,17 +1176,6 @@ void GridEditor::setTargetTeleport(const QModelIndex &caseIndex)
     int teleportIndex = static_cast<int>(LevelElement_e::TELEPORT);
     m_tableModel->memTeleportElement(m_lastPositionAdded, {caseIndex.column(), caseIndex.row()},
                                      m_drawData[teleportIndex][m_currentSelection].m_elementSectionName);
-}
-
-//======================================================================
-void GridEditor::setPlayerDeparture(const QModelIndex &caseIndex)
-{
-    std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(caseIndex);
-    if(caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER)
-    {
-        m_tableModel->removeData(caseIndex);
-    }
-    setColorCaseData(caseIndex.column(), caseIndex.row(), LevelElement_e::PLAYER_DEPARTURE);
 }
 
 //======================================================================
@@ -1265,6 +1267,17 @@ void GridEditor::treatSelection(const QModelIndex &caseIndex)
 }
 
 //======================================================================
+void GridEditor::setColorElement(const QModelIndex &caseIndex, LevelElement_e elementType)
+{
+    std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(caseIndex);
+    if(caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER)
+    {
+        m_tableModel->removeData(caseIndex);
+    }
+    setColorCaseData(caseIndex.column(), caseIndex.row(), elementType);
+}
+
+//======================================================================
 void GridEditor::setWallDrawModeSelected(int wallDrawMode)
 {
     m_wallDrawMode = static_cast<WallDrawShape_e>(wallDrawMode);
@@ -1351,6 +1364,8 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
     case LevelElement_e::PLAYER_DEPARTURE:
     case LevelElement_e::DELETE:
     case LevelElement_e::SELECTION:
+    case LevelElement_e::CHECKPOINT:
+    case LevelElement_e::SECRET:
     case LevelElement_e::TOTAL:
         assert(false);
     }
@@ -1549,6 +1564,10 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
         return "Player Departure";
     case LevelElement_e::SELECTION:
         return "Selection";
+    case LevelElement_e::CHECKPOINT:
+        return "Checkpoint";
+    case LevelElement_e::SECRET:
+        return "Secret";
     case LevelElement_e::TOTAL:
         assert(false);
     }

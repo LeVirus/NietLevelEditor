@@ -33,6 +33,8 @@ enum class LevelElement_e
     GROUND_TRIGGER,
     EXIT,
     PLAYER_DEPARTURE,
+    CHECKPOINT,
+    SECRET,
     SELECTION,
     DELETE,
     TOTAL
@@ -114,7 +116,7 @@ private:
     void treatElementsDrawing();
     void confNewTriggerData(const QModelIndex &caseIndex);
     void setTargetTeleport(const QModelIndex &caseIndex);
-    void setPlayerDeparture(const QModelIndex &caseIndex);
+    void setColorElement(const QModelIndex &caseIndex, LevelElement_e elementType);
     void setTeleporter(const QModelIndex &caseIndex);
 private slots:
     void execConfCeilingBackground();

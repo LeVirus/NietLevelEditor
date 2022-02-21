@@ -494,6 +494,8 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     generateStandardIniLevel(tableModel.getStaticCeilingData());
     generateStandardIniLevel(tableModel.getStaticGroundData());
     generateStandardIniLevel(tableModel.getBarrelsData());
+    generateColorElementsIniLevel(tableModel.getCheckpointsData(), LevelElement_e::CHECKPOINT);
+    generateColorElementsIniLevel(tableModel.getSecretsData(), LevelElement_e::SECRET);
     std::stringstream stringStream;
     std::string str;
     std::ofstream outputStream;
@@ -704,6 +706,17 @@ void LevelDataManager::generateStandardIniLevel(const std::multimap<QString, QPa
     {
         m_ini.setValue(it->first.toStdString(), "GamePosition", formatToIniFile(it->second).toStdString());
     }
+}
+
+//======================================================================
+void LevelDataManager::generateColorElementsIniLevel(const QVector<QPair<int, int> > &datas, LevelElement_e type)
+{
+    std::string pos, iniId = (type == LevelElement_e::CHECKPOINT) ? "Checkpoints" : "Secrets";
+    for(int i = 0; i < datas.size(); ++i)
+    {
+        pos = std::to_string(datas[i].first) + " " + std::to_string(datas[i].second) + "  ";
+    }
+    m_ini.setValue(iniId, "GamePosition", pos);
 }
 
 //======================================================================

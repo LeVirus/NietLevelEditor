@@ -21,7 +21,7 @@ enum class WallDrawShape_e;
 using WallDataContainer_t = QVector<QPair<WallDrawShape_e, WallShapeData>>;
 using BackgroundPairData_t = QPair<const BackgroundData*, const BackgroundData*>;
 enum class Direction_e;
-
+enum class LevelElement_e;
 
 enum class StandardElement_e
 {
@@ -139,6 +139,7 @@ private:
     void generateTeleportsIniLevel(const TableModel &tableModel);
     void generateEnemiesIniLevel(const TableModel &tableModel);
     void generateStandardIniLevel(const std::multimap<QString, QPair<int, int>> &datas);
+    void generateColorElementsIniLevel(const QVector<QPair<int, int>> &datas, LevelElement_e type);
     void writeWallData(const std::map<QString, WallDataINI> &wallData);
     QString getCurrentWallRemovedINI(int index, const WallDataContainer_t &wallData)const;
     QString getIniWallPos(int index, const WallDataContainer_t &wallData) const;

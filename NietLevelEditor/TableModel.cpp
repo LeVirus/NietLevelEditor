@@ -101,6 +101,7 @@ void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall)
         return;
     }
     QPixmap pix;
+    //remove picture or color
     m_vectPic[index.column()][index.row()].first.swap(pix);
     if(caseData->m_type == LevelElement_e::PLAYER_DEPARTURE)
     {
@@ -140,12 +141,48 @@ void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall)
             }
         }
     }
+    else if(caseData->m_type == LevelElement_e::CHECKPOINT)
+    {
+        removeCheckpoint({index.column(), index.row()});
+    }
+    else if(caseData->m_type == LevelElement_e::SECRET)
+    {
+        removeSecret({index.column(), index.row()});
+    }
     else
     {
         rmStdElement({index.column(), index.row()}, caseData->m_type);
     }
     caseData.reset();
     return;
+}
+
+//======================================================================
+void TableModel::removeCheckpoint(const QPair<int, int> &pos)
+{
+    for(int32_t i = 0; i < m_vectCheckpoints.size(); ++i)
+    {
+        if(m_vectCheckpoints[i] == pos)
+        {
+            m_vectCheckpoints.erase(m_vectCheckpoints.begin() + i);
+            return;
+        }
+    }
+    assert(false);
+}
+
+//======================================================================
+void TableModel::removeSecret(const QPair<int, int> &pos)
+{
+    for(int32_t i = 0; i < m_vectSecrets.size(); ++i)
+    {
+        if(m_vectSecrets[i] == pos)
+        {
+            m_vectSecrets.erase(m_vectSecrets.begin() + i);
+            return;
+        }
+    }
+    assert(false);
 }
 
 //======================================================================
@@ -173,6 +210,8 @@ void TableModel::clearModel()
     m_memStaticCeiling.clear();
     m_memStaticGround.clear();
     m_memTeleport.clear();
+    m_vectCheckpoints.clear();
+    m_vectSecrets.clear();
 }
 
 //======================================================================
