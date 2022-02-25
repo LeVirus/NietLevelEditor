@@ -6,6 +6,7 @@
 #include <optional>
 #include <memory>
 #include <QFile>
+#include <QVector>
 #include <includeDir/iniwriter.h>
 
 using ArrayFloat_t = std::array<float, 5>;

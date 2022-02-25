@@ -307,6 +307,10 @@ bool LevelDataManager::loadBasicColorElementLevel(const QSettings &ini, LevelEle
         if(keys[i].contains(iniId))
         {
             pos = ini.value(keys[i] + "/GamePosition", "").toString();
+            if(pos.isEmpty())
+            {
+                return true;
+            }
             posList = pos.split(' ');
             if(posList.size() % 2 != 0)
             {
