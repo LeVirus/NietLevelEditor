@@ -750,8 +750,12 @@ void LevelDataManager::generateStandardIniLevel(const std::multimap<QString, QPa
 }
 
 //======================================================================
-void LevelDataManager::generateColorElementsIniLevel(const QVector<QPair<int, int> > &datas, LevelElement_e type)
+void LevelDataManager::generateColorElementsIniLevel(const QVector<QPair<int, int>> &datas, LevelElement_e type)
 {
+    if(datas.empty())
+    {
+        return;
+    }
     std::string pos, iniId = (type == LevelElement_e::CHECKPOINT) ? "Checkpoints" : "Secrets";
     for(int i = 0; i < datas.size(); ++i)
     {

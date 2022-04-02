@@ -1,7 +1,5 @@
 assert on resave moveable wall
 
-secret section appear even without secrets in INI file
-
 When set player departure bad direction update
 
 
@@ -10,6 +8,8 @@ Add level size modifiable
 
 after reopen grid update size grid
 
+
+secret section appear even without secrets in INI file========================OK
 
 when several shape wall associated to one trigger don't display both (work in game)=======================OK
 
