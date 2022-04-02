@@ -115,10 +115,7 @@ void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall)
     {
         assert(caseData->m_wallShapeNum);
         --m_memWallShape[*caseData->m_wallShapeNum].second.m_currentWallCount;
-        if(!dontMemRemovedWall)
-        {
-            m_memWallShape[*caseData->m_wallShapeNum].second.m_deletedWall.push_back({index.column(), index.row()});
-        }
+        m_memWallShape[*caseData->m_wallShapeNum].second.m_deletedWall.push_back({index.column(), index.row()});
         if(caseData->m_moveWallData->m_triggerPos)
         {
             if(dontMemRemovedWall)

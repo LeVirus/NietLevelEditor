@@ -1,0 +1,33 @@
+On wall shape if several door or other object overload the shape the second does not taken into account=======================OK
+
+assert on resave moveable wall
+
+when several shape wall associated to one trigger don't display both (work in game)
+
+secret section appear even without secrets in INI file
+
+When replace object some time does not take into account
+
+
+Add level size modifiable
+
+after reopen grid update size grid
+
+Barrel create double==========================OK
+
+After load level background does not load====================OK
+
+Trigger select after set trigger and auto====================OK
+
+Generate a second time set bad background data===============OK
+
+After add exit a wall disapear VISUAL UNIQUE===============RARE
+
+
+After reopen grid unselect all=================OK
+
+Some time after load a level with wall impossible to reload an other level==============OK
+
+Musioc loaded does't taked into account===============OK
+
+COLOR BACK BAD ORDER on REGEN===============OK
