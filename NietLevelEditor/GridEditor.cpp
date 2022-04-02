@@ -1151,12 +1151,12 @@ void GridEditor::treatElementsDrawing()
         treatSelection(caseIndex);
         return;
     }
+    setCaseIcon(caseIndex.column(), caseIndex.row(), -1, deleteMode);
     if(!deleteMode)
     {
         m_tableModel->memStdElement({caseIndex.column(), caseIndex.row()}, m_currentElementType,
                                     m_drawData[index][m_currentSelection].m_elementSectionName);
     }
-    setCaseIcon(caseIndex.column(), caseIndex.row(), -1, deleteMode);
     if(m_currentElementType == LevelElement_e::TELEPORT)
     {
         m_lastPositionAdded = {caseIndex.column(), caseIndex.row()};
