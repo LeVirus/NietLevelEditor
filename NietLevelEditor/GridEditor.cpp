@@ -97,7 +97,6 @@ bool GridEditor::loadExistingLevelGrid()
     }
     QModelIndex caseIndex = m_tableModel->index(m_levelDataManager.getExistingLevel()->m_playerDeparture.second,
                                                 m_levelDataManager.getExistingLevel()->m_playerDeparture.first, QModelIndex());
-    m_memPlayerDirection = m_levelDataManager.getExistingLevel()->m_playerDirection;
     m_tableModel->setPlayerDirectionDeparture(m_memPlayerDirection);
     if(m_levelDataManager.getExistingLevel()->m_music)
     {

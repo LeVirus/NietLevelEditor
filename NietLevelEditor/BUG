@@ -1,13 +1,13 @@
 assert on resave moveable wall
 
-When set player departure bad direction update
-
 
 
 Add level size modifiable
 
 after reopen grid update size grid
 
+
+When set player departure bad direction update========================OK
 
 secret section appear even without secrets in INI file========================OK
 

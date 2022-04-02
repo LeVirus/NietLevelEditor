@@ -194,7 +194,7 @@ private:
     QVector<QBitArray> m_vectPreview;
     std::optional<QPair<int, int>> m_departurePlayer, m_exitPos;
     QVector<QPair<int, int>> m_vectCheckpoints, m_vectSecrets;
-    Direction_e m_playerDirectionDeparture;
+    Direction_e m_playerDirectionDeparture = Direction_e::NORTH;
 signals:
     void editCompleted(const QString &str);
 };
