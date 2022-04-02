@@ -161,6 +161,10 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
     std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
     if(caseData->m_type == LevelElement_e::TRIGGER || caseData->m_type == LevelElement_e::GROUND_TRIGGER)
     {
+        if(m_currentElementType == LevelElement_e::TRIGGER || m_currentElementType == LevelElement_e::GROUND_TRIGGER)
+        {
+            return;
+        }
         m_tableModel->removeTrigger(*caseData, {x, y});
     }
     else
