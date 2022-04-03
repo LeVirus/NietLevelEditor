@@ -11,6 +11,7 @@ ConfNewLevelForm::ConfNewLevelForm(QWidget *parent) :
 {
     ui->setupUi(this);
     linkButtons();
+    setWindowFlags(Qt::WindowSystemMenuHint);
 }
 
 //======================================================================

@@ -26,8 +26,7 @@ GridEditor::GridEditor(QWidget *parent) :
     m_eventFilter(new EventFilter(this))
 {
     ui->setupUi(this);
-    layout()->setSizeConstraint(QLayout::SetNoConstraint);
-    ui->mainLayout->setContentsMargins(0, 0, 0, 0);
+    setWindowFlags(Qt::WindowSystemMenuHint);
 }
 
 //======================================================================
