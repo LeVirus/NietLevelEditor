@@ -18,12 +18,11 @@
 #include "EventFilter.hpp"
 #include "LineWallMove.hpp"
 #include "BackgroundForm.hpp"
+#include "CheckpointForm.hpp"
 
 //======================================================================
-GridEditor::GridEditor(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::GridEditor),
-    m_eventFilter(new EventFilter(this))
+GridEditor::GridEditor(QWidget *parent) : QDialog(parent), ui(new Ui::GridEditor), m_eventFilter(new EventFilter(this)),
+    m_checkpointForm(new CheckpointForm(this))
 {
     ui->setupUi(this);
     setWindowFlags(Qt::WindowSystemMenuHint);
@@ -115,8 +114,8 @@ bool GridEditor::loadExistingLevelGrid()
     }
     loadBackgroundGeneralExistingLevelGrid();
     loadTeleportExistingLevelGrid();
-    loadStandardColoredExistingLevelGrid(LevelElement_e::CHECKPOINT);
-    loadStandardColoredExistingLevelGrid(LevelElement_e::SECRET);
+    loadSecretsExistingLevelGrid();
+    loadCheckpointsExistingLevelGrid();
     loadStandardExistingLevelGrid(LevelElement_e::BARREL);
     loadStandardExistingLevelGrid(LevelElement_e::DOOR);
     loadStandardExistingLevelGrid(LevelElement_e::ENEMY);
@@ -257,7 +256,7 @@ void GridEditor::memWallMove(const QModelIndex &index)
 }
 
 //======================================================================
-void GridEditor::setColorCaseData(int x, int y, LevelElement_e type)
+void GridEditor::setColorCaseData(int x, int y, LevelElement_e type, const QPair<uint32_t, Direction_e> &checkpointData)
 {
     QModelIndex index = m_tableModel->index(y, x, QModelIndex());
     QPixmap pix(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
@@ -274,7 +273,7 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type)
     {
         pix.fill(Qt::white);
         m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
-        m_tableModel->addCheckpoint({x, y});
+        m_tableModel->addCheckpoint({x, y}, checkpointData);
     }
     else if(type == LevelElement_e::SECRET)
     {
@@ -1273,12 +1272,38 @@ void GridEditor::treatSelection(const QModelIndex &caseIndex)
 //======================================================================
 void GridEditor::setColorElement(const QModelIndex &caseIndex, LevelElement_e elementType)
 {
+    QPair<uint32_t, Direction_e> checkpointData;
     std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(caseIndex);
+    if(elementType == LevelElement_e::CHECKPOINT)
+    {
+        m_checkpointForm->reinit();
+        uint32_t numberOfCheckpoint = m_tableModel->getNumberOfCheckpoints();
+        if(numberOfCheckpoint > 0)
+        {
+            m_checkpointForm->setSpinBoxSize(numberOfCheckpoint);
+        }
+        if(caseData && caseData->m_type == LevelElement_e::CHECKPOINT)
+        {
+            std::optional<QPair<uint32_t, Direction_e>> checkpointData = m_tableModel->getCheckpointData({caseIndex.column(), caseIndex.row()});
+            assert(checkpointData);
+            m_checkpointForm->setMenuEntries(*checkpointData);
+        }
+        else
+        {
+            m_checkpointForm->setMenuEntries({numberOfCheckpoint, Direction_e::NORTH});
+        }
+        m_checkpointForm->exec();
+        if(!m_checkpointForm->isValid())
+        {
+            return;
+        }
+        checkpointData = m_checkpointForm->getCheckpointData();
+    }
     if(caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER)
     {
         m_tableModel->removeData(caseIndex);
     }
-    setColorCaseData(caseIndex.column(), caseIndex.row(), elementType);
+    setColorCaseData(caseIndex.column(), caseIndex.row(), elementType, checkpointData);
 }
 
 //======================================================================
@@ -1390,15 +1415,24 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
 }
 
 //======================================================================
-bool GridEditor::loadStandardColoredExistingLevelGrid(LevelElement_e elementType)
+void GridEditor::loadSecretsExistingLevelGrid()
 {
-    const QVector<QPair<int, int>> &currentContainer = (elementType == LevelElement_e::CHECKPOINT) ?
-                m_levelDataManager.getExistingLevel()->m_checkpoints : m_levelDataManager.getExistingLevel()->m_secrets;
-    for(int i = 0; i < currentContainer.size(); ++i)
+    for(int i = 0; i < m_levelDataManager.getExistingLevel()->m_secrets.size(); ++i)
     {
-        setColorCaseData(currentContainer[i].first, currentContainer[i].second, elementType);
+        setColorCaseData(m_levelDataManager.getExistingLevel()->m_secrets[i].first,
+                         m_levelDataManager.getExistingLevel()->m_secrets[i].second, LevelElement_e::SECRET);
     }
-    return true;
+}
+
+//======================================================================
+void GridEditor::loadCheckpointsExistingLevelGrid()
+{
+    for(int i = 0; i < m_levelDataManager.getExistingLevel()->m_checkpoints.size(); ++i)
+    {
+        setColorCaseData(m_levelDataManager.getExistingLevel()->m_checkpoints[i].first.first,
+                         m_levelDataManager.getExistingLevel()->m_checkpoints[i].first.second, LevelElement_e::CHECKPOINT,
+                         {0, m_levelDataManager.getExistingLevel()->m_checkpoints[i].second});
+    }
 }
 
 //======================================================================

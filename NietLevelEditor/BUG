@@ -1,11 +1,4 @@
-assert on resave moveable wall
-
-
-
-Add level size modifiable
-
-after reopen grid update size grid
-
+assert on resave moveable wall=================NOT REPRODUCIBLE
 
 When set player departure bad direction update========================OK
 

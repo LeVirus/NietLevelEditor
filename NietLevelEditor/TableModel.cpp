@@ -159,7 +159,7 @@ void TableModel::removeCheckpoint(const QPair<int, int> &pos)
 {
     for(int32_t i = 0; i < m_vectCheckpoints.size(); ++i)
     {
-        if(m_vectCheckpoints[i] == pos)
+        if(m_vectCheckpoints[i].first == pos)
         {
             m_vectCheckpoints.erase(m_vectCheckpoints.begin() + i);
             return;
@@ -490,6 +490,33 @@ bool TableModel::checkLevelData()const
         return false;
     }
     return true;
+}
+
+//======================================================================
+void TableModel::addCheckpoint(const QPair<int, int> &pos, const QPair<uint32_t, Direction_e> &checkpointData)
+{
+    for(int i = 0; i < m_vectCheckpoints.size(); ++i)
+    {
+        if(m_vectCheckpoints[i].first == pos)
+        {
+            m_vectCheckpoints.erase(m_vectCheckpoints.begin() + i);
+            break;
+        }
+    }
+    m_vectCheckpoints.insert(checkpointData.first, {pos, checkpointData.second});
+}
+
+//======================================================================
+std::optional<QPair<uint32_t, Direction_e>> TableModel::getCheckpointData(const QPair<int, int> &pos)const
+{
+    for(int i = 0; i < m_vectCheckpoints.size(); ++i)
+    {
+        if(m_vectCheckpoints[i].first == pos)
+        {
+            return QPair<uint32_t, Direction_e>{i, m_vectCheckpoints[i].second};
+        }
+    }
+    return {};
 }
 
 //======================================================================

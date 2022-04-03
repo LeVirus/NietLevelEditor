@@ -101,12 +101,12 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     }
     m_existingLevelData->m_playerDirection = static_cast<Direction_e>(playerOrientation);
     //Checkpoint
-    if(!loadBasicColorElementLevel(levelFile, LevelElement_e::CHECKPOINT))
+    if(!loadBasicCheckpointsElementLevel(levelFile))
     {
         return false;
     }
     //Secret
-    if(!loadBasicColorElementLevel(levelFile, LevelElement_e::SECRET))
+    if(!loadBasicSecretsElementLevel(levelFile))
     {
         return false;
     }
@@ -296,15 +296,13 @@ bool LevelDataManager::loadWallLevel(const QSettings &ini)
 }
 
 //======================================================================
-bool LevelDataManager::loadBasicColorElementLevel(const QSettings &ini, LevelElement_e type)
+bool LevelDataManager::loadBasicSecretsElementLevel(const QSettings &ini)
 {
     QStringList keys = ini.childGroups(), posList;
-    QString pos, iniId = (type == LevelElement_e::CHECKPOINT) ? "Checkpoints" : "Secrets";
-    QVector<QPair<int, int>> &currentContainer = (type == LevelElement_e::CHECKPOINT) ? m_existingLevelData->m_checkpoints :
-                                                                                        m_existingLevelData->m_secrets;
+    QString pos;
     for(int i = 0; i < keys.size(); ++i)
     {
-        if(keys[i].contains(iniId))
+        if(keys[i].contains("Secrets"))
         {
             pos = ini.value(keys[i] + "/GamePosition", "").toString();
             if(pos.isEmpty())
@@ -318,7 +316,40 @@ bool LevelDataManager::loadBasicColorElementLevel(const QSettings &ini, LevelEle
             }
             for(int j = 0; j < posList.size(); j += 2)
             {
-                currentContainer.push_back({posList[j].toInt(), posList[j + 1].toInt()});
+                m_existingLevelData->m_secrets.push_back({posList[j].toInt(), posList[j + 1].toInt()});
+            }
+            break;
+        }
+    }
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadBasicCheckpointsElementLevel(const QSettings &ini)
+{
+    QStringList keys = ini.childGroups(), posList, dirList;
+    QString pos, strDir;
+    for(int i = 0; i < keys.size(); ++i)
+    {
+        if(keys[i].contains("Checkpoints"))
+        {
+            pos = ini.value(keys[i] + "/GamePosition", "").toString();
+            if(pos.isEmpty())
+            {
+                return true;
+            }
+            posList = pos.split(' ');
+            if(posList.size() % 2 != 0)
+            {
+                return false;
+            }
+            strDir = ini.value(keys[i] + "/Direction", "").toString();
+            dirList = strDir.split(' ');
+            assert(dirList.size() == posList.size());
+            for(int j = 0; j < posList.size(); j += 2)
+            {
+                m_existingLevelData->m_checkpoints.push_back({{posList[j].toInt(), posList[j + 1].toInt()},
+                                                              static_cast<Direction_e>(dirList[j].toInt())});
             }
             break;
         }
@@ -535,8 +566,8 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     generateStandardIniLevel(tableModel.getStaticCeilingData());
     generateStandardIniLevel(tableModel.getStaticGroundData());
     generateStandardIniLevel(tableModel.getBarrelsData());
-    generateColorElementsIniLevel(tableModel.getCheckpointsData(), LevelElement_e::CHECKPOINT);
-    generateColorElementsIniLevel(tableModel.getSecretsData(), LevelElement_e::SECRET);
+    generateCheckpointElementsIniLevel(tableModel.getCheckpointsData());
+    generateSecretsElementsIniLevel(tableModel.getSecretsData());
     std::stringstream stringStream;
     std::string str;
     std::ofstream outputStream;
@@ -750,18 +781,35 @@ void LevelDataManager::generateStandardIniLevel(const std::multimap<QString, QPa
 }
 
 //======================================================================
-void LevelDataManager::generateColorElementsIniLevel(const QVector<QPair<int, int>> &datas, LevelElement_e type)
+void LevelDataManager::generateCheckpointElementsIniLevel(const QVector<QPair<QPair<int, int>, Direction_e>> &datas)
 {
     if(datas.empty())
     {
         return;
     }
-    std::string pos, iniId = (type == LevelElement_e::CHECKPOINT) ? "Checkpoints" : "Secrets";
+    std::string pos, dir;
+    for(int i = 0; i < datas.size(); ++i)
+    {
+        dir += std::to_string(static_cast<uint32_t>(datas[i].second)) + " ";
+        pos += std::to_string(datas[i].first.first) + " " + std::to_string(datas[i].first.second) + " ";
+    }
+    m_ini.setValue("Checkpoints", "GamePosition", pos);
+    m_ini.setValue("Checkpoints", "Direction", dir);
+}
+
+//======================================================================
+void LevelDataManager::generateSecretsElementsIniLevel(const QVector<QPair<int, int>> &datas)
+{
+    if(datas.empty())
+    {
+        return;
+    }
+    std::string pos;
     for(int i = 0; i < datas.size(); ++i)
     {
         pos += std::to_string(datas[i].first) + " " + std::to_string(datas[i].second) + " ";
     }
-    m_ini.setValue(iniId, "GamePosition", pos);
+    m_ini.setValue("Secrets", "GamePosition", pos);
 }
 
 //======================================================================

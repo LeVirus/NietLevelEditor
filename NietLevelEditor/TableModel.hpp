@@ -154,7 +154,7 @@ public:
     {
         return m_memStaticGround;
     }
-    inline const QVector<QPair<int, int>> &getCheckpointsData()const
+    inline const QVector<QPair<QPair<int, int>, Direction_e>> &getCheckpointsData()const
     {
         return m_vectCheckpoints;
     }
@@ -170,14 +170,16 @@ public:
     {
         m_playerDirectionDeparture = dir;
     }
-    inline void addCheckpoint(const QPair<int, int> &pos)
-    {
-        m_vectCheckpoints.push_back(pos);
-    }
+    void addCheckpoint(const QPair<int, int> &pos, const QPair<uint32_t, Direction_e> &checkpointData);
     inline void addSecret(const QPair<int, int> &pos)
     {
         m_vectSecrets.push_back(pos);
     }
+    inline uint32_t getNumberOfCheckpoints()
+    {
+        return m_vectCheckpoints.size();
+    }
+    std::optional<QPair<uint32_t, Direction_e>> getCheckpointData(const QPair<int, int> &pos) const;
     void updateTriggerPos(const QPair<int, int> &pos);
     void removeTrigger(CaseData &triggerCase, const QPair<int, int> &triggercoord);
 private:
@@ -193,7 +195,8 @@ private:
     QVector<QVector<QPair<QPixmap, std::optional<CaseData>>>> m_vectPic;
     QVector<QBitArray> m_vectPreview;
     std::optional<QPair<int, int>> m_departurePlayer, m_exitPos;
-    QVector<QPair<int, int>> m_vectCheckpoints, m_vectSecrets;
+    QVector<QPair<QPair<int, int>, Direction_e>> m_vectCheckpoints;
+    QVector<QPair<int, int>> m_vectSecrets;
     Direction_e m_playerDirectionDeparture = Direction_e::NORTH;
 signals:
     void editCompleted(const QString &str);

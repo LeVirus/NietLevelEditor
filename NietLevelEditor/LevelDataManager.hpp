@@ -59,7 +59,8 @@ struct LevelData
     std::unique_ptr<QPair<BackgroundData, BackgroundData>> m_backgroundData;
     QPair<int, int> m_playerDeparture;
     Direction_e m_playerDirection;
-    QVector<QPair<int, int>> m_checkpoints, m_secrets;
+    QVector<QPair<int, int>> m_secrets;
+    QVector<QPair<QPair<int, int>, Direction_e>> m_checkpoints;
     std::map<QString, WallDataINI> m_wallsData;
     std::multimap<QString, TeleportData> m_teleportData;
     std::multimap<QString, QPair<int, int>> m_exitData, m_barrelsData, m_groundElementsData, m_ceilingElementsData,
@@ -134,7 +135,8 @@ private:
     bool loadBackgroundLevel(bool ground, const QSettings &ini);
     bool loadStandardElementLevel(const QSettings &ini, StandardElement_e elementType);
     bool loadWallLevel(const QSettings &ini);
-    bool loadBasicColorElementLevel(const QSettings &ini, LevelElement_e type);
+    bool loadBasicSecretsElementLevel(const QSettings &ini);
+    bool loadBasicCheckpointsElementLevel(const QSettings &ini);
     bool loadTeleportLevel(const QSettings &ini);
     bool generateStructPosWall(const QString &key, bool positionMode);
     void generateWallsIniLevel(const TableModel &tableModel);
@@ -142,7 +144,8 @@ private:
     void generateTeleportsIniLevel(const TableModel &tableModel);
     void generateEnemiesIniLevel(const TableModel &tableModel);
     void generateStandardIniLevel(const std::multimap<QString, QPair<int, int>> &datas);
-    void generateColorElementsIniLevel(const QVector<QPair<int, int>> &datas, LevelElement_e type);
+    void generateCheckpointElementsIniLevel(const QVector<QPair<QPair<int, int>, Direction_e> > &datas);
+    void generateSecretsElementsIniLevel(const QVector<QPair<int, int>> &datas);
     void writeWallData(const std::map<QString, WallDataINI> &wallData);
     QString getCurrentWallRemovedINI(int index, const WallDataContainer_t &wallData)const;
     QString getIniWallPos(int index, const WallDataContainer_t &wallData) const;

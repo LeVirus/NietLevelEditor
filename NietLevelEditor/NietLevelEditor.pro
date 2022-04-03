@@ -13,6 +13,7 @@ QMAKE_CXXFLAGS_DEBUG += -Wall -Wextra -Wpedantic -Og
 
 SOURCES += \
     BackgroundForm.cpp \
+    CheckpointForm.cpp \
     ConfNewLevelForm.cpp \
     EventFilter.cpp \
     GridEditor.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
 
 HEADERS += \
     BackgroundForm.hpp \
+    CheckpointForm.hpp \
     ConfNewLevelForm.hpp \
     EventFilter.hpp \
     GridEditor.hpp \
@@ -38,6 +40,7 @@ HEADERS += \
 
 FORMS += \
     BackgroundForm.ui \
+    CheckpointForm.ui \
     ConfNewLevelForm.ui \
     GridEditor.ui \
     MainWindow.ui \

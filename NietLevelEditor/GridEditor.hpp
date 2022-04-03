@@ -17,6 +17,7 @@ class SelectableLineLayout;
 class BackgroundForm;
 struct MoveWallData;
 class QComboBox;
+class CheckpointForm;
 
 enum class LevelElement_e
 {
@@ -75,7 +76,8 @@ public:
     ~GridEditor();
 private:
     bool loadStandardExistingLevelGrid(LevelElement_e elementType);
-    bool loadStandardColoredExistingLevelGrid(LevelElement_e elementType);
+    void loadSecretsExistingLevelGrid();
+    void loadCheckpointsExistingLevelGrid();
     bool loadTeleportExistingLevelGrid();
     bool loadBackgroundGeneralExistingLevelGrid();
     bool loadWallExistingLevelGrid();
@@ -109,7 +111,7 @@ private:
                               int shapeNum, uint32_t &wallNumber, bool preview = false, bool deleteMode = false);
     void setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode = false, bool dontMemRemovedWall = false);
     void memWallMove(const QModelIndex &index);
-    void setColorCaseData(int x, int y, LevelElement_e type);
+    void setColorCaseData(int x, int y, LevelElement_e type, const QPair<uint32_t, Direction_e> &direction = {0, Direction_e::NORTH});
     QIcon getCurrentSelectedIcon()const;
     void updateGridView();
     void setLineSelectableEnabled(bool enable);
@@ -151,6 +153,7 @@ private:
     std::map<LevelElement_e, QVector<QString>> m_mapElementID;
     std::unique_ptr<MoveWallData> m_memcurrentMoveWallData;
     QSet<QPair<int, int>> m_memCurrentLinkTriggerWall;
+    CheckpointForm *m_checkpointForm = nullptr;
     QPushButton *m_generateButton;
     QComboBox *m_musicWidget;
     Direction_e m_memPlayerDirection = Direction_e::NORTH;
