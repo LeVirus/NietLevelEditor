@@ -279,7 +279,7 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type, const QPair
     else if(type == LevelElement_e::CHECKPOINT)
     {
         pix.fill(Qt::white);
-        text = "CP" + QString::number(checkpointData.first);
+        text = getStrCheckpoint(checkpointData);
         m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
         m_tableModel->addCheckpoint({x, y}, checkpointData);
     }
@@ -312,7 +312,7 @@ void GridEditor::updateCheckpointDisplay()
     for(int i = 0; i < checkpoint.size(); ++i)
     {
         pix.fill(Qt::white);
-        text = "CP" + QString::number(i);
+        text = getStrCheckpoint({i, checkpoint[i].second});
         index = m_tableModel->index(checkpoint[i].first.second, checkpoint[i].first.first, QModelIndex());
         paint.drawText(QRect(0, 0, CASE_SPRITE_SIZE, CASE_SPRITE_SIZE), Qt::AlignCenter, text);
         m_tableModel->setData(index, QVariant(pix));
@@ -1686,4 +1686,31 @@ Direction_e getDirEnumFromQString(const QString &str)
         dir = Direction_e::WEST;
     }
     return dir;
+}
+
+//======================================================================
+QString getStrDir(Direction_e direction)
+{
+    switch(direction)
+    {
+    case Direction_e::EAST:
+        return "E";
+        break;
+    case Direction_e::WEST:
+        return "W";
+        break;
+    case Direction_e::NORTH:
+        return "N";
+        break;
+    case Direction_e::SOUTH:
+        return "S";
+        break;
+    }
+    return "";
+}
+
+//======================================================================
+QString getStrCheckpoint(const QPair<int, Direction_e> &direction)
+{
+    return "C" + getStrDir(direction.second) + QString::number(direction.first) ;
 }

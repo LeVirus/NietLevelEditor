@@ -161,6 +161,8 @@ private:
     bool m_widgetInit = false, m_loadingExistingLevelMode = false, m_loadingDistantTriggerMode = false;
 };
 
+QString getStrDir(Direction_e direction);
+QString getStrCheckpoint(const QPair<int, Direction_e> &direction);
 Direction_e getDirEnumFromQString(const QString &str);
 const int32_t CASE_SIZE_PX = 40, CASE_SPRITE_SIZE = (CASE_SIZE_PX * 4) / 5;
 QPixmap getSprite(const ArrayFloat_t &spriteData, const LevelDataManager &levelDataManager, const QString &installDir);
