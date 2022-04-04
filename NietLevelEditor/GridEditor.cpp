@@ -124,6 +124,7 @@ bool GridEditor::loadExistingLevelGrid()
     loadStandardExistingLevelGrid(LevelElement_e::EXIT);
     loadStandardExistingLevelGrid(LevelElement_e::OBJECT);
     updateGridView();
+    updateCheckpointDisplay();
     return true;
 }
 
@@ -278,7 +279,7 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type, const QPair
     }
     else if(type == LevelElement_e::CHECKPOINT)
     {
-        pix.fill(Qt::white);
+        pix.fill(Qt::darkGray);
         text = getStrCheckpoint(checkpointData);
         m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
         m_tableModel->addCheckpoint({x, y}, checkpointData);
@@ -311,7 +312,7 @@ void GridEditor::updateCheckpointDisplay()
     QModelIndex index;
     for(int i = 0; i < checkpoint.size(); ++i)
     {
-        pix.fill(Qt::white);
+        pix.fill(Qt::darkGray);
         text = getStrCheckpoint({i, checkpoint[i].second});
         index = m_tableModel->index(checkpoint[i].first.second, checkpoint[i].first.first, QModelIndex());
         paint.drawText(QRect(0, 0, CASE_SPRITE_SIZE, CASE_SPRITE_SIZE), Qt::AlignCenter, text);

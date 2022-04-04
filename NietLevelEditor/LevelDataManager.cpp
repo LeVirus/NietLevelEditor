@@ -345,11 +345,11 @@ bool LevelDataManager::loadBasicCheckpointsElementLevel(const QSettings &ini)
             }
             strDir = ini.value(keys[i] + "/Direction", "").toString();
             dirList = strDir.split(' ');
-            assert(dirList.size() == posList.size());
-            for(int j = 0; j < posList.size(); j += 2)
+            assert(dirList.size() == posList.size() / 2);
+            for(int j = 0, k = 0; j < posList.size(); j += 2, ++k)
             {
                 m_existingLevelData->m_checkpoints.push_back({{posList[j].toInt(), posList[j + 1].toInt()},
-                                                              static_cast<Direction_e>(dirList[j].toInt())});
+                                                              static_cast<Direction_e>(dirList[k].toInt())});
             }
             break;
         }
