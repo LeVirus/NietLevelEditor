@@ -112,6 +112,7 @@ private:
     void setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode = false, bool dontMemRemovedWall = false);
     void memWallMove(const QModelIndex &index);
     void setColorCaseData(int x, int y, LevelElement_e type, const QPair<uint32_t, Direction_e> &direction = {0, Direction_e::NORTH});
+    void updateCheckpointDisplay();
     QIcon getCurrentSelectedIcon()const;
     void updateGridView();
     void setLineSelectableEnabled(bool enable);

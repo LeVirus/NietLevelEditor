@@ -45,7 +45,7 @@ QVariant TableModel::data(const QModelIndex &index, int role)const
 //======================================================================
 bool TableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (role == Qt::EditRole)
+    if(role == Qt::EditRole)
     {
         if(!checkIndex(index))
         {
@@ -91,7 +91,7 @@ bool TableModel::setIdData(const QModelIndex &index, const CaseData &value)
 //======================================================================
 void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall)
 {
-    if (!checkIndex(index))
+    if(!checkIndex(index))
     {
         return;
     }

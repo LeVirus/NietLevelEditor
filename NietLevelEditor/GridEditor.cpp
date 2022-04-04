@@ -156,7 +156,8 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
 {
     QModelIndex index = m_tableModel->index(y, x, QModelIndex());
     std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
-    if(caseData->m_type == LevelElement_e::TRIGGER || caseData->m_type == LevelElement_e::GROUND_TRIGGER)
+    LevelElement_e type = caseData ? LevelElement_e::TOTAL : caseData->m_type;
+    if(type == LevelElement_e::TRIGGER || type == LevelElement_e::GROUND_TRIGGER)
     {
         if(m_currentElementType == LevelElement_e::TRIGGER || m_currentElementType == LevelElement_e::GROUND_TRIGGER)
         {
@@ -175,7 +176,7 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
     bool ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
                                                     pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
     assert(ok);
-    if(!caseData || (caseData->m_type != LevelElement_e::TRIGGER && caseData->m_type != LevelElement_e::GROUND_TRIGGER))
+    if(!caseData || (type != LevelElement_e::TRIGGER && type != LevelElement_e::GROUND_TRIGGER))
     {
         m_tableModel->setIdData(index, CaseData{m_currentElementType,
                                                 m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}});
@@ -260,23 +261,31 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type, const QPair
 {
     QModelIndex index = m_tableModel->index(y, x, QModelIndex());
     QPixmap pix(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
+    QPainter paint(&pix);
+    QString text;
+    paint.setPen(Qt::black);
+    paint.setFont(QFont("Arial", 12));
     if(type == LevelElement_e::PLAYER_DEPARTURE)
     {
-        pix.fill(Qt::darkBlue);
+        pix.fill(Qt::cyan);
+        text = "D";
         m_tableModel->setPlayerDirectionDeparture(m_memPlayerDirection);
     }
     else if(type == LevelElement_e::GROUND_TRIGGER)
     {
+        text = "GT";
         pix.fill(Qt::magenta);
     }
     else if(type == LevelElement_e::CHECKPOINT)
     {
         pix.fill(Qt::white);
+        text = "CP" + QString::number(checkpointData.first);
         m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
         m_tableModel->addCheckpoint({x, y}, checkpointData);
     }
     else if(type == LevelElement_e::SECRET)
     {
+        text = "S";
         pix.fill(Qt::darkRed);
         m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
         m_tableModel->addSecret({x, y});
@@ -285,8 +294,29 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type, const QPair
     {
         m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
     }
+    paint.drawText(QRect(0, 0, CASE_SPRITE_SIZE, CASE_SPRITE_SIZE), Qt::AlignCenter, text);
     m_tableModel->setData(index, QVariant(pix));
     updateGridView();
+}
+
+//======================================================================
+void GridEditor::updateCheckpointDisplay()
+{
+    QString text;
+    QPixmap pix(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
+    QPainter paint(&pix);
+    paint.setPen(Qt::black);
+    paint.setFont(QFont("Arial", 12));
+    const QVector<QPair<QPair<int, int>, Direction_e>> checkpoint = m_tableModel->getCheckpointsData();
+    QModelIndex index;
+    for(int i = 0; i < checkpoint.size(); ++i)
+    {
+        pix.fill(Qt::white);
+        text = "CP" + QString::number(i);
+        index = m_tableModel->index(checkpoint[i].first.second, checkpoint[i].first.first, QModelIndex());
+        paint.drawText(QRect(0, 0, CASE_SPRITE_SIZE, CASE_SPRITE_SIZE), Qt::AlignCenter, text);
+        m_tableModel->setData(index, QVariant(pix));
+    }
 }
 
 //======================================================================
@@ -1073,6 +1103,7 @@ void GridEditor::mouseReleaseSelection()
     }
     m_firstCaseSelection = m_tableModel->index(-1, -1, QModelIndex());
     m_secondCaseSelection = m_tableModel->index(-1, -1, QModelIndex());
+    updateCheckpointDisplay();
     updateGridView();
 }
 
@@ -1136,6 +1167,11 @@ void GridEditor::treatElementsDrawing()
     }
     else if(m_currentElementType == LevelElement_e::GROUND_TRIGGER)
     {
+        std::optional<CaseData> data = m_tableModel->getDataElementCase(caseIndex);
+        if(data && data->m_type == LevelElement_e::CHECKPOINT)
+        {
+            m_tableModel->removeData(caseIndex);
+        }
         setColorCaseData(caseIndex.column(), caseIndex.row(), m_currentElementType);
         m_currentElementType = LevelElement_e::WALL;
         setLineSelectableEnabled(true);
@@ -1278,11 +1314,16 @@ void GridEditor::setColorElement(const QModelIndex &caseIndex, LevelElement_e el
     {
         m_checkpointForm->reinit();
         uint32_t numberOfCheckpoint = m_tableModel->getNumberOfCheckpoints();
-        if(numberOfCheckpoint > 0)
+        bool checkpointExists = (caseData && caseData->m_type == LevelElement_e::CHECKPOINT);
+        if(numberOfCheckpoint > 0 && !checkpointExists)
         {
             m_checkpointForm->setSpinBoxSize(numberOfCheckpoint);
         }
-        if(caseData && caseData->m_type == LevelElement_e::CHECKPOINT)
+        else if(checkpointExists)
+        {
+            m_checkpointForm->setSpinBoxSize(numberOfCheckpoint - 1);
+        }
+        if(checkpointExists)
         {
             std::optional<QPair<uint32_t, Direction_e>> checkpointData = m_tableModel->getCheckpointData({caseIndex.column(), caseIndex.row()});
             assert(checkpointData);
