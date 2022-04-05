@@ -107,6 +107,7 @@ bool GridEditor::loadExistingLevelGrid()
             }
         }
     }
+    m_memPlayerDirection = existingLevel->m_playerDirection;
     setColorElement(caseIndex, LevelElement_e::PLAYER_DEPARTURE);
     if(!loadWallExistingLevelGrid())
     {
@@ -269,7 +270,7 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type, const QPair
     if(type == LevelElement_e::PLAYER_DEPARTURE)
     {
         pix.fill(Qt::cyan);
-        text = "D";
+        text = "D" + getStrDir(m_memPlayerDirection);
         m_tableModel->setPlayerDirectionDeparture(m_memPlayerDirection);
     }
     else if(type == LevelElement_e::GROUND_TRIGGER)
