@@ -21,6 +21,13 @@ void LogForm::reinit()
 }
 
 //=============================================================
+void LogForm::setMessage(const QString &message)
+{
+    m_messageText = message;
+    ui->plainTextEdit->setPlainText(message);
+}
+
+//=============================================================
 LogForm::~LogForm()
 {
     delete ui;

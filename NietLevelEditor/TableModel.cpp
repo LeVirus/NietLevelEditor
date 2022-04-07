@@ -505,6 +505,19 @@ bool TableModel::checkLevelData()const
 }
 
 //======================================================================
+std::optional<LogData> TableModel::getLogDataPos(const QPair<int, int> &pos)const
+{
+    for(int32_t i = 0; i < m_memLog.size(); ++i)
+    {
+        if(m_memLog[i].m_position == pos)
+        {
+            return m_memLog[i];
+        }
+    }
+    return {};
+}
+
+//======================================================================
 void TableModel::addCheckpoint(const QPair<int, int> &pos, const QPair<uint32_t, Direction_e> &checkpointData)
 {
     for(int i = 0; i < m_vectCheckpoints.size(); ++i)

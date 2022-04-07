@@ -1133,6 +1133,13 @@ void GridEditor::treatElementsDrawing()
     else if(m_currentElementType == LevelElement_e::LOG)
     {
         m_logForm->reinit();
+        std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(caseIndex);
+        if(caseData && caseData->m_type == LevelElement_e::LOG)
+        {
+            std::optional<LogData> logData = m_tableModel->getLogDataPos({caseIndex.column(), caseIndex.row()});
+            assert(logData);
+            m_logForm->setMessage(logData->m_message);
+        }
         m_logForm->exec();
         if(!m_logForm->validate())
         {
@@ -1442,6 +1449,7 @@ void GridEditor::loadLogsExistingLevelGrid()
             return;
         }
         setCaseIcon(it->second.m_position.first, it->second.m_position.second, -1);
+        m_tableModel->addLog(it->second.m_position, it->second.m_message, it->second.m_displayID);
     }
 }
 

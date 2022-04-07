@@ -174,6 +174,7 @@ public:
     {
         m_playerDirectionDeparture = dir;
     }
+    std::optional<LogData> getLogDataPos(const QPair<int, int> &pos)const;
     void addCheckpoint(const QPair<int, int> &pos, const QPair<uint32_t, Direction_e> &checkpointData);
     void addLog(const QPair<int, int> &pos, const QString &message, const QString &displayID);
     inline void addSecret(const QPair<int, int> &pos)

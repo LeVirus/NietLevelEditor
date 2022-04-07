@@ -21,6 +21,7 @@ public:
     {
         return m_messageText;
     }
+    void setMessage(const QString &message);
     ~LogForm();
 private slots:
     void valid();
