@@ -57,6 +57,10 @@ void ConfNewLevelForm::openExistingLevel()
     {
         m_existingLevelFile.clear();
     }
+    else
+    {
+        onOkButtonClicked();
+    }
 }
 
 //======================================================================
