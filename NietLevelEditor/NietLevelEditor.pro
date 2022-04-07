@@ -19,6 +19,7 @@ SOURCES += \
     GridEditor.cpp \
     LevelDataManager.cpp \
     LineWallMove.cpp \
+    LogForm.cpp \
     MainWindow.cpp \
     MoveableWallForm.cpp \
     SelectableLineLayout.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     GridEditor.hpp \
     LevelDataManager.hpp \
     LineWallMove.hpp \
+    LogForm.hpp \
     MainWindow.hpp \
     MoveableWallForm.hpp \
     SelectableLineLayout.hpp \
@@ -43,6 +45,7 @@ FORMS += \
     CheckpointForm.ui \
     ConfNewLevelForm.ui \
     GridEditor.ui \
+    LogForm.ui \
     MainWindow.ui \
     MoveableWallForm.ui
 

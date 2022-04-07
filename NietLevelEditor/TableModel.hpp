@@ -158,6 +158,10 @@ public:
     {
         return m_vectCheckpoints;
     }
+    inline const QVector<LogData> &getLogData()const
+    {
+        return m_memLog;
+    }
     inline const QVector<QPair<int, int>> &getSecretsData()const
     {
         return m_vectSecrets;
@@ -171,6 +175,7 @@ public:
         m_playerDirectionDeparture = dir;
     }
     void addCheckpoint(const QPair<int, int> &pos, const QPair<uint32_t, Direction_e> &checkpointData);
+    void addLog(const QPair<int, int> &pos, const QString &message, const QString &displayID);
     inline void addSecret(const QPair<int, int> &pos)
     {
         m_vectSecrets.push_back(pos);
@@ -190,6 +195,7 @@ private:
     WallDataContainer_t m_memWallShape;
     std::multimap<QString, QPair<int, int>> m_memEnemy, m_memBarrel, m_memDoor, m_memExit, m_memObject, m_memStaticCeiling,
     m_memStaticGround;
+    QVector<LogData> m_memLog;
     std::multimap<QString, TeleportData> m_memTeleport;
     QPair<int, int> m_tableSize;
     QVector<QVector<QPair<QPixmap, std::optional<CaseData>>>> m_vectPic;

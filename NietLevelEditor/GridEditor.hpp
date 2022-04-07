@@ -18,6 +18,7 @@ class BackgroundForm;
 struct MoveWallData;
 class QComboBox;
 class CheckpointForm;
+class LogForm;
 
 enum class LevelElement_e
 {
@@ -30,6 +31,7 @@ enum class LevelElement_e
     STATIC_CEILING,
     STATIC_GROUND,
     BARREL,
+    LOG,
     TRIGGER,
     GROUND_TRIGGER,
     EXIT,
@@ -78,6 +80,7 @@ private:
     bool loadStandardExistingLevelGrid(LevelElement_e elementType);
     void loadSecretsExistingLevelGrid();
     void loadCheckpointsExistingLevelGrid();
+    void loadLogsExistingLevelGrid();
     bool loadTeleportExistingLevelGrid();
     bool loadBackgroundGeneralExistingLevelGrid();
     bool loadWallExistingLevelGrid();
@@ -91,13 +94,7 @@ private:
     void loadSpritesForBackgroundForm();
     void loadWallsPictures(const QString &installDir);
     void loadDoorsPictures(const QString &installDir);
-    void loadTeleportsPictures(const QString &installDir);
-    void loadEnemiesPictures(const QString &installDir);
-    void loadObjectsPictures(const QString &installDir);
-    void loadStaticCeilingElementPictures(const QString &installDir);
-    void loadStaticGroundElementPictures(const QString &installDir);
-    void loadBarrelsPictures(const QString &installDir);
-    void loadExitsPictures(const QString &installDir);
+    void loadStandardPictures(const QString &installDir, LevelElement_e elementType);
     bool setWallShape(bool preview = false, bool loadFromIni = false);
     void setWallDiagCaseConf();
     void setWallDiagRectCaseConf();
@@ -150,6 +147,7 @@ private:
     QModelIndex m_firstCaseSelection, m_secondCaseSelection;
     BackgroundForm *m_backgroundForm = nullptr;
     MoveableWallForm *m_moveableWallForm = nullptr;
+    LogForm *m_logForm = nullptr;
     SelectableLineLayout *m_memWallSelectLayout = nullptr;
     std::map<LevelElement_e, QVector<QString>> m_mapElementID;
     std::unique_ptr<MoveWallData> m_memcurrentMoveWallData;

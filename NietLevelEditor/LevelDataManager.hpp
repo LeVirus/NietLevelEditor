@@ -51,6 +51,12 @@ struct WallDataINI
     std::unique_ptr<MoveWallData> m_moveableData;
 };
 
+struct LogData
+{
+    QPair<int, int> m_position;
+    QString m_message, m_displayID;
+};
+
 struct LevelData
 {
     QPair<int, int> m_levelSize;
@@ -63,6 +69,7 @@ struct LevelData
     QVector<QPair<QPair<int, int>, Direction_e>> m_checkpoints;
     std::map<QString, WallDataINI> m_wallsData;
     std::multimap<QString, TeleportData> m_teleportData;
+    std::map<QString, LogData> m_logsData;
     std::multimap<QString, QPair<int, int>> m_exitData, m_barrelsData, m_groundElementsData, m_ceilingElementsData,
     m_enemiesData, m_objectsData, m_doorsData;
 };
@@ -114,6 +121,10 @@ public:
     {
         return m_exitElement;
     }
+    inline const std::map<QString, QString> &getLogData()const
+    {
+        return m_logElement;
+    }
     inline const QStringList &getTexturePaths()const
     {
         return m_texturesPath;
@@ -138,13 +149,15 @@ private:
     bool loadBasicSecretsElementLevel(const QSettings &ini);
     bool loadBasicCheckpointsElementLevel(const QSettings &ini);
     bool loadTeleportLevel(const QSettings &ini);
+    bool loadLogElementLevel(const QSettings &ini);
     bool generateStructPosWall(const QString &key, bool positionMode);
     void generateWallsIniLevel(const TableModel &tableModel);
     void generateDoorsIniLevel(const TableModel &tableModel);
     void generateTeleportsIniLevel(const TableModel &tableModel);
     void generateEnemiesIniLevel(const TableModel &tableModel);
     void generateStandardIniLevel(const std::multimap<QString, QPair<int, int>> &datas);
-    void generateCheckpointElementsIniLevel(const QVector<QPair<QPair<int, int>, Direction_e> > &datas);
+    void generateCheckpointElementsIniLevel(const QVector<QPair<QPair<int, int>, Direction_e>> &datas);
+    void generateLogsElementsIniLevel(const QVector<LogData> &datas);
     void generateSecretsElementsIniLevel(const QVector<QPair<int, int>> &datas);
     void writeWallData(const std::map<QString, WallDataINI> &wallData);
     QString getCurrentWallRemovedINI(int index, const WallDataContainer_t &wallData)const;
@@ -166,6 +179,7 @@ private:
     bool loadStaticElementGroundData(const QString &key);
     bool loadStaticElementCeilingData(const QString &key);
     bool loadTeleportData(const QString &key);
+    bool loadLogData(const QString &key);
     bool loadBarrelData(const QString &key);
     bool loadExitData(const QString &key);
 private:
@@ -176,12 +190,12 @@ private:
     std::map<QString, QStringList> m_wallElement;
     std::map<QString, DoorData> m_doorElement;
     std::map<QString, QString> m_triggerElement, m_teleportElement, m_enemyElement, m_objectElement, m_staticCeilingElement,
-    m_staticGroundElement, m_barrelElement, m_exitElement;
+    m_staticGroundElement, m_barrelElement, m_exitElement, m_logElement;
     std::unique_ptr<LevelData> m_existingLevelData;
     inipp::Ini<char> m_ini;
     const uint32_t ENCRYPTION_KEY_CONF_FILE = 42, ENCRYPTION_KEY_STANDARD_LEVEL = 17;
 };
 
 std::string encrypt(const std::string &str, uint32_t key);
-QString getWallINIKey(int shapeWallNum);
+QString getStrNumINIKey(int shapeWallNum);
 QString formatToIniFile(const QString &str);

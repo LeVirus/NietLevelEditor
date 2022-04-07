@@ -207,6 +207,7 @@ void TableModel::clearModel()
     m_memStaticCeiling.clear();
     m_memStaticGround.clear();
     m_memTeleport.clear();
+    m_memLog.clear();
     m_vectCheckpoints.clear();
     m_vectSecrets.clear();
 }
@@ -382,6 +383,17 @@ void TableModel::rmStdElement(const QPair<int, int> &pos, LevelElement_e element
             }
         }
     }
+    else if(elementType == LevelElement_e::LOG)
+    {
+        for(int32_t i = 0; i < m_memLog.size(); ++i)
+        {
+            if(m_memLog[i].m_position == pos)
+            {
+                m_memLog.erase(m_memLog.begin() + i);
+                return;
+            }
+        }
+    }
     else
     {
         return;
@@ -504,6 +516,12 @@ void TableModel::addCheckpoint(const QPair<int, int> &pos, const QPair<uint32_t,
         }
     }
     m_vectCheckpoints.insert(checkpointData.first, {pos, checkpointData.second});
+}
+
+//======================================================================
+void TableModel::addLog(const QPair<int, int> &pos, const QString &message, const QString &displayID)
+{
+    m_memLog.push_back({pos, message, displayID});
 }
 
 //======================================================================

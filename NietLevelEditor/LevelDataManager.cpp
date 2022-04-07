@@ -120,6 +120,11 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     {
         return false;
     }
+    //Log
+    if(!loadLogElementLevel(levelFile))
+    {
+        return false;
+    }
     //Barrel
     if(!loadStandardElementLevel(levelFile, StandardElement_e::BARREL))
     {
@@ -382,6 +387,29 @@ bool LevelDataManager::loadTeleportLevel(const QSettings &ini)
 }
 
 //======================================================================
+bool LevelDataManager::loadLogElementLevel(const QSettings &ini)
+{
+    QStringList keys = ini.childGroups(), logPos;
+    QString logPosStr;
+    for(int i = 0; i < keys.size(); ++i)
+    {
+        if(keys[i].contains("Log"))
+        {
+            logPosStr = ini.value(keys[i] + "/GamePosition", "").toString();
+            logPos = logPosStr.split(' ');
+            if(logPos.size() != 2)
+            {
+                return false;
+            }
+            m_existingLevelData->m_logsData.insert({keys[i], {{logPos[0].toInt(), logPos[1].toInt()},
+                                                              ini.value(keys[i] + "/Message", "").toString(),
+                                                              ini.value(keys[i] + "/DisplayID", "").toString()}});
+        }
+    }
+    return true;
+}
+
+//======================================================================
 bool LevelDataManager::generateStructPosWall(const QString &key, bool positionMode)
 {
     QString baseStr = m_existingLevelData->m_wallsData[key].m_position;
@@ -567,6 +595,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     generateStandardIniLevel(tableModel.getStaticGroundData());
     generateStandardIniLevel(tableModel.getBarrelsData());
     generateCheckpointElementsIniLevel(tableModel.getCheckpointsData());
+    generateLogsElementsIniLevel(tableModel.getLogData());
     generateSecretsElementsIniLevel(tableModel.getSecretsData());
     std::stringstream stringStream;
     std::string str;
@@ -693,7 +722,7 @@ void LevelDataManager::generateWallsIniLevel(const TableModel &tableModel)
         {
             continue;
         }
-        key = getWallINIKey(cmpt);
+        key = "WallShape" + getStrNumINIKey(cmpt);
         ++cmpt;
         gamePos = getIniWallPos(i, wallData);
         removePos = getCurrentWallRemovedINI(i, wallData);
@@ -712,7 +741,7 @@ void LevelDataManager::generateWallsIniLevel(const TableModel &tableModel)
 }
 
 //======================================================================
-QString getWallINIKey(int shapeWallNum)
+QString getStrNumINIKey(int shapeWallNum)
 {
     QString zeros;
     if(shapeWallNum < 10)
@@ -732,7 +761,7 @@ QString getWallINIKey(int shapeWallNum)
     {
         zeros = "0";
     }
-    return "WallShape" + zeros + QString::number(shapeWallNum);
+    return zeros + QString::number(shapeWallNum);
 }
 
 //======================================================================
@@ -756,7 +785,7 @@ void LevelDataManager::generateTeleportsIniLevel(const TableModel &tableModel)
 }
 
 //======================================================================
-void LevelDataManager::generateStandardIniLevel(const std::multimap<QString, QPair<int, int> > &datas)
+void LevelDataManager::generateStandardIniLevel(const std::multimap<QString, QPair<int, int>> &datas)
 {
     QString pos;
     std::map<QString, QString> mapINI;
@@ -795,6 +824,25 @@ void LevelDataManager::generateCheckpointElementsIniLevel(const QVector<QPair<QP
     }
     m_ini.setValue("Checkpoints", "GamePosition", pos);
     m_ini.setValue("Checkpoints", "Direction", dir);
+}
+
+//======================================================================
+void LevelDataManager::generateLogsElementsIniLevel(const QVector<LogData> &datas)
+{
+    if(datas.empty())
+    {
+        return;
+    }
+    uint32_t cmpt = 0;
+    QString key, pos;
+    for(int32_t i = 0; i < datas.size(); ++i, ++cmpt)
+    {
+        key = "Log" + getStrNumINIKey(cmpt);
+        pos = QString::number(datas[i].m_position.first) + " " + QString::number(datas[i].m_position.second);
+        m_ini.setValue(key.toStdString(), "GamePosition", pos.toStdString());
+        m_ini.setValue(key.toStdString(), "Message", datas[i].m_message.toStdString());
+        m_ini.setValue(key.toStdString(), "DisplayID", datas[i].m_displayID.toStdString());
+    }
 }
 
 //======================================================================
@@ -1068,6 +1116,10 @@ bool LevelDataManager::loadStandardDataINI()
         {
             ok = loadTeleportData(keysList.at(i));
         }
+        else if(keysList.at(i).contains("Log"))
+        {
+            ok = loadLogData(keysList.at(i));
+        }
         else if(keysList.at(i) == "Barrel")
         {
             ok = loadBarrelData(keysList.at(i));
@@ -1193,6 +1245,18 @@ bool LevelDataManager::loadTeleportData(const QString &key)
         return false;
     }
     m_teleportElement.insert({key, sprites});
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadLogData(const QString &key)
+{
+    QString sprites = m_INIFile->value(key + "/Sprite", "").toString();
+    if(sprites.isEmpty())
+    {
+        return false;
+    }
+    m_logElement.insert({key, sprites});
     return true;
 }
 

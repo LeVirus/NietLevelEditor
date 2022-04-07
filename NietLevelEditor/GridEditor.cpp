@@ -19,6 +19,7 @@
 #include "LineWallMove.hpp"
 #include "BackgroundForm.hpp"
 #include "CheckpointForm.hpp"
+#include "LogForm.hpp"
 
 //======================================================================
 GridEditor::GridEditor(QWidget *parent) : QDialog(parent), ui(new Ui::GridEditor), m_eventFilter(new EventFilter(this)),
@@ -51,6 +52,10 @@ void GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     {
         m_moveableWallForm = new MoveableWallForm(this);
         m_moveableWallForm->setTriggerIcons(m_drawData[static_cast<int>(LevelElement_e::TRIGGER)]);
+    }
+    if(!m_logForm)
+    {
+        m_logForm = new LogForm();
     }
     if(!m_backgroundForm)
     {
@@ -117,6 +122,7 @@ bool GridEditor::loadExistingLevelGrid()
     loadTeleportExistingLevelGrid();
     loadSecretsExistingLevelGrid();
     loadCheckpointsExistingLevelGrid();
+    loadLogsExistingLevelGrid();
     loadStandardExistingLevelGrid(LevelElement_e::BARREL);
     loadStandardExistingLevelGrid(LevelElement_e::DOOR);
     loadStandardExistingLevelGrid(LevelElement_e::ENEMY);
@@ -427,14 +433,15 @@ void GridEditor::loadIconPictures(const QString &installDir)
     m_mapElementID.clear();
     loadWallsPictures(installDir);
     loadDoorsPictures(installDir);
-    loadTeleportsPictures(installDir);
-    loadEnemiesPictures(installDir);
-    loadObjectsPictures(installDir);
-    loadTriggerDisplay(installDir);
-    loadStaticCeilingElementPictures(installDir);
-    loadStaticGroundElementPictures(installDir);
-    loadBarrelsPictures(installDir);
-    loadExitsPictures(installDir);
+    loadStandardPictures(installDir, LevelElement_e::LOG);
+    loadStandardPictures(installDir, LevelElement_e::TELEPORT);
+    loadStandardPictures(installDir, LevelElement_e::ENEMY);
+    loadStandardPictures(installDir, LevelElement_e::OBJECT);
+    loadStandardPictures(installDir, LevelElement_e::TRIGGER);
+    loadStandardPictures(installDir, LevelElement_e::STATIC_GROUND);
+    loadStandardPictures(installDir, LevelElement_e::STATIC_CEILING);
+    loadStandardPictures(installDir, LevelElement_e::BARREL);
+    loadStandardPictures(installDir, LevelElement_e::EXIT);
 }
 
 //======================================================================
@@ -554,126 +561,59 @@ void GridEditor::loadDoorsPictures(const QString &installDir)
 }
 
 //======================================================================
-void GridEditor::loadTeleportsPictures(const QString &installDir)
+void GridEditor::loadStandardPictures(const QString &installDir, LevelElement_e elementType)
 {
-    const std::map<QString, QString> &teleportsMap = m_levelDataManager.getTeleportData();
-    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::TELEPORT);
-    assert(!teleportsMap.empty());
-    m_drawData[currentIndex].reserve(teleportsMap.size());
-    std::optional<ArrayFloat_t> spriteData;
-    m_mapElementID.insert({LevelElement_e::TELEPORT, QVector<QString>()});
-    m_mapElementID[LevelElement_e::TELEPORT].reserve(teleportsMap.size());
-    for(std::map<QString, QString>::const_iterator it = teleportsMap.begin(); it != teleportsMap.end(); ++it)
+    const std::map<QString, QString> *currentMap;
+    switch(elementType)
     {
-        m_mapElementID[LevelElement_e::TELEPORT].push_back(it->first);
-        spriteData = m_levelDataManager.getPictureData(it->second);
-        assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
+    case LevelElement_e::TELEPORT:
+        currentMap = &m_levelDataManager.getTeleportData();
+        break;
+    case LevelElement_e::ENEMY:
+        currentMap = &m_levelDataManager.getEnemyData();
+        break;
+    case LevelElement_e::OBJECT:
+        currentMap = &m_levelDataManager.getObjectData();
+        break;
+    case LevelElement_e::STATIC_CEILING:
+        currentMap = &m_levelDataManager.getStaticCeilingData();
+        break;
+    case LevelElement_e::STATIC_GROUND:
+        currentMap = &m_levelDataManager.getStaticGroundData();
+        break;
+    case LevelElement_e::BARREL:
+        currentMap = &m_levelDataManager.getBarrelData();
+        break;
+    case LevelElement_e::LOG:
+        currentMap = &m_levelDataManager.getLogData();
+        break;
+    case LevelElement_e::TRIGGER:
+        currentMap = &m_levelDataManager.getTriggerData();
+        break;
+    case LevelElement_e::EXIT:
+        currentMap = &m_levelDataManager.getExitData();
+        break;
+    case LevelElement_e::WALL:
+    case LevelElement_e::DOOR:
+    case LevelElement_e::PLAYER_DEPARTURE:
+    case LevelElement_e::CHECKPOINT:
+    case LevelElement_e::SECRET:
+    case LevelElement_e::GROUND_TRIGGER:
+    case LevelElement_e::TARGET_TELEPORT:
+    case LevelElement_e::SELECTION:
+    case LevelElement_e::DELETE:
+    case LevelElement_e::TOTAL:
+        assert(false);
+        break;
     }
-}
-
-//======================================================================
-void GridEditor::loadEnemiesPictures(const QString &installDir)
-{
-    const std::map<QString, QString> &enemiesMap = m_levelDataManager.getEnemyData();
-    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::ENEMY);
-    m_drawData[currentIndex].reserve(enemiesMap.size());
+    uint32_t currentIndex = static_cast<uint32_t>(elementType);
+    m_drawData[currentIndex].reserve(currentMap->size());
     std::optional<ArrayFloat_t> spriteData;
-    m_mapElementID.insert({LevelElement_e::ENEMY, QVector<QString>()});
-    m_mapElementID[LevelElement_e::ENEMY].reserve(enemiesMap.size());
-    for(std::map<QString, QString>::const_iterator it = enemiesMap.begin(); it != enemiesMap.end(); ++it)
+    m_mapElementID.insert({elementType, QVector<QString>()});
+    m_mapElementID[elementType].reserve(currentMap->size());
+    for(std::map<QString, QString>::const_iterator it = currentMap->begin(); it != currentMap->end(); ++it)
     {
-        m_mapElementID[LevelElement_e::ENEMY].push_back(it->first);
-        spriteData = m_levelDataManager.getPictureData(it->second);
-        assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
-    }
-}
-
-//======================================================================
-void GridEditor::loadObjectsPictures(const QString &installDir)
-{
-    const std::map<QString, QString> &objectsMap = m_levelDataManager.getObjectData();
-    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::OBJECT);
-    m_drawData[currentIndex].reserve(objectsMap.size());
-    std::optional<ArrayFloat_t> spriteData;
-    m_mapElementID.insert({LevelElement_e::OBJECT, QVector<QString>()});
-    m_mapElementID[LevelElement_e::OBJECT].reserve(objectsMap.size());
-    for(std::map<QString, QString>::const_iterator it = objectsMap.begin(); it != objectsMap.end(); ++it)
-    {
-        m_mapElementID[LevelElement_e::OBJECT].push_back(it->first);
-        spriteData = m_levelDataManager.getPictureData(it->second);
-        assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
-    }
-}
-
-//======================================================================
-void GridEditor::loadStaticCeilingElementPictures(const QString &installDir)
-{
-    const std::map<QString, QString> &staticCeilingElementsMap = m_levelDataManager.getStaticCeilingData();
-    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::STATIC_CEILING);
-    m_drawData[currentIndex].reserve(staticCeilingElementsMap.size());
-    std::optional<ArrayFloat_t> spriteData;
-    m_mapElementID.insert({LevelElement_e::STATIC_CEILING, QVector<QString>()});
-    m_mapElementID[LevelElement_e::STATIC_CEILING].reserve(staticCeilingElementsMap.size());
-    for(std::map<QString, QString>::const_iterator it = staticCeilingElementsMap.begin(); it != staticCeilingElementsMap.end(); ++it)
-    {
-        m_mapElementID[LevelElement_e::STATIC_CEILING].push_back(it->first);
-        spriteData = m_levelDataManager.getPictureData(it->second);
-        assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
-    }
-}
-
-//======================================================================
-void GridEditor::loadStaticGroundElementPictures(const QString &installDir)
-{
-    const std::map<QString, QString> &staticGroundElementsMap = m_levelDataManager.getStaticGroundData();
-    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::STATIC_GROUND);
-    m_drawData[currentIndex].reserve(staticGroundElementsMap.size());
-    std::optional<ArrayFloat_t> spriteData;
-    m_mapElementID.insert({LevelElement_e::STATIC_GROUND, QVector<QString>()});
-    m_mapElementID[LevelElement_e::STATIC_GROUND].reserve(staticGroundElementsMap.size());
-    for(std::map<QString, QString>::const_iterator it = staticGroundElementsMap.begin(); it != staticGroundElementsMap.end(); ++it)
-    {
-        m_mapElementID[LevelElement_e::STATIC_GROUND].push_back(it->first);
-        spriteData = m_levelDataManager.getPictureData(it->second);
-        assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
-    }
-}
-
-//======================================================================
-void GridEditor::loadBarrelsPictures(const QString &installDir)
-{
-    const std::map<QString, QString> &barrelsMap = m_levelDataManager.getBarrelData();
-    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::BARREL);
-    m_drawData[currentIndex].reserve(barrelsMap.size());
-    std::optional<ArrayFloat_t> spriteData;
-    m_mapElementID.insert({LevelElement_e::BARREL, QVector<QString>()});
-    m_mapElementID[LevelElement_e::BARREL].reserve(barrelsMap.size());
-    for(std::map<QString, QString>::const_iterator it = barrelsMap.begin(); it != barrelsMap.end(); ++it)
-    {
-        m_mapElementID[LevelElement_e::BARREL].push_back(it->first);
-        spriteData = m_levelDataManager.getPictureData(it->second);
-        assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
-    }
-}
-
-//======================================================================
-void GridEditor::loadExitsPictures(const QString &installDir)
-{
-    const std::map<QString, QString> &exitsMap = m_levelDataManager.getExitData();
-    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::EXIT);
-    m_drawData[currentIndex].reserve(exitsMap.size());
-    std::optional<ArrayFloat_t> spriteData;
-    m_mapElementID.insert({LevelElement_e::EXIT, QVector<QString>()});
-    m_mapElementID[LevelElement_e::EXIT].reserve(exitsMap.size());
-    for(std::map<QString, QString>::const_iterator it = exitsMap.begin(); it != exitsMap.end(); ++it)
-    {
-        m_mapElementID[LevelElement_e::EXIT].push_back(it->first);
+        m_mapElementID[elementType].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
         m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
@@ -714,7 +654,7 @@ bool GridEditor::setWallShape(bool preview, bool loadFromIni)
                                               m_drawData[index][m_currentSelection].m_elementSectionName, memMoveData);
         if(topLeftPos == bottomRight)
         {
-            setCaseIcon(minX, minY, shapeNum, false, true);
+            (minX, minY, shapeNum, false, true);
             m_tableModel->updateWallNumber(1);
             return true;
         }
@@ -1190,6 +1130,16 @@ void GridEditor::treatElementsDrawing()
         treatSelection(caseIndex);
         return;
     }
+    else if(m_currentElementType == LevelElement_e::LOG)
+    {
+        m_logForm->reinit();
+        m_logForm->exec();
+        if(!m_logForm->validate())
+        {
+            return;
+        }
+        m_tableModel->addLog({caseIndex.column(), caseIndex.row()}, m_logForm->getMessage(), m_mapElementID[m_currentElementType][m_currentSelection]);
+    }
     setCaseIcon(caseIndex.column(), caseIndex.row(), -1, deleteMode);
     if(!deleteMode)
     {
@@ -1438,6 +1388,7 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
     case LevelElement_e::SELECTION:
     case LevelElement_e::CHECKPOINT:
     case LevelElement_e::SECRET:
+    case LevelElement_e::LOG:
     case LevelElement_e::TOTAL:
         assert(false);
     }
@@ -1475,6 +1426,22 @@ void GridEditor::loadCheckpointsExistingLevelGrid()
         setColorCaseData(m_levelDataManager.getExistingLevel()->m_checkpoints[i].first.first,
                          m_levelDataManager.getExistingLevel()->m_checkpoints[i].first.second, LevelElement_e::CHECKPOINT,
                          {0, m_levelDataManager.getExistingLevel()->m_checkpoints[i].second});
+    }
+}
+
+//======================================================================
+void GridEditor::loadLogsExistingLevelGrid()
+{
+    m_currentElementType = LevelElement_e::LOG;
+    for(std::map<QString, LogData>::const_iterator it = m_levelDataManager.getExistingLevel()->m_logsData.begin();
+        it != m_levelDataManager.getExistingLevel()->m_logsData.end(); ++it)
+    {
+        m_currentSelection = m_mapElementID[LevelElement_e::LOG].indexOf(it->second.m_displayID);
+        if(m_currentSelection == -1)
+        {
+            return;
+        }
+        setCaseIcon(it->second.m_position.first, it->second.m_position.second, -1);
     }
 }
 
@@ -1637,6 +1604,8 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
         return "Exits";
     case LevelElement_e::OBJECT:
         return "Objects";
+    case LevelElement_e::LOG:
+        return "Log";
     case LevelElement_e::STATIC_CEILING:
         return "Static ceiling objects";
     case LevelElement_e::STATIC_GROUND:
