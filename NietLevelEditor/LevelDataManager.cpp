@@ -393,7 +393,7 @@ bool LevelDataManager::loadLogElementLevel(const QSettings &ini)
     QString logPosStr;
     for(int i = 0; i < keys.size(); ++i)
     {
-        if(keys[i].contains("Log"))
+        if(keys[i].contains("MessageLog"))
         {
             logPosStr = ini.value(keys[i] + "/GamePosition", "").toString();
             logPos = logPosStr.split(' ');
@@ -837,10 +837,10 @@ void LevelDataManager::generateLogsElementsIniLevel(const QVector<LogData> &data
     QString key, pos;
     for(int32_t i = 0; i < datas.size(); ++i, ++cmpt)
     {
-        key = "Log" + getStrNumINIKey(cmpt);
+        key = "MessageLog" + getStrNumINIKey(cmpt);
         pos = QString::number(datas[i].m_position.first) + " " + QString::number(datas[i].m_position.second);
         m_ini.setValue(key.toStdString(), "GamePosition", pos.toStdString());
-        m_ini.setValue(key.toStdString(), "Message", datas[i].m_message.toStdString());
+        m_ini.setValue(key.toStdString(), "Message", treatStrEndLine(datas[i].m_message.toStdString()));
         m_ini.setValue(key.toStdString(), "DisplayID", datas[i].m_displayID.toStdString());
     }
 }
@@ -1116,7 +1116,7 @@ bool LevelDataManager::loadStandardDataINI()
         {
             ok = loadTeleportData(keysList.at(i));
         }
-        else if(keysList.at(i).contains("Log"))
+        else if(keysList.at(i).contains("MessageLog"))
         {
             ok = loadLogData(keysList.at(i));
         }
@@ -1350,4 +1350,18 @@ QString formatToIniFile(const QString &str)
         }
     }
     return copy;
+}
+
+//======================================================================
+std::string treatStrEndLine(const std::string &str)
+{
+    std::string ret = str;
+    for(uint i = 0; i < ret.size(); ++i)
+    {
+        if(ret[i] == '\n')
+        {
+            ret[i] = '\\';
+        }
+    }
+    return ret;
 }

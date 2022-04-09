@@ -8,7 +8,7 @@ LogForm::LogForm(QWidget *parent) :
     ui(new Ui::LogForm)
 {
     ui->setupUi(this);
-    QObject::connect(ui->OkButton, &QPushButton::clicked, this, &LogForm::valid);
+    QObject::connect(ui->OkButton, &QPushButton::clicked, this, &LogForm::validateForm);
     QObject::connect(ui->CancelButton, &QPushButton::clicked, this, &LogForm::cancel);
 }
 
@@ -34,7 +34,7 @@ LogForm::~LogForm()
 }
 
 //=============================================================
-void LogForm::valid()
+void LogForm::validateForm()
 {
     m_valid = true;
     m_messageText = ui->plainTextEdit->toPlainText().toUpper();

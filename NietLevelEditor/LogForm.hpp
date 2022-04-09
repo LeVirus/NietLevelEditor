@@ -13,7 +13,7 @@ class LogForm : public QDialog
 public:
     explicit LogForm(QWidget *parent = nullptr);
     void reinit();
-    inline bool validate()const
+    inline bool valid()const
     {
         return m_valid;
     }
@@ -24,7 +24,7 @@ public:
     void setMessage(const QString &message);
     ~LogForm();
 private slots:
-    void valid();
+    void validateForm();
     void cancel();
 private:
     QString m_messageText;

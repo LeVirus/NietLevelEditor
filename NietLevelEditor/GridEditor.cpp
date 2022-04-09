@@ -1141,7 +1141,7 @@ void GridEditor::treatElementsDrawing()
             m_logForm->setMessage(logData->m_message);
         }
         m_logForm->exec();
-        if(!m_logForm->validate())
+        if(!m_logForm->valid())
         {
             return;
         }
@@ -1613,7 +1613,7 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
     case LevelElement_e::OBJECT:
         return "Objects";
     case LevelElement_e::LOG:
-        return "Log";
+        return "MessageLog";
     case LevelElement_e::STATIC_CEILING:
         return "Static ceiling objects";
     case LevelElement_e::STATIC_GROUND:
