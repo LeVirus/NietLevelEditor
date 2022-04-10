@@ -408,7 +408,6 @@ bool LevelDataManager::loadLogElementLevel(std::string_view levelPath)
     std::istringstream istringStream(dataString);
     m_ini.parse(istringStream);
     std::vector<std::string> vectINISections = m_ini.getSectionNamesContaining("MessageLog");
-    std::cerr << vectINISections.size() << "\n";
     for(uint32_t j = 0; j < vectINISections.size(); ++j)
     {
         val = m_ini.getValue(vectINISections[j], "DisplayID");
@@ -418,7 +417,7 @@ bool LevelDataManager::loadLogElementLevel(std::string_view levelPath)
         assert(val);
         std::istringstream iss(*val);
         std::vector<uint32_t> vectPos(std::istream_iterator<uint32_t>{iss},
-                          std::istream_iterator<uint32_t>());
+                                      std::istream_iterator<uint32_t>());
         assert(vectPos.size() == 2);
         pos = {vectPos[0], vectPos[1]};
         val = m_ini.getValue(vectINISections[j], "Message");
