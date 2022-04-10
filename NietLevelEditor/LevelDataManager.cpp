@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <functional>
 #include "BackgroundForm.hpp"
 #include <QFileDialog>
 #include <QMessageBox>
@@ -121,7 +122,7 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
         return false;
     }
     //Log
-    if(!loadLogElementLevel(levelFile))
+    if(!loadLogElementLevel(levelFilePath.toStdString()))
     {
         return false;
     }
@@ -387,24 +388,45 @@ bool LevelDataManager::loadTeleportLevel(const QSettings &ini)
 }
 
 //======================================================================
-bool LevelDataManager::loadLogElementLevel(const QSettings &ini)
+bool LevelDataManager::loadLogElementLevel(std::string_view levelPath)
 {
-    QStringList keys = ini.childGroups(), logPos;
-    QString logPosStr;
-    for(int i = 0; i < keys.size(); ++i)
+    std::ifstream inputStream(levelPath.data());
+    if(inputStream.fail())
     {
-        if(keys[i].contains("MessageLog"))
-        {
-            logPosStr = ini.value(keys[i] + "/GamePosition", "").toString();
-            logPos = logPosStr.split(' ');
-            if(logPos.size() != 2)
-            {
-                return false;
-            }
-            m_existingLevelData->m_logsData.insert({keys[i], {{logPos[0].toInt(), logPos[1].toInt()},
-                                                              ini.value(keys[i] + "/Message", "").toString(),
-                                                              ini.value(keys[i] + "/DisplayID", "").toString()}});
-        }
+        inputStream.close();
+        return false;
+    }
+    std::optional<std::string> val;
+    std::ostringstream ostringStream;
+    QPair<uint32_t, uint32_t> pos;
+    std::vector<std::pair<uint32_t, uint32_t>> vectPos;
+    QString id, message;
+    ostringStream << inputStream.rdbuf();
+    inputStream.close();
+    m_ini.clear();
+    std::string dataString = decrypt(ostringStream.str(), ENCRYPTION_KEY_STANDARD_LEVEL);
+    std::istringstream istringStream(dataString);
+    m_ini.parse(istringStream);
+
+    std::vector<std::string> vectINISections = m_ini.getSectionNamesContaining("MessageLog");
+    std::cerr << vectINISections.size() << "\n";
+    for(uint32_t j = 0; j < vectINISections.size(); ++j)
+    {
+        val = m_ini.getValue(vectINISections[j], "DisplayID");
+        assert(val);
+        id = QString(val->c_str());
+        val = m_ini.getValue(vectINISections[j], "GamePosition");
+        assert(val);
+        std::istringstream iss(*val);
+        std::vector<uint32_t> vectPos(std::istream_iterator<uint32_t>{iss},
+                          std::istream_iterator<uint32_t>());
+        assert(vectPos.size() == 2);
+        pos = {vectPos[0], vectPos[1]};
+        val = m_ini.getValue(vectINISections[j], "Message");
+        assert(val);
+        message = QString(val->c_str());
+        m_existingLevelData->m_logsData.insert({QString(vectINISections[j].c_str()),
+                                                LogData{pos, message, id}});
     }
     return true;
 }
@@ -631,12 +653,7 @@ std::optional<QTemporaryFile*> LevelDataManager::loadEncryptedINIFile(const QStr
     std::ostringstream ostringStream;
     ostringStream << stream.rdbuf();
     stream.close();
-    std::string dataString = ostringStream.str();
-    //decrypt
-    for(uint32_t i = 0; i < dataString.size(); ++i)
-    {
-        dataString[i] -= encryptKey;
-    }
+    std::string dataString = decrypt(ostringStream.str(), encryptKey);
     QTemporaryFile *tmpFile = new QTemporaryFile(".fake.ini");
     if(!tmpFile->open())
     {
@@ -645,6 +662,17 @@ std::optional<QTemporaryFile*> LevelDataManager::loadEncryptedINIFile(const QStr
     tmpFile->write(dataString.c_str());
     tmpFile->close();
     return tmpFile;
+}
+
+//======================================================================
+std::string decrypt(const std::string &str, uint32_t key)
+{
+    std::string ret = str;
+    for(uint32_t i = 0; i < ret.size(); ++i)
+    {
+        ret[i] -= key;
+    }
+    return ret;
 }
 
 //======================================================================

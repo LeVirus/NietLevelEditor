@@ -149,7 +149,7 @@ private:
     bool loadBasicSecretsElementLevel(const QSettings &ini);
     bool loadBasicCheckpointsElementLevel(const QSettings &ini);
     bool loadTeleportLevel(const QSettings &ini);
-    bool loadLogElementLevel(const QSettings &ini);
+    bool loadLogElementLevel(std::string_view levelPath);
     bool generateStructPosWall(const QString &key, bool positionMode);
     void generateWallsIniLevel(const TableModel &tableModel);
     void generateDoorsIniLevel(const TableModel &tableModel);
@@ -197,6 +197,7 @@ private:
 };
 
 std::string encrypt(const std::string &str, uint32_t key);
+std::string decrypt(const std::string &str, uint32_t key);
 std::string treatStrEndLine(const std::string &str);
 QString getStrNumINIKey(int shapeWallNum);
 QString formatToIniFile(const QString &str);
