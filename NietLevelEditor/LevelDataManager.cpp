@@ -407,7 +407,6 @@ bool LevelDataManager::loadLogElementLevel(std::string_view levelPath)
     std::string dataString = decrypt(ostringStream.str(), ENCRYPTION_KEY_STANDARD_LEVEL);
     std::istringstream istringStream(dataString);
     m_ini.parse(istringStream);
-
     std::vector<std::string> vectINISections = m_ini.getSectionNamesContaining("MessageLog");
     std::cerr << vectINISections.size() << "\n";
     for(uint32_t j = 0; j < vectINISections.size(); ++j)
@@ -424,7 +423,7 @@ bool LevelDataManager::loadLogElementLevel(std::string_view levelPath)
         pos = {vectPos[0], vectPos[1]};
         val = m_ini.getValue(vectINISections[j], "Message");
         assert(val);
-        message = QString(val->c_str());
+        message = QString(treatStrEndLineLoad(*val).c_str());
         m_existingLevelData->m_logsData.insert({QString(vectINISections[j].c_str()),
                                                 LogData{pos, message, id}});
     }
@@ -868,7 +867,7 @@ void LevelDataManager::generateLogsElementsIniLevel(const QVector<LogData> &data
         key = "MessageLog" + getStrNumINIKey(cmpt);
         pos = QString::number(datas[i].m_position.first) + " " + QString::number(datas[i].m_position.second);
         m_ini.setValue(key.toStdString(), "GamePosition", pos.toStdString());
-        m_ini.setValue(key.toStdString(), "Message", treatStrEndLine(datas[i].m_message.toStdString()));
+        m_ini.setValue(key.toStdString(), "Message", treatStrEndLineSave(datas[i].m_message.toStdString()));
         m_ini.setValue(key.toStdString(), "DisplayID", datas[i].m_displayID.toStdString());
     }
 }
@@ -1381,7 +1380,7 @@ QString formatToIniFile(const QString &str)
 }
 
 //======================================================================
-std::string treatStrEndLine(const std::string &str)
+std::string treatStrEndLineSave(const std::string &str)
 {
     std::string ret = str;
     for(uint i = 0; i < ret.size(); ++i)
@@ -1389,6 +1388,20 @@ std::string treatStrEndLine(const std::string &str)
         if(ret[i] == '\n')
         {
             ret[i] = '\\';
+        }
+    }
+    return ret;
+}
+
+//======================================================================
+std::string treatStrEndLineLoad(const std::string &str)
+{
+    std::string ret = str;
+    for(uint i = 0; i < ret.size(); ++i)
+    {
+        if(ret[i] == '\\')
+        {
+            ret[i] = '\n';
         }
     }
     return ret;

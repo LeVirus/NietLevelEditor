@@ -198,6 +198,7 @@ private:
 
 std::string encrypt(const std::string &str, uint32_t key);
 std::string decrypt(const std::string &str, uint32_t key);
-std::string treatStrEndLine(const std::string &str);
+std::string treatStrEndLineSave(const std::string &str);
+std::string treatStrEndLineLoad(const std::string &str);
 QString getStrNumINIKey(int shapeWallNum);
 QString formatToIniFile(const QString &str);
