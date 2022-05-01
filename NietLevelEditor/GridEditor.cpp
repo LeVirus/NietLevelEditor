@@ -654,7 +654,7 @@ bool GridEditor::setWallShape(bool preview, bool loadFromIni)
                                               m_drawData[index][m_currentSelection].m_elementSectionName, memMoveData);
         if(topLeftPos == bottomRight)
         {
-            (minX, minY, shapeNum, false, true);
+            setCaseIcon(minX, minY, shapeNum, false, true);
             m_tableModel->updateWallNumber(1);
             return true;
         }
