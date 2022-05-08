@@ -1,3 +1,5 @@
+Checkpoint reverse order on loading=====================OK
+
 assert on resave moveable wall=================NOT REPRODUCIBLE
 
 When set player departure bad direction update========================OK

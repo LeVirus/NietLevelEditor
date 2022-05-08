@@ -1432,7 +1432,7 @@ void GridEditor::loadCheckpointsExistingLevelGrid()
     {
         setColorCaseData(m_levelDataManager.getExistingLevel()->m_checkpoints[i].first.first,
                          m_levelDataManager.getExistingLevel()->m_checkpoints[i].first.second, LevelElement_e::CHECKPOINT,
-                         {0, m_levelDataManager.getExistingLevel()->m_checkpoints[i].second});
+                         {i, m_levelDataManager.getExistingLevel()->m_checkpoints[i].second});
     }
 }
 
