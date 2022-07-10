@@ -78,6 +78,17 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     {
         m_existingLevelData->m_music = varA.toString();
     }
+
+    varA = levelFile.value("PlayerInit/levelNum", 0);
+    if(varA.toInt() < 1)
+    {
+        return false;
+    }
+    m_existingLevelData->m_levelNum = varA.toInt();
+    varA = levelFile.value("LevelMessage/prologue", "");
+    m_existingLevelData->m_prologueText = varA.toString();
+    varA = levelFile.value("LevelMessage/epilogue", "");
+    m_existingLevelData->m_epilogueText = varA.toString();
     //Background
     if(!loadBackgroundLevel(true, levelFile))
     {
@@ -578,7 +589,8 @@ std::optional<QPair<int, int>> LevelDataManager::getLoadedLevelSize()const
 
 //======================================================================
 void LevelDataManager::generateLevel(const TableModel &tableModel, const QString &musicFilename,
-                                     const QPair<BackgroundData const*, BackgroundData const*> &backgroundData, Direction_e playerDirection)
+                                     const QPair<BackgroundData const*, BackgroundData const*> &backgroundData,
+                                     Direction_e playerDirection, const GlobalLevelData &globalLevelData)
 {
     if(!tableModel.checkLevelData())
     {
@@ -601,6 +613,15 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
         m_ini.setValue("Level", "music", musicFilename.toStdString());
     }
     loadBackgroundData(backgroundData);
+    if(!globalLevelData.m_prologue.isEmpty())
+    {
+        m_ini.setValue("LevelMessage", "prologue", globalLevelData.m_prologue.toStdString());
+    }
+    if(!globalLevelData.m_epilogue.isEmpty())
+    {
+        m_ini.setValue("LevelMessage", "epilogue", globalLevelData.m_epilogue.toStdString());
+    }
+    m_ini.setValue("PlayerInit", "levelNum", std::to_string(globalLevelData.m_levelNum));
     m_ini.setValue("PlayerInit", "playerDepartureX", std::to_string(tableModel.getPlayerDepartureData()->first));
     m_ini.setValue("PlayerInit", "playerDepartureY", std::to_string(tableModel.getPlayerDepartureData()->second));
     m_ini.setValue("PlayerInit", "PlayerOrientation", std::to_string(static_cast<int>(playerDirection)));

@@ -16,6 +16,7 @@ SOURCES += \
     CheckpointForm.cpp \
     ConfNewLevelForm.cpp \
     EventFilter.cpp \
+    GlobalLevelConfForm.cpp \
     GridEditor.cpp \
     LevelDataManager.cpp \
     LineWallMove.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     CheckpointForm.hpp \
     ConfNewLevelForm.hpp \
     EventFilter.hpp \
+    GlobalLevelConfForm.hpp \
     GridEditor.hpp \
     LevelDataManager.hpp \
     LineWallMove.hpp \
@@ -44,6 +46,7 @@ FORMS += \
     BackgroundForm.ui \
     CheckpointForm.ui \
     ConfNewLevelForm.ui \
+    GlobalLevelConfForm.ui \
     GridEditor.ui \
     LogForm.ui \
     MainWindow.ui \

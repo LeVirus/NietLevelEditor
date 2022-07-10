@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QVector>
 #include <includeDir/iniwriter.h>
+#include "GlobalLevelConfForm.hpp"
 
 using ArrayFloat_t = std::array<float, 5>;
 class QSettings;
@@ -59,8 +60,9 @@ struct LogData
 
 struct LevelData
 {
+    uint32_t m_levelNum;
     QPair<int, int> m_levelSize;
-    std::optional<QString> m_music;
+    std::optional<QString> m_music, m_prologueText, m_epilogueText;
     //first ground
     std::unique_ptr<QPair<BackgroundData, BackgroundData>> m_backgroundData;
     QPair<int, int> m_playerDeparture;
@@ -140,7 +142,7 @@ public:
     std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
     std::optional<QPair<int, int>> getLoadedLevelSize()const;
     void generateLevel(const TableModel &tableModel, const QString &musicFilename,
-                       const BackgroundPairData_t &backgroundData, Direction_e playerDirection);    
+                       const BackgroundPairData_t &backgroundData, Direction_e playerDirection, const GlobalLevelData &globalLevelData);
 private:
     std::optional<QTemporaryFile *> loadEncryptedINIFile(const QString &filePath, uint32_t encryptKey);
     bool loadBackgroundLevel(bool ground, const QSettings &ini);
