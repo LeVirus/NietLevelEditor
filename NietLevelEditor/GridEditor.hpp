@@ -132,6 +132,7 @@ private slots:
     void treatSelection(const QModelIndex &caseIndex);
     void setWallDrawModeSelected(int wallDrawMode);
     void setWallMoveableMode(int moveableMode);
+    void setEndLevelEnemyMode(int moveableMode);
     void loadTriggerDisplay(const QString &installDir);
     void memPlayerDirection(int direction);
 private:
@@ -142,7 +143,7 @@ private:
     int m_currentSelection;
     LevelElement_e m_currentElementType;
     WallDrawShape_e m_wallDrawMode;
-    bool m_wallMoveableMode;
+    bool m_wallMoveableMode, m_levelEndEnemyMode;
     IconArray_t m_drawData;
     bool m_elementSelected, m_displayPreview = false;
     EventFilter *m_eventFilter;
@@ -151,7 +152,7 @@ private:
     MoveableWallForm *m_moveableWallForm = nullptr;
     GlobalLevelConfForm *m_globalLevelConfForm = nullptr;
     LogForm *m_logForm = nullptr;
-    SelectableLineLayout *m_memWallSelectLayout = nullptr;
+    SelectableLineLayout *m_memWallSelectLayout = nullptr, *m_memFinishLevelEnemySelectLayout = nullptr;
     std::map<LevelElement_e, QVector<QString>> m_mapElementID;
     std::unique_ptr<MoveWallData> m_memcurrentMoveWallData;
     QSet<QPair<int, int>> m_memCurrentLinkTriggerWall;

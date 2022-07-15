@@ -384,6 +384,11 @@ void GridEditor::initSelectableWidgets()
         {
             selectLayout->confPlayerDeparture(this);
         }
+        else if(currentEnum == LevelElement_e::ENEMY)
+        {
+            m_memFinishLevelEnemySelectLayout = selectLayout;
+            selectLayout->confEnemySelectWidget(this);
+        }
         QObject::connect(selectLayout, &SelectableLineLayout::lineSelected, this, &GridEditor::setElementSelected);
     }
 }
@@ -995,7 +1000,11 @@ void GridEditor::setElementSelected(LevelElement_e num, int currentSelect)
     if(num != LevelElement_e::WALL)
     {
         m_wallMoveableMode = false;
-        m_memWallSelectLayout->uncheckMoveableWall();
+        m_memWallSelectLayout->uncheckCheckBox();
+    }
+    if(num != LevelElement_e::ENEMY)
+    {
+        m_memFinishLevelEnemySelectLayout->uncheckCheckBox();
     }
     m_currentElementType = num;
     m_currentSelection = currentSelect;
@@ -1073,7 +1082,7 @@ void GridEditor::treatWallDrawing()
         if(!m_moveableWallForm->confirmed())
         {
             m_wallMoveableMode = false;
-            m_memWallSelectLayout->uncheckMoveableWall();
+            m_memWallSelectLayout->uncheckCheckBox();
             return;
         }
     }
@@ -1082,7 +1091,7 @@ void GridEditor::treatWallDrawing()
     {
         if(draw)
         {
-            m_memWallSelectLayout->uncheckMoveableWall();
+            m_memWallSelectLayout->uncheckCheckBox();
             if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH &&
                     m_moveableWallForm->getTriggerBehaviour() != TriggerBehaviourType_e::AUTO)
             {
@@ -1351,6 +1360,12 @@ void GridEditor::setWallDrawModeSelected(int wallDrawMode)
 void GridEditor::setWallMoveableMode(int moveableMode)
 {
     m_wallMoveableMode = moveableMode;
+}
+
+//======================================================================
+void GridEditor::setEndLevelEnemyMode(int moveableMode)
+{
+    m_levelEndEnemyMode = moveableMode;
 }
 
 //======================================================================

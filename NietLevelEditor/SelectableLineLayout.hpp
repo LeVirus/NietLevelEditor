@@ -15,8 +15,9 @@ public:
     SelectableLineLayout(const QString &radioBoxTxt, LevelElement_e typeElement, GridEditor *parent = nullptr);
     void setIcons(const QVector<DisplayData> &vectIcons);
     void confWallSelectWidget(GridEditor *parent);
+    void confEnemySelectWidget(GridEditor *parent);
     void confPlayerDeparture(GridEditor *parent);
-    void uncheckMoveableWall();
+    void uncheckCheckBox();
     void reinitWallComp();
     void setWallWidgetsEnabled(bool enable);
     std::optional<int> getSelected();
@@ -31,5 +32,5 @@ private:
     QComboBox *m_comboBox;
     LevelElement_e m_elementType;
     QComboBox *m_wallComboBox = nullptr;
-    QCheckBox *m_wallCheckBox = nullptr;
+    QCheckBox *m_wallCheckBox = nullptr, *m_finishLevelCheckBox = nullptr;
 };

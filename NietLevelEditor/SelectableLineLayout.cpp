@@ -51,6 +51,19 @@ void SelectableLineLayout::confWallSelectWidget(GridEditor *parent)
 }
 
 //======================================================================
+void SelectableLineLayout::confEnemySelectWidget(GridEditor *parent)
+{
+    m_finishLevelCheckBox = new QCheckBox(parent);
+    m_finishLevelCheckBox->setEnabled(false);
+    QObject::connect(m_radio, &QRadioButton::toggled, m_finishLevelCheckBox, &QComboBox::setEnabled);
+    addWidget(new QLabel("End level"));
+    addWidget(m_finishLevelCheckBox);
+    QObject::connect(m_finishLevelCheckBox, SIGNAL(stateChanged(int)), parent,
+                     SLOT(setEndLevelEnemyMode(int)));
+
+}
+
+//======================================================================
 void SelectableLineLayout::confPlayerDeparture(GridEditor *parent)
 {
     QComboBox *combo = new QComboBox();
@@ -65,10 +78,16 @@ void SelectableLineLayout::confPlayerDeparture(GridEditor *parent)
 }
 
 //======================================================================
-void SelectableLineLayout::uncheckMoveableWall()
+void SelectableLineLayout::uncheckCheckBox()
 {
-    assert(m_wallComboBox);
-    m_wallCheckBox->setCheckState(Qt::CheckState::Unchecked);
+    if(m_wallComboBox)
+    {
+        m_wallCheckBox->setCheckState(Qt::CheckState::Unchecked);
+    }
+    else if(m_finishLevelCheckBox)
+    {
+        m_finishLevelCheckBox->setCheckState(Qt::CheckState::Unchecked);
+    }
 }
 
 //======================================================================
