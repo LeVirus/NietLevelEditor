@@ -53,6 +53,7 @@ struct CaseData
     std::optional<QPair<int, int>> m_targetTeleport;
     std::optional<MoveWallData> m_moveWallData;
     std::optional<QSet<QPair<int, int>>> m_triggerLinkWall;
+    std::optional<bool> m_endLevelEnemy;
 };
 
 struct WallShapeData
