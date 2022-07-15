@@ -351,7 +351,6 @@ void GridEditor::updateGridView()
 void GridEditor::setLineSelectableEnabled(bool enable)
 {
     const QObjectList &children = ui->SelectableLayout->children();
-    m_memWallSelectLayout->setWallWidgetsEnabled(enable);
     //-1 ignore music select layout
     for(int i = 0; i < children.size() - 1; ++i)
     {

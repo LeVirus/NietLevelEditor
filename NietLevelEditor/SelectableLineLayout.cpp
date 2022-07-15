@@ -97,20 +97,6 @@ void SelectableLineLayout::reinitWallComp()
 }
 
 //======================================================================
-void SelectableLineLayout::setWallWidgetsEnabled(bool enable)
-{
-    m_comboBox->setEnabled(enable);
-    if(m_wallCheckBox)
-    {
-        m_wallCheckBox->setEnabled(enable);
-    }
-    if(m_wallComboBox)
-    {
-        m_wallComboBox->setEnabled(enable);
-    }
-}
-
-//======================================================================
 std::optional<int> SelectableLineLayout::getSelected()
 {
     if(!m_comboBox)
