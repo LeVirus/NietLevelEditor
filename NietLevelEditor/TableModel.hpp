@@ -83,7 +83,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DecorationRole)const override;
     void setLevelSize(int tableWidth, int tableHeight);
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole)override;
-    bool setIdData(const QModelIndex &index, const CaseData &value);
+    bool setIdData(const QModelIndex &index, const CaseData &value, bool endLevelEnemyCase = false);
     void removeData(const QModelIndex &index, bool dontMemRemovedWall = false);
     inline std::optional<CaseData> &getDataElementCase(const QModelIndex &index)
     {
@@ -202,7 +202,7 @@ private:
     QPair<int, int> m_tableSize;
     QVector<QVector<QPair<QPixmap, std::optional<CaseData>>>> m_vectPic;
     QVector<QBitArray> m_vectPreview;
-    std::optional<QPair<int, int>> m_departurePlayer, m_exitPos;
+    std::optional<QPair<int, int>> m_departurePlayer, m_exitPos, m_levelEndEnemy;
     QVector<QPair<QPair<int, int>, Direction_e>> m_vectCheckpoints;
     QVector<QPair<int, int>> m_vectSecrets;
     Direction_e m_playerDirectionDeparture = Direction_e::NORTH;

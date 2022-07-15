@@ -60,7 +60,7 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
 }
 
 //======================================================================
-bool TableModel::setIdData(const QModelIndex &index, const CaseData &value)
+bool TableModel::setIdData(const QModelIndex &index, const CaseData &value, bool endLevelEnemyCase)
 {
     if(!checkIndex(index))
     {
@@ -84,6 +84,14 @@ bool TableModel::setIdData(const QModelIndex &index, const CaseData &value)
             removeData(this->index(m_exitPos->second, m_exitPos->first, QModelIndex()));
         }
         m_exitPos = {index.column(), index.row()};
+    }
+    else if(value.m_type == LevelElement_e::ENEMY && endLevelEnemyCase)
+    {
+        if(m_levelEndEnemy)
+        {
+            removeData(this->index(m_levelEndEnemy->second, m_levelEndEnemy->first, QModelIndex()));
+        }
+        m_levelEndEnemy = {index.column(), index.row()};
     }
     return true;
 }
@@ -110,6 +118,13 @@ void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall)
     else if(caseData->m_type == LevelElement_e::EXIT)
     {
         m_exitPos.reset();
+    }
+    else if(caseData->m_type == LevelElement_e::ENEMY && m_levelEndEnemy)
+    {
+        if(*m_levelEndEnemy == QPair<int, int>{index.column(), index.row()})
+        {
+            m_levelEndEnemy.reset();
+        }
     }
     else if(caseData->m_type == LevelElement_e::WALL)
     {
