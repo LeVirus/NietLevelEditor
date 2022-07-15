@@ -167,6 +167,8 @@ void GridEditor::connectSlots()
 //======================================================================
 void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bool dontMemRemovedWall)
 {
+    bool endLevelEnemyCase = (m_currentElementType == LevelElement_e::ENEMY &&
+                              m_memFinishLevelEnemySelectLayout->isEndLevelEnemyChecked());
     QModelIndex index = m_tableModel->index(y, x, QModelIndex());
     std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
     LevelElement_e type = caseData ? LevelElement_e::TOTAL : caseData->m_type;
@@ -186,11 +188,12 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
     {
         return;
     }
-    if(m_currentElementType == LevelElement_e::ENEMY && m_memFinishLevelEnemySelectLayout->isEndLevelEnemyChecked())
+    //end level enemy
+    if(endLevelEnemyCase)
     {
         QPixmap pix(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
         QPainter paint(&pix);
-        pix.fill(Qt::darkRed);
+        pix.fill(Qt::darkMagenta);
         paint.drawPixmap(0,0,CASE_SPRITE_SIZE,CASE_SPRITE_SIZE, getCurrentSelectedIcon().
                          pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE}));
         bool ok = m_tableModel->setData(index, QVariant(pix));
@@ -205,7 +208,7 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
     if(!caseData || (type != LevelElement_e::TRIGGER && type != LevelElement_e::GROUND_TRIGGER))
     {
         m_tableModel->setIdData(index, CaseData{m_currentElementType,
-                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}, {}});
+                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}, {}}, endLevelEnemyCase);
     }
     if(m_currentElementType == LevelElement_e::ENEMY &&
             m_memFinishLevelEnemySelectLayout->isEndLevelEnemyChecked())
