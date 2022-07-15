@@ -186,15 +186,35 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
     {
         return;
     }
-    bool ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
-                                                    pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
-    assert(ok);
+    if(m_currentElementType == LevelElement_e::ENEMY && m_memFinishLevelEnemySelectLayout->isEndLevelEnemyChecked())
+    {
+        QPixmap pix(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
+        QPainter paint(&pix);
+        pix.fill(Qt::darkRed);
+        paint.drawPixmap(0,0,CASE_SPRITE_SIZE,CASE_SPRITE_SIZE, getCurrentSelectedIcon().
+                         pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE}));
+        bool ok = m_tableModel->setData(index, QVariant(pix));
+        assert(ok);
+    }
+    else
+    {
+        bool ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
+                                                        pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
+        assert(ok);
+    }
     if(!caseData || (type != LevelElement_e::TRIGGER && type != LevelElement_e::GROUND_TRIGGER))
     {
         m_tableModel->setIdData(index, CaseData{m_currentElementType,
-                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}});
+                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}, {}});
     }
-    if(m_currentElementType == LevelElement_e::WALL)
+    if(m_currentElementType == LevelElement_e::ENEMY &&
+            m_memFinishLevelEnemySelectLayout->isEndLevelEnemyChecked())
+    {
+        std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
+        caseData->m_endLevelEnemy = true;
+        m_memFinishLevelEnemySelectLayout->uncheckCheckBox();
+    }
+    else if(m_currentElementType == LevelElement_e::WALL)
     {
         caseData->m_wallShapeNum = wallShapeNum;
         if(m_wallMoveableMode)
@@ -293,19 +313,19 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type, const QPair
     {
         pix.fill(Qt::darkGray);
         text = getStrCheckpoint(checkpointData);
-        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
+        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}, {}});
         m_tableModel->addCheckpoint({x, y}, checkpointData);
     }
     else if(type == LevelElement_e::SECRET)
     {
         text = "S";
         pix.fill(Qt::darkRed);
-        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
+        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}, {}});
         m_tableModel->addSecret({x, y});
     }
     if(type == LevelElement_e::PLAYER_DEPARTURE || !m_tableModel->getDataElementCase(index))
     {
-        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
+        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}, {}});
     }
     paint.drawText(QRect(0, 0, CASE_SPRITE_SIZE, CASE_SPRITE_SIZE), Qt::AlignCenter, text);
     m_tableModel->setData(index, QVariant(pix));
@@ -1362,12 +1382,6 @@ void GridEditor::setWallMoveableMode(int moveableMode)
 }
 
 //======================================================================
-void GridEditor::setEndLevelEnemyMode(int moveableMode)
-{
-    m_levelEndEnemyMode = moveableMode;
-}
-
-//======================================================================
 void GridEditor::setStdTableSize()
 {
     QPair<int, int> sizeTable = m_tableModel->getTableSize();
@@ -1514,7 +1528,7 @@ bool GridEditor::loadTeleportExistingLevelGrid()
         m_currentSelection = m_mapElementID[m_currentElementType].indexOf(it->first);
         setCaseIcon(it->second.m_teleporterPos.first, it->second.m_teleporterPos.second, -1);
         m_tableModel->setIdData(index, CaseData{m_currentElementType,
-                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}});
+                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}, {}});
         m_lastPositionAdded = it->second.m_teleporterPos;
         //TARGET
         m_currentElementType = LevelElement_e::TARGET_TELEPORT;

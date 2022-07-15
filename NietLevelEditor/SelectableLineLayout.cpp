@@ -121,6 +121,12 @@ void SelectableLineLayout::uncheckRadioButton()
 }
 
 //======================================================================
+bool SelectableLineLayout::isEndLevelEnemyChecked()
+{
+    return m_finishLevelCheckBox && m_finishLevelCheckBox->isChecked();
+}
+
+//======================================================================
 void SelectableLineLayout::selectedIndex(int currentIndex)
 {
     emit lineSelected(m_elementType, currentIndex);
