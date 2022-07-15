@@ -19,7 +19,6 @@ public:
     void confPlayerDeparture(GridEditor *parent);
     void uncheckCheckBox();
     void reinitWallComp();
-    void setWallWidgetsEnabled(bool enable);
     std::optional<int> getSelected();
     void setRadioButtonEnabled(bool enable);
     void uncheckRadioButton();
