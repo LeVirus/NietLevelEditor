@@ -83,6 +83,10 @@ bool TableModel::setIdData(const QModelIndex &index, const CaseData &value, bool
         {
             removeData(this->index(m_exitPos->second, m_exitPos->first, QModelIndex()));
         }
+        if(m_levelEndEnemy)
+        {
+            removeData(this->index(m_levelEndEnemy->second, m_levelEndEnemy->first, QModelIndex()));
+        }
         m_exitPos = {index.column(), index.row()};
     }
     else if(value.m_type == LevelElement_e::ENEMY && endLevelEnemyCase)
@@ -90,6 +94,10 @@ bool TableModel::setIdData(const QModelIndex &index, const CaseData &value, bool
         if(m_levelEndEnemy)
         {
             removeData(this->index(m_levelEndEnemy->second, m_levelEndEnemy->first, QModelIndex()));
+        }
+        if(m_exitPos)
+        {
+            removeData(this->index(m_exitPos->second, m_exitPos->first, QModelIndex()));
         }
         m_levelEndEnemy = {index.column(), index.row()};
     }
@@ -513,7 +521,7 @@ void TableModel::setTableWallDiagRectCaseConf(QPair<int, int> originPoint)
 //======================================================================
 bool TableModel::checkLevelData()const
 {
-    if(!m_exitPos || !m_departurePlayer)
+    if((!m_exitPos && !m_levelEndEnemy) || !m_departurePlayer)
     {
         return false;
     }
