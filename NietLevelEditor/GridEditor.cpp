@@ -205,12 +205,10 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
     if(!caseData || (type != LevelElement_e::TRIGGER && type != LevelElement_e::GROUND_TRIGGER))
     {
         m_tableModel->setIdData(index, CaseData{m_currentElementType,
-                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}, {}}, endLevelEnemyCase);
+                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}}, endLevelEnemyCase);
     }
     if(endLevelEnemyCase)
     {
-        std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
-        caseData->m_endLevelEnemy = true;
         m_memFinishLevelEnemySelectLayout->uncheckCheckBox();
     }
     else if(m_currentElementType == LevelElement_e::WALL)
@@ -323,19 +321,19 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type, const QPair
     {
         pix.fill(Qt::darkGray);
         text = getStrCheckpoint(checkpointData);
-        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}, {}});
+        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
         m_tableModel->addCheckpoint({x, y}, checkpointData);
     }
     else if(type == LevelElement_e::SECRET)
     {
         text = "S";
         pix.fill(Qt::darkRed);
-        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}, {}});
+        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
         m_tableModel->addSecret({x, y});
     }
     if(type == LevelElement_e::PLAYER_DEPARTURE || !m_tableModel->getDataElementCase(index))
     {
-        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}, {}});
+        m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
     }
     paint.drawText(QRect(0, 0, CASE_SPRITE_SIZE, CASE_SPRITE_SIZE), Qt::AlignCenter, text);
     m_tableModel->setData(index, QVariant(pix));
@@ -1485,6 +1483,20 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
         m_tableModel->memStdElement({index.column(), index.row()}, m_currentElementType,
                                     m_drawData[elementTypeInt][m_currentSelection].m_elementSectionName);
     }
+    //load end level enemy
+    if(m_currentElementType == LevelElement_e::ENEMY && existingLevel->m_endLevelEnemyPos)
+    {
+        m_currentSelection = m_mapElementID[m_currentElementType].indexOf(existingLevel->m_endLevelEnemyPos->first);
+        QModelIndex index = m_tableModel->index(existingLevel->m_endLevelEnemyPos->second.second,
+                                                existingLevel->m_endLevelEnemyPos->second.first, QModelIndex());
+        bool ok = m_tableModel->setData(index, QVariant(getColoredBackgroundIcon()));
+        assert(ok);
+        m_tableModel->setIdData(index, CaseData{m_currentElementType,
+                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}}, true);
+        m_tableModel->memStdElement({index.column(), index.row()}, m_currentElementType,
+                                    m_drawData[elementTypeInt][m_currentSelection].m_elementSectionName);
+        m_tableModel->setEndLevelEnemyPos({index.column(), index.row()});
+    }
     return true;
 }
 
@@ -1538,7 +1550,7 @@ bool GridEditor::loadTeleportExistingLevelGrid()
         m_currentSelection = m_mapElementID[m_currentElementType].indexOf(it->first);
         setCaseIcon(it->second.m_teleporterPos.first, it->second.m_teleporterPos.second, -1);
         m_tableModel->setIdData(index, CaseData{m_currentElementType,
-                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}, {}});
+                                                m_mapElementID[m_currentElementType][m_currentSelection], {}, {}, {}, {}});
         m_lastPositionAdded = it->second.m_teleporterPos;
         //TARGET
         m_currentElementType = LevelElement_e::TARGET_TELEPORT;

@@ -53,7 +53,6 @@ struct CaseData
     std::optional<QPair<int, int>> m_targetTeleport;
     std::optional<MoveWallData> m_moveWallData;
     std::optional<QSet<QPair<int, int>>> m_triggerLinkWall;
-    std::optional<bool> m_endLevelEnemy;
 };
 
 struct WallShapeData
@@ -88,6 +87,10 @@ public:
     inline std::optional<CaseData> &getDataElementCase(const QModelIndex &index)
     {
         return m_vectPic[index.column()][index.row()].second;
+    }
+    inline void setEndLevelEnemyPos(const QPair<int, int> &pos)
+    {
+        m_levelEndEnemy = pos;
     }
     void clearPreview();
     void clearModel();

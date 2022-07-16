@@ -66,6 +66,7 @@ struct LevelData
     //first ground
     std::unique_ptr<QPair<BackgroundData, BackgroundData>> m_backgroundData;
     QPair<int, int> m_playerDeparture;
+    std::optional<QPair<QString, QPair<int, int>>> m_endLevelEnemyPos;
     Direction_e m_playerDirection;
     QVector<QPair<int, int>> m_secrets;
     QVector<QPair<QPair<int, int>, Direction_e>> m_checkpoints;
