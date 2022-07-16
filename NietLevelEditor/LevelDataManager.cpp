@@ -212,7 +212,7 @@ bool LevelDataManager::loadStandardElementLevel(const QSettings &ini, StandardEl
         break;
     }
     QStringList keys = ini.childGroups(), list;
-    QString pos;
+    QString pos, endLevelPos;
     for(int i = 0; i < keys.size(); ++i)
     {
         if(keys[i].contains(str))
@@ -238,6 +238,18 @@ bool LevelDataManager::loadStandardElementLevel(const QSettings &ini, StandardEl
                     return false;
                 }
                 currentMap->insert({keys[i], {list[j].toInt(), list[j + 1].toInt()}});
+            }
+            if(str == "Enemy")
+            {
+                endLevelPos = ini.value(keys[i] + "/EndLevelEnemyPos", "").toString();
+                if(!endLevelPos.isEmpty())
+                {
+                    list = endLevelPos.split(" ");
+                    std::cerr << list.size() << "  " << list[0].toStdString()
+                              << "  " << list[1].toStdString() << "\n";
+                    assert(list.size() == 2);
+                    m_existingLevelData->m_endLevelEnemyPos = {keys[i], {list[0].toInt(), list[1].toInt()}};
+                }
             }
         }
     }
