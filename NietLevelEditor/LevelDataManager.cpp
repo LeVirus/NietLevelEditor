@@ -630,7 +630,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     generateWallsIniLevel(tableModel);
     generateTeleportsIniLevel(tableModel);
     generateStandardIniLevel(tableModel.getDoorsData());
-    generateStandardIniLevel(tableModel.getEnemiesData());
+    generateStandardIniLevel(tableModel.getEnemiesData(), tableModel.getEndLevelEnemyPos());
     generateStandardIniLevel(tableModel.getObjectsData());
     generateStandardIniLevel(tableModel.getStaticCeilingData());
     generateStandardIniLevel(tableModel.getStaticGroundData());
@@ -832,27 +832,44 @@ void LevelDataManager::generateTeleportsIniLevel(const TableModel &tableModel)
 }
 
 //======================================================================
-void LevelDataManager::generateStandardIniLevel(const std::multimap<QString, QPair<int, int>> &datas)
+void LevelDataManager::generateStandardIniLevel(const std::multimap<QString, QPair<int, int>> &datas,
+                                                const std::optional<QPair<int, int>> &endLevelEnemyPos)
 {
     QString pos;
     std::map<QString, QString> mapINI;
     std::map<QString, QString>::iterator itt;
+    QString endLevelEnemyType;
     for(std::multimap<QString, QPair<int, int>>::const_iterator it = datas.begin(); it != datas.end(); ++it)
     {
         pos = QString::number(it->second.first) + " " + QString::number(it->second.second) + "  ";
-        itt = mapINI.find(it->first);
-        if(itt == mapINI.end())
+        //skip if end level enemy
+        if(!endLevelEnemyPos || it->second != *endLevelEnemyPos)
         {
-            mapINI.insert({it->first, pos});
+            itt = mapINI.find(it->first);
+            if(itt == mapINI.end())
+            {
+                mapINI.insert({it->first, pos});
+            }
+            else
+            {
+                mapINI[it->first] += pos;
+            }
         }
+        //end level enemy
         else
         {
-            mapINI[it->first] += pos;
+            endLevelEnemyType = it->first;
         }
     }
     for(std::map<QString, QString>::const_iterator it = mapINI.begin(); it != mapINI.end(); ++it)
     {
         m_ini.setValue(it->first.toStdString(), "GamePosition", formatToIniFile(it->second).toStdString());
+    }
+    if(endLevelEnemyPos)
+    {
+        m_ini.setValue(endLevelEnemyType.toStdString(), "EndLevelEnemyPos",
+                       (QString::number(endLevelEnemyPos->first) + " " +
+                        QString::number(endLevelEnemyPos->second)).toStdString());
     }
 }
 

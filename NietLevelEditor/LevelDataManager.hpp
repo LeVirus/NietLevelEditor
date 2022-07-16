@@ -157,7 +157,7 @@ private:
     void generateDoorsIniLevel(const TableModel &tableModel);
     void generateTeleportsIniLevel(const TableModel &tableModel);
     void generateEnemiesIniLevel(const TableModel &tableModel);
-    void generateStandardIniLevel(const std::multimap<QString, QPair<int, int>> &datas);
+    void generateStandardIniLevel(const std::multimap<QString, QPair<int, int>> &datas, const std::optional<QPair<int, int>> &endLevelEnemyPos = {});
     void generateCheckpointElementsIniLevel(const QVector<QPair<QPair<int, int>, Direction_e>> &datas);
     void generateLogsElementsIniLevel(const QVector<LogData> &datas);
     void generateSecretsElementsIniLevel(const QVector<QPair<int, int>> &datas);
