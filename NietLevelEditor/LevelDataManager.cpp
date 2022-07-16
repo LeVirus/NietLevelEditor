@@ -625,8 +625,11 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     m_ini.setValue("PlayerInit", "playerDepartureX", std::to_string(tableModel.getPlayerDepartureData()->first));
     m_ini.setValue("PlayerInit", "playerDepartureY", std::to_string(tableModel.getPlayerDepartureData()->second));
     m_ini.setValue("PlayerInit", "PlayerOrientation", std::to_string(static_cast<int>(playerDirection)));
-    m_ini.setValue("Exit", "GamePosition", QString::number(tableModel.getExitData().begin()->second.first).toStdString() + " " +
-                        QString::number(tableModel.getExitData().begin()->second.second).toStdString());
+    if(!tableModel.getEndLevelEnemyPos())
+    {
+        m_ini.setValue("Exit", "GamePosition", QString::number(tableModel.getExitData().begin()->second.first).toStdString() + " " +
+                            QString::number(tableModel.getExitData().begin()->second.second).toStdString());
+    }
     generateWallsIniLevel(tableModel);
     generateTeleportsIniLevel(tableModel);
     generateStandardIniLevel(tableModel.getDoorsData());
