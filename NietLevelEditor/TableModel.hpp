@@ -119,6 +119,10 @@ public:
     {
         return m_memWallShape;
     }
+    inline const std::optional<QPair<int, int>> &getEndLevelEnemyPos()const
+    {
+        return m_levelEndEnemy;
+    }
     inline const std::multimap<QString, TeleportData> &getTeleporterData()const
     {
         return m_memTeleport;

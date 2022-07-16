@@ -108,6 +108,7 @@ private:
     bool setWallDiagRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex,
                               int shapeNum, uint32_t &wallNumber, bool preview = false, bool deleteMode = false);
     void setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode = false, bool dontMemRemovedWall = false);
+    QPixmap getColoredBackgroundIcon();
     void memWallMove(const QModelIndex &index);
     void setColorCaseData(int x, int y, LevelElement_e type, const QPair<uint32_t, Direction_e> &direction = {0, Direction_e::NORTH});
     void updateCheckpointDisplay();

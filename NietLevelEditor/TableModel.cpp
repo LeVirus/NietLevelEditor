@@ -273,7 +273,8 @@ int TableModel::memWallShape(WallDrawShape_e wallShape, const QPair<int, int> &t
 }
 
 //======================================================================
-void TableModel::memStdElement(const QPair<int, int> &pos, LevelElement_e elementType, const QString &iniId)
+void TableModel::memStdElement(const QPair<int, int> &pos, LevelElement_e elementType,
+                               const QString &iniId)
 {
     if(elementType == LevelElement_e::BARREL)
     {
