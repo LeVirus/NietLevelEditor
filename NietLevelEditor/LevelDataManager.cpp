@@ -594,7 +594,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
 {
     if(!tableModel.checkLevelData())
     {
-        QMessageBox::warning(nullptr, "Error", "Player departure and Exit have to be defined");
+        QMessageBox::warning(nullptr, "Error", "Player departure or end level enemy, and Exit have to be defined");
         return;
     }
     QFileDialog dialog;
