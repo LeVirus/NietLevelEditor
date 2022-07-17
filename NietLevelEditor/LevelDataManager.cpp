@@ -245,8 +245,6 @@ bool LevelDataManager::loadStandardElementLevel(const QSettings &ini, StandardEl
                 if(!endLevelPos.isEmpty())
                 {
                     list = endLevelPos.split(" ");
-                    std::cerr << list.size() << "  " << list[0].toStdString()
-                              << "  " << list[1].toStdString() << "\n";
                     assert(list.size() == 2);
                     m_existingLevelData->m_endLevelEnemyPos = {keys[i], {list[0].toInt(), list[1].toInt()}};
                 }

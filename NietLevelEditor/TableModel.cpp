@@ -107,7 +107,7 @@ bool TableModel::setIdData(const QModelIndex &index, const CaseData &value, bool
 //======================================================================
 void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall)
 {
-    if(!checkIndex(index))
+    if(!checkIndex(index) /*|| index.column() < 0 || index.row() < 0*/)
     {
         return;
     }
