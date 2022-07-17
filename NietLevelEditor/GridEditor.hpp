@@ -19,7 +19,6 @@ struct MoveWallData;
 class QComboBox;
 class CheckpointForm;
 class LogForm;
-class GlobalLevelConfForm;
 
 enum class LevelElement_e
 {
@@ -124,7 +123,6 @@ private:
 private slots:
     void execConfCeilingBackground();
     void execConfGroundBackground();
-    void execConfGlobalLevel();
     void generateLevel();
     void setElementSelected(LevelElement_e num, int currentSelect);
     void stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);
@@ -150,7 +148,6 @@ private:
     QModelIndex m_firstCaseSelection, m_secondCaseSelection;
     BackgroundForm *m_backgroundForm = nullptr;
     MoveableWallForm *m_moveableWallForm = nullptr;
-    GlobalLevelConfForm *m_globalLevelConfForm = nullptr;
     LogForm *m_logForm = nullptr;
     SelectableLineLayout *m_memWallSelectLayout = nullptr, *m_memFinishLevelEnemySelectLayout = nullptr;
     std::map<LevelElement_e, QVector<QString>> m_mapElementID;
@@ -160,7 +157,6 @@ private:
     QPushButton *m_generateButton;
     QComboBox *m_musicWidget;
     Direction_e m_memPlayerDirection = Direction_e::NORTH;
-    std::optional<GlobalLevelData> m_globalLevelData;
     bool m_widgetInit = false, m_loadingExistingLevelMode = false, m_loadingDistantTriggerMode = false;
 };
 

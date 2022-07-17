@@ -20,7 +20,6 @@
 #include "BackgroundForm.hpp"
 #include "CheckpointForm.hpp"
 #include "LogForm.hpp"
-#include "GlobalLevelConfForm.hpp"
 
 //======================================================================
 GridEditor::GridEditor(QWidget *parent) : QDialog(parent), ui(new Ui::GridEditor), m_eventFilter(new EventFilter(this)),
@@ -53,10 +52,6 @@ void GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     {
         m_moveableWallForm = new MoveableWallForm(this);
         m_moveableWallForm->setTriggerIcons(m_drawData[static_cast<int>(LevelElement_e::TRIGGER)]);
-    }
-    if(!m_globalLevelConfForm)
-    {
-        m_globalLevelConfForm = new GlobalLevelConfForm(this);
     }
     if(!m_logForm)
     {
@@ -427,9 +422,6 @@ void GridEditor::initButtons()
     button = new QPushButton("Set Ground Background");
     ui->SelectableLayout->addWidget(button);
     QObject::connect(button, &QPushButton::clicked, this, &GridEditor::execConfGroundBackground);
-    button = new QPushButton("General Conf Level");
-    ui->SelectableLayout->addWidget(button);
-    QObject::connect(button, &QPushButton::clicked, this, &GridEditor::execConfGlobalLevel);
     button = new QPushButton("Generate Level");
     ui->SelectableLayout->addWidget(button);
     QObject::connect(button, &QPushButton::clicked, this, &GridEditor::generateLevel);
@@ -1237,27 +1229,6 @@ void GridEditor::execConfGroundBackground()
 }
 
 //======================================================================
-void GridEditor::execConfGlobalLevel()
-{
-    LevelData const *level = m_levelDataManager.getExistingLevel();
-    if(level)
-    {
-        m_globalLevelData = {level->m_levelNum, level->m_prologueText ? *level->m_prologueText : "",
-                             level->m_epilogueText ? *level->m_epilogueText : ""};
-        m_globalLevelConfForm->init(m_globalLevelData);
-    }
-    else
-    {
-        m_globalLevelConfForm->init();
-    }
-    m_globalLevelConfForm->exec();
-    if(m_globalLevelConfForm->valid())
-    {
-        m_globalLevelData = m_globalLevelConfForm->getData();
-    }
-}
-
-//======================================================================
 void GridEditor::generateLevel()
 {
     if(!m_backgroundForm->backgroundSetted())
@@ -1265,14 +1236,8 @@ void GridEditor::generateLevel()
         QMessageBox::warning(nullptr, "Error", "Ground OR/AND Ceiling background are not been setted.");
         return;
     }
-    else if(!m_globalLevelData)
-    {
-        QMessageBox::warning(nullptr, "Error", "Level num is not set.");
-        return;
-    }
     m_levelDataManager.generateLevel(*m_tableModel, m_musicWidget->currentText(),
-                                     {&m_backgroundForm->getGroundData(), &m_backgroundForm->getCeilingData()},
-                                     m_memPlayerDirection, *m_globalLevelData);
+                                     {&m_backgroundForm->getGroundData(), &m_backgroundForm->getCeilingData()}, m_memPlayerDirection);
 }
 
 //======================================================================
@@ -1517,7 +1482,7 @@ void GridEditor::loadCheckpointsExistingLevelGrid()
     {
         setColorCaseData(m_levelDataManager.getExistingLevel()->m_checkpoints[i].first.first,
                          m_levelDataManager.getExistingLevel()->m_checkpoints[i].first.second, LevelElement_e::CHECKPOINT,
-                         {static_cast<uint32_t>(i), m_levelDataManager.getExistingLevel()->m_checkpoints[i].second});
+                         {i, m_levelDataManager.getExistingLevel()->m_checkpoints[i].second});
     }
 }
 
