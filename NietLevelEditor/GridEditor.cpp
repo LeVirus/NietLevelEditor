@@ -103,14 +103,14 @@ bool GridEditor::loadExistingLevelGrid()
     {
         return false;
     }
-    QModelIndex caseIndex = m_tableModel->index(existingLevel->m_playerDeparture.second,
-                                                existingLevel->m_playerDeparture.first, QModelIndex());
+    QModelIndex caseIndex = m_tableModel->index(m_levelDataManager.getExistingLevel()->m_playerDeparture.second,
+                                                m_levelDataManager.getExistingLevel()->m_playerDeparture.first, QModelIndex());
     m_tableModel->setPlayerDirectionDeparture(m_memPlayerDirection);
-    if(existingLevel->m_music)
+    if(m_levelDataManager.getExistingLevel()->m_music)
     {
         for(int i = 0; i < m_musicWidget->count(); ++i)
         {
-            if(m_musicWidget->itemText(i) == *existingLevel->m_music)
+            if(m_musicWidget->itemText(i) == *m_levelDataManager.getExistingLevel()->m_music)
             {
                 m_musicWidget->setCurrentIndex(i);
                 break;
@@ -119,8 +119,6 @@ bool GridEditor::loadExistingLevelGrid()
     }
     m_memPlayerDirection = existingLevel->m_playerDirection;
     setColorElement(caseIndex, LevelElement_e::PLAYER_DEPARTURE);
-    m_globalLevelData = {existingLevel->m_levelNum, existingLevel->m_prologueText ? *existingLevel->m_prologueText : "",
-                         existingLevel->m_epilogueText ? *existingLevel->m_epilogueText : ""};
     if(!loadWallExistingLevelGrid())
     {
         return false;
