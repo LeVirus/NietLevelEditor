@@ -1067,7 +1067,8 @@ void GridEditor::wallSelection(const QModelIndex &index)
 void GridEditor::mouseReleaseSelection()
 {
     m_tableModel->clearPreview();
-    if(!m_elementSelected)
+    if(!m_elementSelected || m_firstCaseSelection.row() < 0 ||
+            m_firstCaseSelection.column() < 0)
     {
         return;
     }
