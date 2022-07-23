@@ -59,7 +59,7 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     {
         return false;
     }
-    std::optional<QTemporaryFile*> levelData = loadEncryptedINIFile(levelFilePath, ENCRYPTION_KEY_STANDARD_LEVEL);
+    std::optional<QTemporaryFile*> levelData = loadEncryptedINIFile(levelFilePath, ENCRYPTION_KEY_CUSTOM_LEVEL);
     if(!levelData || !(*levelData))
     {
         return false;
@@ -414,7 +414,7 @@ bool LevelDataManager::loadLogElementLevel(std::string_view levelPath)
     ostringStream << inputStream.rdbuf();
     inputStream.close();
     m_ini.clear();
-    std::string dataString = decrypt(ostringStream.str(), ENCRYPTION_KEY_STANDARD_LEVEL);
+    std::string dataString = decrypt(ostringStream.str(), ENCRYPTION_KEY_CUSTOM_LEVEL);
     std::istringstream istringStream(dataString);
     m_ini.parse(istringStream);
     std::vector<std::string> vectINISections = m_ini.getSectionNamesContaining("MessageLog");
@@ -596,8 +596,8 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
         return;
     }
     QFileDialog dialog;
-    QString selfilter = "INI (*.ini)", filename;
-    filename = dialog.getSaveFileName(nullptr, "Level file selection", m_installDirectory + "/Ressources/", "INI (*.ini)", &selfilter);
+    QString selfilter = "CLVL (*.clvl)", filename;
+    filename = dialog.getSaveFileName(nullptr, "Level file selection", m_installDirectory + "/Ressources/", selfilter, &selfilter);
     QFile file(filename);
     if(file.exists())
     {
@@ -635,7 +635,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     std::ofstream outputStream;
     outputStream.open(filename.toStdString());
     m_ini.generate(stringStream);
-    str = encrypt(stringStream.str(), ENCRYPTION_KEY_STANDARD_LEVEL);
+    str = encrypt(stringStream.str(), ENCRYPTION_KEY_CUSTOM_LEVEL);
     outputStream << str;
     outputStream.close();
 }

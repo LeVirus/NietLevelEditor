@@ -194,7 +194,8 @@ private:
     m_staticGroundElement, m_barrelElement, m_exitElement, m_logElement;
     std::unique_ptr<LevelData> m_existingLevelData;
     inipp::Ini<char> m_ini;
-    const uint32_t ENCRYPTION_KEY_CONF_FILE = 42, ENCRYPTION_KEY_STANDARD_LEVEL = 17;
+    const uint32_t ENCRYPTION_KEY_CONF_FILE = 42, ENCRYPTION_KEY_STANDARD_LEVEL = 17,
+        ENCRYPTION_KEY_CUSTOM_LEVEL = 52;
 };
 
 std::string encrypt(const std::string &str, uint32_t key);

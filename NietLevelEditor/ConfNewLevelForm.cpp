@@ -50,8 +50,9 @@ void ConfNewLevelForm::linkButtons()
 void ConfNewLevelForm::openExistingLevel()
 {
     QFileDialog dialog;
-    QString selfilter = "INI (*.ini)";
-    m_existingLevelFile = dialog.getOpenFileName(nullptr, "Level file selection", m_installDirectory + "/Ressources/", "INI (*.ini)", &selfilter);
+    QString selfilter = "CLVL (*.clvl)";
+    m_existingLevelFile = dialog.getOpenFileName(nullptr, "Level file selection",
+                                                 m_installDirectory + "/Ressources/", selfilter, &selfilter);
     QFile file(m_existingLevelFile);
     if(!file.exists())
     {
