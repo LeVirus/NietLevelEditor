@@ -58,9 +58,6 @@ void SelectableLineLayout::confEnemySelectWidget(GridEditor *parent)
     QObject::connect(m_radio, &QRadioButton::toggled, m_finishLevelCheckBox, &QComboBox::setEnabled);
     addWidget(new QLabel("End level"));
     addWidget(m_finishLevelCheckBox);
-    QObject::connect(m_finishLevelCheckBox, SIGNAL(stateChanged(int)), parent,
-                     SLOT(setEndLevelEnemyMode(int)));
-
 }
 
 //======================================================================
