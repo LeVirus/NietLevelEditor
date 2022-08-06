@@ -1,5 +1,6 @@
 #include "GlobalLevelConfForm.hpp"
 #include "ui_GlobalLevelConfForm.h"
+#include "LevelDataManager.hpp"
 #include <iostream>
 
 //======================================================================
@@ -36,8 +37,8 @@ void GlobalLevelConfForm::validateForm()
 {
     m_valid = true;
     m_data.m_levelNum = ui->LevelNumSpinBox->value();
-    m_data.m_prologue = ui->ProloguePlainTextEdit->toPlainText();
-    m_data.m_epilogue = ui->EpiloguePlainTextEdit->toPlainText();
+    m_data.m_prologue = QString(treatStrEndLineSave(ui->ProloguePlainTextEdit->toPlainText().toStdString()).c_str());
+    m_data.m_epilogue = QString(treatStrEndLineSave(ui->EpiloguePlainTextEdit->toPlainText().toStdString()).c_str());
     close();
 }
 
