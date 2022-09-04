@@ -648,6 +648,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     if(!globalLevelData.m_epilogue.isEmpty())
     {
         m_ini.setValue("LevelMessage", "epilogue", globalLevelData.m_epilogue.toStdString());
+        m_ini.setValue("LevelMessage", "epilogueMusic", globalLevelData.m_epilogueMusic.toStdString());
     }
     m_ini.setValue("PlayerInit", "levelNum", std::to_string(globalLevelData.m_levelNum));
     m_ini.setValue("PlayerInit", "playerDepartureX", std::to_string(tableModel.getPlayerDepartureData()->first));

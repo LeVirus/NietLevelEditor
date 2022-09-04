@@ -7,10 +7,12 @@ namespace Ui {
 class GlobalLevelConfForm;
 }
 
+class QComboBox;
+
 struct GlobalLevelData
 {
     uint32_t m_levelNum;
-    QString m_prologue, m_epilogue;
+    QString m_prologue, m_epilogue, m_epilogueMusic;
 };
 
 class GlobalLevelConfForm : public QDialog
@@ -18,7 +20,7 @@ class GlobalLevelConfForm : public QDialog
     Q_OBJECT
 public:
     explicit GlobalLevelConfForm(QWidget *parent = nullptr);
-    void init(std::optional<GlobalLevelData> data = {});
+    void init(const QComboBox *musicWidget, std::optional<GlobalLevelData> data = {});
     inline bool valid()const
     {
         return m_valid;

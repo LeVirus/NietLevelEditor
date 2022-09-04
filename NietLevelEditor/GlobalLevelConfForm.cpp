@@ -12,9 +12,14 @@ GlobalLevelConfForm::GlobalLevelConfForm(QWidget *parent) :
 }
 
 //======================================================================
-void GlobalLevelConfForm::init(std::optional<GlobalLevelData> data)
+void GlobalLevelConfForm::init(const QComboBox *musicWidget, std::optional<GlobalLevelData> data)
 {
     m_valid = false;
+    ui->MusicWidget->clear();
+    for(int32_t i = 0; i < musicWidget->count(); ++i)
+    {
+        ui->MusicWidget->addItem(musicWidget->itemText(i));
+    }
     if(data)
     {
         m_data = *data;
@@ -38,6 +43,7 @@ void GlobalLevelConfForm::validateForm()
     m_data.m_levelNum = ui->LevelNumSpinBox->value();
     m_data.m_prologue = ui->ProloguePlainTextEdit->toPlainText();
     m_data.m_epilogue = ui->EpiloguePlainTextEdit->toPlainText();
+    m_data.m_epilogueMusic = ui->MusicWidget->currentText();
     close();
 }
 

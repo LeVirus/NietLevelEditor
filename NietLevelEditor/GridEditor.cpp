@@ -1246,11 +1246,12 @@ void GridEditor::execConfGlobalLevel()
     {
         m_globalLevelData = {level->m_levelNum, level->m_prologueText ? *level->m_prologueText : "",
                              level->m_epilogueText ? *level->m_epilogueText : ""};
-        m_globalLevelConfForm->init(m_globalLevelData);
+        assert(m_musicWidget);
+        m_globalLevelConfForm->init(m_musicWidget, m_globalLevelData);
     }
     else
     {
-        m_globalLevelConfForm->init();
+        m_globalLevelConfForm->init(m_musicWidget);
     }
     m_globalLevelConfForm->exec();
     if(m_globalLevelConfForm->valid())
