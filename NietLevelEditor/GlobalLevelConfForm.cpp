@@ -1,5 +1,6 @@
 #include "GlobalLevelConfForm.hpp"
 #include "ui_GlobalLevelConfForm.h"
+#include "LevelDataManager.hpp"
 #include <iostream>
 
 //======================================================================
