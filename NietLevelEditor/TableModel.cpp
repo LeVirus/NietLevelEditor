@@ -568,7 +568,7 @@ std::optional<QPair<uint32_t, Direction_e>> TableModel::getCheckpointData(const 
     {
         if(m_vectCheckpoints[i].first == pos)
         {
-            return QPair<uint32_t, Direction_e>{i, m_vectCheckpoints[i].second};
+            return QPair<uint32_t, Direction_e>{static_cast<uint32_t>(i), m_vectCheckpoints[i].second};
         }
     }
     return {};

@@ -91,6 +91,8 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     m_existingLevelData->m_prologueText = varA.toString();
     varA = levelFile.value("LevelMessage/epilogue", "");
     m_existingLevelData->m_epilogueText = varA.toString();
+    varA = levelFile.value("LevelMessage/epilogueMusic", "");
+    m_existingLevelData->m_epilogueMusic = varA.toString();
     //Background
     if(!loadBackgroundLevel(true, levelFile))
     {

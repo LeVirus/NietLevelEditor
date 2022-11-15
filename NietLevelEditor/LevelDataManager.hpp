@@ -62,7 +62,7 @@ struct LevelData
 {
     uint32_t m_levelNum;
     QPair<int, int> m_levelSize;
-    std::optional<QString> m_music, m_prologueText, m_epilogueText;
+    std::optional<QString> m_music, m_prologueText, m_epilogueText, m_epilogueMusic;
     //first ground
     std::unique_ptr<QPair<BackgroundData, BackgroundData>> m_backgroundData;
     QPair<int, int> m_playerDeparture;

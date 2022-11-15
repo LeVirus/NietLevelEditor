@@ -27,6 +27,14 @@ void GlobalLevelConfForm::init(const QComboBox *musicWidget, std::optional<Globa
         ui->LevelNumSpinBox->setValue(m_data.m_levelNum);
         ui->ProloguePlainTextEdit->setPlainText(data->m_prologue);
         ui->EpiloguePlainTextEdit->setPlainText(data->m_epilogue);
+        for(int i = 0; i < ui->MusicWidget->count(); ++i)
+        {
+            if(ui->MusicWidget->itemText(i) == data->m_epilogueMusic)
+            {
+                ui->MusicWidget->setCurrentIndex(i);
+                break;
+            }
+        }
     }
 }
 

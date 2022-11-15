@@ -120,7 +120,8 @@ bool GridEditor::loadExistingLevelGrid()
     m_memPlayerDirection = existingLevel->m_playerDirection;
     setColorElement(caseIndex, LevelElement_e::PLAYER_DEPARTURE);
     m_globalLevelData = {existingLevel->m_levelNum, existingLevel->m_prologueText ? *existingLevel->m_prologueText : "",
-                         existingLevel->m_epilogueText ? *existingLevel->m_epilogueText : ""};
+                         existingLevel->m_epilogueText ? *existingLevel->m_epilogueText : "",
+                         existingLevel->m_epilogueMusic ? *existingLevel->m_epilogueMusic : ""};
     if(!loadWallExistingLevelGrid())
     {
         return false;
@@ -1245,7 +1246,8 @@ void GridEditor::execConfGlobalLevel()
     if(level)
     {
         m_globalLevelData = {level->m_levelNum, level->m_prologueText ? *level->m_prologueText : "",
-                             level->m_epilogueText ? *level->m_epilogueText : ""};
+                             level->m_epilogueText ? *level->m_epilogueText : "",
+                            level->m_epilogueMusic ? *level->m_epilogueMusic : ""};
         assert(m_musicWidget);
         m_globalLevelConfForm->init(m_musicWidget, m_globalLevelData);
     }
