@@ -33,7 +33,7 @@ void CheckpointForm::setSpinBoxSize(uint32_t size)
 //======================================================================
 QPair<uint32_t, Direction_e> CheckpointForm::getCheckpointData()const
 {
-    return {ui->spinBox->value(), static_cast<Direction_e>(ui->comboBox->currentIndex())};
+    return {static_cast<uint32_t>(ui->spinBox->value()), static_cast<Direction_e>(ui->comboBox->currentIndex())};
 }
 
 
