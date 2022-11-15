@@ -858,8 +858,8 @@ void LevelDataManager::generateTeleportsIniLevel(const TableModel &tableModel)
     QString pos, target, biDirection;
     for(std::multimap<QString, TeleportData>::const_iterator it = teleportData.begin(); it != teleportData.end(); ++it)
     {
-        pos += QString::number(it->second.m_teleporterPos.first) + " " + QString::number(it->second.m_teleporterPos.second) + "  ";
-        target += QString::number(it->second.m_targetPos.first) + " " + QString::number(it->second.m_targetPos.second) + "  ";
+        pos += QString::number(it->second.m_teleporterPos.first) + " " + QString::number(it->second.m_teleporterPos.second) + " ";
+        target += QString::number(it->second.m_targetPos.first) + " " + QString::number(it->second.m_targetPos.second) + " ";
         biDirection += "0 ";
     }
     m_ini.setValue(teleportData.begin()->first.toStdString(), "PosA", formatToIniFile(pos).toStdString());
