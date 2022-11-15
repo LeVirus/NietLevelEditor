@@ -415,12 +415,16 @@ bool LevelDataManager::loadTeleportLevel(const QSettings &ini)
             teleportPos = teleportPosStr.split(' ');
             targetPosStr = ini.value(keys[i] + "/PosB", "").toString();
             targetPos = targetPosStr.split(' ');
-            if(teleportPos.size() != 2 || targetPos.size() != 2)
+
+            if(teleportPos.size() != targetPos.size())
             {
                 return false;
             }
-            m_existingLevelData->m_teleportData.insert({keys[i], {{teleportPos[0].toInt(), teleportPos[1].toInt()},
-                                                                  {targetPos[0].toInt(), targetPos[1].toInt()}}});
+            for(int j = 0; j < teleportPos.size() - 1; j += 2)
+            {
+                m_existingLevelData->m_teleportData.insert({keys[i], {{teleportPos[j].toInt(), teleportPos[j + 1].toInt()},
+                                                                      {targetPos[j].toInt(), targetPos[j + 1].toInt()}}});
+            }
         }
     }
     return true;
