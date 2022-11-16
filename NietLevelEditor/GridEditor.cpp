@@ -1511,7 +1511,7 @@ bool GridEditor::loadTeleportExistingLevelGrid()
     {
         //TELEPORTER
         m_currentElementType = LevelElement_e::TELEPORT;
-        QModelIndex index = m_tableModel->index(it->second.m_teleporterPos.first, it->second.m_teleporterPos.second, QModelIndex());
+        QModelIndex index = m_tableModel->index(it->second.m_teleporterPos.second, it->second.m_teleporterPos.first, QModelIndex());
         m_currentSelection = m_mapElementID[m_currentElementType].indexOf(it->first);
         setCaseIcon(it->second.m_teleporterPos.first, it->second.m_teleporterPos.second, -1);
         m_tableModel->setIdData(index, CaseData{m_currentElementType,
@@ -1519,7 +1519,7 @@ bool GridEditor::loadTeleportExistingLevelGrid()
         m_lastPositionAdded = it->second.m_teleporterPos;
         //TARGET
         m_currentElementType = LevelElement_e::TARGET_TELEPORT;
-        QModelIndex indexx = m_tableModel->index(it->second.m_targetPos.first, it->second.m_targetPos.second, QModelIndex());
+        QModelIndex indexx = m_tableModel->index(it->second.m_targetPos.second, it->second.m_targetPos.first, QModelIndex());
         setTargetTeleport(indexx);
     }
     return true;
