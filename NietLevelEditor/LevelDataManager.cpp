@@ -670,6 +670,7 @@ std::optional<QTemporaryFile*> LevelDataManager::loadEncryptedINIFile(const QStr
     {
         return {};
     }
+    tmpFile->setAutoRemove(true);
     tmpFile->write(dataString.c_str());
     tmpFile->close();
     return tmpFile;
