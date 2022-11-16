@@ -422,6 +422,7 @@ void TableModel::rmStdElement(const QPair<int, int> &pos, LevelElement_e element
     {
         return;
     }
+    std::cout << "ERROR " << (int)elementType << " " << pos.first << "  " << pos.second << "REMOVE FAILED \n";
     assert(false);
 }
 
