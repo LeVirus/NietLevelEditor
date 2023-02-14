@@ -24,8 +24,9 @@ public:
     ~ConfNewLevelForm();
 private:
     void linkButtons();
-private slots:
+public slots:
     void onBrowseIniFileClicked();
+private slots:
     void onOkButtonClicked();
     void openExistingLevel();
     void toggleNewLevel(bool selected);
