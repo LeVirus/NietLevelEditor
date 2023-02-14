@@ -37,7 +37,7 @@ LogForm::~LogForm()
 void LogForm::validateForm()
 {
     m_valid = true;
-    m_messageText = ui->plainTextEdit->toPlainText().toUpper();
+    m_messageText = ui->plainTextEdit->toPlainText();
     close();
 }
 
