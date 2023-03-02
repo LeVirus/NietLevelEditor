@@ -1,5 +1,6 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
+#include <QMessageBox>
 
 //======================================================================
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), m_confNewLevelForm()
@@ -19,6 +20,8 @@ void MainWindow::linkButtons()
 void MainWindow::openEmptyEditorGrid()
 {
     m_confNewLevelForm.clearForm();
+    QMessageBox::information(nullptr, "Install directory selection", "Please select game install directory.");
+    m_confNewLevelForm.onBrowseIniFileClicked();
     m_confNewLevelForm.exec();
 }
 
