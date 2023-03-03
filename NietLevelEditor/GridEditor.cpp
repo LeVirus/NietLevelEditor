@@ -112,8 +112,10 @@ bool GridEditor::loadExistingLevelGrid()
             }
         }
     }
+    Direction_e memDir = m_memPlayerDirection;
     m_memPlayerDirection = existingLevel->m_playerDirection;
     setColorElement(caseIndex, LevelElement_e::PLAYER_DEPARTURE);
+    m_memPlayerDirection = memDir;
     if(!loadWallExistingLevelGrid())
     {
         return false;
