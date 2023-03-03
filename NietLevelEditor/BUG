@@ -1,4 +1,13 @@
-Checkpoint reverse order on loading=====================OK
+))
+Player departure direction isn't init until manipulate widget
+
+))
+When enemy end level exists and add a classic exit, enemy disapear of level editor but remain in game
+
+))
+Color section does not work for ground====================OK
+
+Checkpoint reverse order o loading=====================OK
 
 assert on resave moveable wall=================NOT REPRODUCIBLE
 
