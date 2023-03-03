@@ -1049,10 +1049,10 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
         QString colorR, colorG, colorB;
         for(uint32_t i = 0; i < 4; ++i)
         {
-            QString::number(backgroundData.second->m_colorData[0][i]);
-            colorR += QString::number(backgroundData.second->m_colorData[i][0]) + " ";
-            colorG += QString::number(backgroundData.second->m_colorData[i][1]) + " ";
-            colorB += QString::number(backgroundData.second->m_colorData[i][2]) + " ";
+            QString::number(backgroundData.first->m_colorData[0][i]);
+            colorR += QString::number(backgroundData.first->m_colorData[i][0]) + " ";
+            colorG += QString::number(backgroundData.first->m_colorData[i][1]) + " ";
+            colorB += QString::number(backgroundData.first->m_colorData[i][2]) + " ";
         }
         m_ini.setValue("ColorGroundBackground", "colorR", formatToIniFile(colorR).toStdString());
         m_ini.setValue("ColorGroundBackground", "colorG", formatToIniFile(colorG).toStdString());
