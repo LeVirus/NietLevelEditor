@@ -155,7 +155,6 @@ void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall)
                     QSet<QPair<int, int>>::iterator it = triggerData->m_triggerLinkWall->find({index.column(), index.row()});
                     if(it != triggerData->m_triggerLinkWall->end())
                     {
-                        std::cerr << it->first << "  " << it->second << " RM \n";
                         triggerData->m_triggerLinkWall->erase(it);
                     }
                     caseData->m_moveWallData->m_triggerPos.reset();

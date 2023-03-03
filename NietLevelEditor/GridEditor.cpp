@@ -117,8 +117,10 @@ bool GridEditor::loadExistingLevelGrid()
             }
         }
     }
+    Direction_e memDir = m_memPlayerDirection;
     m_memPlayerDirection = existingLevel->m_playerDirection;
     setColorElement(caseIndex, LevelElement_e::PLAYER_DEPARTURE);
+    m_memPlayerDirection = memDir;
     m_globalLevelData = {existingLevel->m_levelNum, existingLevel->m_prologueText ? *existingLevel->m_prologueText : "",
                          existingLevel->m_epilogueText ? *existingLevel->m_epilogueText : "",
                          existingLevel->m_epilogueMusic ? *existingLevel->m_epilogueMusic : ""};
