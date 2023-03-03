@@ -131,6 +131,7 @@ void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall)
     {
         if(*m_levelEndEnemy == QPair<int, int>{index.column(), index.row()})
         {
+            rmStdElement({index.column(), index.row()}, caseData->m_type);
             m_levelEndEnemy.reset();
         }
     }
