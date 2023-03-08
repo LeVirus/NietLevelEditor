@@ -64,7 +64,7 @@ void SelectableLineLayout::confEnemySelectWidget(GridEditor *parent)
 }
 
 //======================================================================
-void SelectableLineLayout::confPlayerDeparture(GridEditor *parent)
+QComboBox *SelectableLineLayout::confPlayerDeparture(GridEditor *parent)
 {
     QComboBox *combo = new QComboBox();
     combo->addItem("NORTH");
@@ -75,6 +75,7 @@ void SelectableLineLayout::confPlayerDeparture(GridEditor *parent)
     QObject::connect(combo, SIGNAL(currentIndexChanged(int)), parent, SLOT(memPlayerDirection(int)));
     QObject::connect(m_radio, &QRadioButton::toggled, combo, &QComboBox::setEnabled);
     combo->setEnabled(false);
+    return combo;
 }
 
 //======================================================================

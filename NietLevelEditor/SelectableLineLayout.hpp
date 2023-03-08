@@ -16,7 +16,7 @@ public:
     void setIcons(const QVector<DisplayData> &vectIcons);
     void confWallSelectWidget(GridEditor *parent);
     void confEnemySelectWidget(GridEditor *parent);
-    void confPlayerDeparture(GridEditor *parent);
+    QComboBox *confPlayerDeparture(GridEditor *parent);
     void uncheckCheckBox();
     void reinitWallComp();
     std::optional<int> getSelected();
