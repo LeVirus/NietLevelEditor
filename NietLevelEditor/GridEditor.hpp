@@ -136,6 +136,7 @@ private slots:
     void loadTriggerDisplay(const QString &installDir);
     void memPlayerDirection(int direction);
 private:
+    QComboBox *m_memPlayerDepartureWidget;
     Ui::GridEditor *ui;
     QPair<int, int> m_lastPositionAdded;
     LevelDataManager m_levelDataManager;

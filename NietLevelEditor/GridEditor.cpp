@@ -117,10 +117,9 @@ bool GridEditor::loadExistingLevelGrid()
             }
         }
     }
-    Direction_e memDir = m_memPlayerDirection;
     m_memPlayerDirection = existingLevel->m_playerDirection;
+    m_memPlayerDepartureWidget->setCurrentIndex(static_cast<uint32_t>(existingLevel->m_playerDirection));
     setColorElement(caseIndex, LevelElement_e::PLAYER_DEPARTURE);
-    m_memPlayerDirection = memDir;
     m_globalLevelData = {existingLevel->m_levelNum, existingLevel->m_prologueText ? *existingLevel->m_prologueText : "",
                          existingLevel->m_epilogueText ? *existingLevel->m_epilogueText : "",
                          existingLevel->m_epilogueMusic ? *existingLevel->m_epilogueMusic : ""};
@@ -412,7 +411,7 @@ void GridEditor::initSelectableWidgets()
         }
         else if(currentEnum == LevelElement_e::PLAYER_DEPARTURE)
         {
-            selectLayout->confPlayerDeparture(this);
+            m_memPlayerDepartureWidget = selectLayout->confPlayerDeparture(this);
         }
         else if(currentEnum == LevelElement_e::ENEMY)
         {
