@@ -405,6 +405,10 @@ void GridEditor::initSelectableWidgets()
         {
             m_memPlayerDepartureWidget = selectLayout->confPlayerDeparture(this);
         }
+        else if(currentEnum == LevelElement_e::DOOR)
+        {
+            selectLayout->confDoorSelectWidget(this);
+        }
         else if(currentEnum == LevelElement_e::ENEMY)
         {
             m_memFinishLevelEnemySelectLayout = selectLayout;
