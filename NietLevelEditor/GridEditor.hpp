@@ -94,6 +94,7 @@ private:
     void loadSpritesForBackgroundForm();
     void loadWallsPictures(const QString &installDir);
     void loadDoorsPictures(const QString &installDir);
+    void loadCardPictures(const QString &installDir);
     void loadStandardPictures(const QString &installDir, LevelElement_e elementType);
     bool setWallShape(bool preview = false, bool loadFromIni = false);
     void setWallDiagCaseConf();
@@ -131,7 +132,6 @@ private slots:
     void treatSelection(const QModelIndex &caseIndex);
     void setWallDrawModeSelected(int wallDrawMode);
     void setWallMoveableMode(int moveableMode);
-    void loadTriggerDisplay(const QString &installDir);
     void memPlayerDirection(int direction);
 private:
     QComboBox *m_memPlayerDepartureWidget;
@@ -144,6 +144,7 @@ private:
     WallDrawShape_e m_wallDrawMode;
     bool m_wallMoveableMode;
     IconArray_t m_drawData;
+    QVector<DisplayData> m_cardIcons;
     bool m_elementSelected, m_displayPreview = false;
     EventFilter *m_eventFilter;
     QModelIndex m_firstCaseSelection, m_secondCaseSelection;

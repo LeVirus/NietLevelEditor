@@ -1160,6 +1160,10 @@ bool LevelDataManager::loadStandardDataINI()
         else if(keysList.at(i).contains("Object"))
         {
             ok = loadObjectData(keysList.at(i));
+            if(keysList.at(i).contains("Card"))
+            {
+                ok = loadCardData(keysList.at(i));
+            }
         }
         else if(keysList.at(i).contains("Ground"))
         {
@@ -1343,6 +1347,18 @@ bool LevelDataManager::loadExitData(const QString &key)
         return false;
     }
     m_exitElement.insert({key, sprites});
+    return true;
+}
+
+//======================================================================
+bool LevelDataManager::loadCardData(const QString &key)
+{
+    QString sprites = m_INIFile->value(key + "/Sprite", "").toString();
+    if(sprites.isEmpty())
+    {
+        return false;
+    }
+    m_cardElement.insert({key, sprites});
     return true;
 }
 

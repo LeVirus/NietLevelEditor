@@ -106,6 +106,10 @@ public:
     {
         return m_objectElement;
     }
+    inline const std::map<QString, QString> &getCardData()const
+    {
+        return m_cardElement;
+    }
     inline const std::map<QString, QString> &getStaticCeilingData()const
     {
         return m_staticCeilingElement;
@@ -183,6 +187,7 @@ private:
     bool loadLogData(const QString &key);
     bool loadBarrelData(const QString &key);
     bool loadExitData(const QString &key);
+    bool loadCardData(const QString &key);
 private:
     QSettings *m_INIFile = nullptr, *m_pictureDataINI = nullptr;
     QString m_installDirectory;
@@ -191,7 +196,7 @@ private:
     std::map<QString, QStringList> m_wallElement;
     std::map<QString, DoorData> m_doorElement;
     std::map<QString, QString> m_triggerElement, m_teleportElement, m_enemyElement, m_objectElement, m_staticCeilingElement,
-    m_staticGroundElement, m_barrelElement, m_exitElement, m_logElement;
+    m_staticGroundElement, m_barrelElement, m_exitElement, m_logElement, m_cardElement;
     std::unique_ptr<LevelData> m_existingLevelData;
     inipp::Ini<char> m_ini;
     const uint32_t ENCRYPTION_KEY_CONF_FILE = 42, ENCRYPTION_KEY_STANDARD_LEVEL = 17,

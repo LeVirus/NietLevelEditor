@@ -16,7 +16,7 @@ public:
     void setIcons(const QVector<DisplayData> &vectIcons);
     void confWallSelectWidget(GridEditor *parent);
     void confEnemySelectWidget(GridEditor *parent);
-    void confDoorSelectWidget(GridEditor *parent);
+    void confDoorSelectWidget(GridEditor *parent, const QVector<DisplayData> &cardData);
     QComboBox *confPlayerDeparture(GridEditor *parent);
     void uncheckCheckBox();
     void reinitWallComp();
