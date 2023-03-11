@@ -415,7 +415,7 @@ void GridEditor::initSelectableWidgets()
         }
         else if(currentEnum == LevelElement_e::DOOR)
         {
-            selectLayout->confDoorSelectWidget(this);
+            selectLayout->confDoorSelectWidget(this, m_cardIcons);
         }
         else if(currentEnum == LevelElement_e::ENEMY)
         {
@@ -479,6 +479,7 @@ void GridEditor::loadIconPictures(const QString &installDir)
     m_mapElementID.clear();
     loadWallsPictures(installDir);
     loadDoorsPictures(installDir);
+    loadCardPictures(installDir);
     loadStandardPictures(installDir, LevelElement_e::LOG);
     loadStandardPictures(installDir, LevelElement_e::TELEPORT);
     loadStandardPictures(installDir, LevelElement_e::ENEMY);
@@ -495,24 +496,6 @@ void GridEditor::loadSpritesForBackgroundForm()
 {
     const std::map<QString, ArrayFloat_t> &picData = m_levelDataManager.getSpriteData();
     m_backgroundForm = new BackgroundForm(picData);
-}
-
-//======================================================================
-void GridEditor::loadTriggerDisplay(const QString &installDir)
-{
-    const std::map<QString, QString> &triggersMap = m_levelDataManager.getTriggerData();
-    std::optional<ArrayFloat_t> spriteData;
-    uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::TRIGGER);
-    m_drawData[currentIndex].reserve(triggersMap.size());
-    m_mapElementID.insert({LevelElement_e::TRIGGER, QVector<QString>()});
-    m_mapElementID[LevelElement_e::TRIGGER].reserve(triggersMap.size());
-    for(std::map<QString, QString>::const_iterator it = triggersMap.begin(); it != triggersMap.end(); ++it)
-    {
-        m_mapElementID[LevelElement_e::TRIGGER].push_back(it->first);
-        spriteData = m_levelDataManager.getPictureData(it->second);
-        assert(spriteData);
-        m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
-    }
 }
 
 //======================================================================
@@ -603,6 +586,20 @@ void GridEditor::loadDoorsPictures(const QString &installDir)
                              CASE_SPRITE_SIZE / 4, CASE_SPRITE_SIZE / 3, cardSprite);
         }
         m_drawData[currentIndex].push_back({it->first, it->second.m_sprite, final});
+    }
+}
+
+//======================================================================
+void GridEditor::loadCardPictures(const QString &installDir)
+{
+    std::optional<ArrayFloat_t> spriteData;
+    const std::map<QString, QString> &cardsMap = m_levelDataManager.getCardData();
+    m_cardIcons.reserve(cardsMap.size());
+    for(std::map<QString, QString>::const_iterator it = cardsMap.begin(); it != cardsMap.end(); ++it)
+    {
+        spriteData = m_levelDataManager.getPictureData(it->second);
+        assert(spriteData);
+        m_cardIcons.push_back({it->first, it->second[0], getSprite(*spriteData, m_levelDataManager, installDir)});
     }
 }
 

@@ -61,17 +61,17 @@ void SelectableLineLayout::confEnemySelectWidget(GridEditor *parent)
 }
 
 //======================================================================
-void SelectableLineLayout::confDoorSelectWidget(GridEditor *parent)
+void SelectableLineLayout::confDoorSelectWidget(GridEditor *parent, const QVector<DisplayData> &cardData)
 {
     m_cardDoorCheckBox = new QCheckBox(parent);
     m_cardDoorCheckBox->setEnabled(false);
     addWidget(new QLabel("Card"));
     addWidget(m_cardDoorCheckBox);
     QComboBox *combo = new QComboBox(parent);
-//    combo->addItem("NORTH");
-//    combo->addItem("WEST");
-//    combo->addItem("SOUTH");
-//    combo->addItem("EAST");
+    for(int i = 0; i < cardData.size(); ++i)
+    {
+        combo->addItem(cardData[i].m_icon, "");
+    }
     addWidget(combo);
     QObject::connect(m_radio, &QRadioButton::toggled, m_cardDoorCheckBox, &QCheckBox::setEnabled);
     QObject::connect(m_radio, &QRadioButton::toggled, combo, &QComboBox::setEnabled);
