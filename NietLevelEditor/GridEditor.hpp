@@ -93,7 +93,8 @@ private:
     void loadIconPictures(const QString &installDir);
     void loadSpritesForBackgroundForm();
     void loadWallsPictures(const QString &installDir);
-    void loadDoorsPictures(const QString &installDir);
+    void loadDoorsPictures();
+    QPixmap getDoorPixmap(bool vertical, const ArrayFloat_t &doorSpriteData, std::optional<QString> cardId);
     void loadCardPictures(const QString &installDir);
     void loadStandardPictures(const QString &installDir, LevelElement_e elementType);
     bool setWallShape(bool preview = false, bool loadFromIni = false);
@@ -107,7 +108,7 @@ private:
                                   int shapeNum, bool preview = false, bool deleteMode = false);
     bool setWallDiagRectShape(const QPair<int, int> &topLeftIndex, const QPair<int, int> &bottomRightIndex,
                               int shapeNum, uint32_t &wallNumber, bool preview = false, bool deleteMode = false);
-    void setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode = false, bool dontMemRemovedWall = false);
+    void setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode = false, bool dontMemRemovedWall = false, QPixmap *cardDoorCase = nullptr);
     QPixmap getColoredBackgroundIcon();
     void memWallMove(const QModelIndex &index);
     void setColorCaseData(int x, int y, LevelElement_e type, const QPair<uint32_t, Direction_e> &direction = {0, Direction_e::NORTH});
@@ -116,6 +117,7 @@ private:
     void updateGridView();
     void setLineSelectableEnabled(bool enable);
     void treatWallDrawing();
+    void treatDoorDrawing();
     void treatElementsDrawing();
     void confNewTriggerData(const QModelIndex &caseIndex);
     void setTargetTeleport(const QModelIndex &caseIndex);
@@ -133,7 +135,10 @@ private slots:
     void setWallDrawModeSelected(int wallDrawMode);
     void setWallMoveableMode(int moveableMode);
     void memPlayerDirection(int direction);
+    void setCardDoorMode(int active);
 private:
+    std::vector<bool> m_memDoorVertical;
+    QString m_installDir;
     QComboBox *m_memPlayerDepartureWidget;
     Ui::GridEditor *ui;
     QPair<int, int> m_lastPositionAdded;
@@ -142,7 +147,7 @@ private:
     int m_currentSelection;
     LevelElement_e m_currentElementType;
     WallDrawShape_e m_wallDrawMode;
-    bool m_wallMoveableMode;
+    bool m_wallMoveableMode, m_doorCardMode;
     IconArray_t m_drawData;
     QVector<DisplayData> m_cardIcons;
     bool m_elementSelected, m_displayPreview = false;
@@ -151,7 +156,7 @@ private:
     BackgroundForm *m_backgroundForm = nullptr;
     MoveableWallForm *m_moveableWallForm = nullptr;
     LogForm *m_logForm = nullptr;
-    SelectableLineLayout *m_memWallSelectLayout = nullptr, *m_memFinishLevelEnemySelectLayout = nullptr;
+    SelectableLineLayout *m_memWallSelectLayout = nullptr, *m_memDoorSelectLayout = nullptr, *m_memFinishLevelEnemySelectLayout = nullptr;
     std::map<LevelElement_e, QVector<QString>> m_mapElementID;
     std::unique_ptr<MoveWallData> m_memcurrentMoveWallData;
     QSet<QPair<int, int>> m_memCurrentLinkTriggerWall;
@@ -166,6 +171,8 @@ QString getStrDir(Direction_e direction);
 QString getStrCheckpoint(const QPair<int, Direction_e> &direction);
 Direction_e getDirEnumFromQString(const QString &str);
 const int32_t CASE_SIZE_PX = 40, CASE_SPRITE_SIZE = (CASE_SIZE_PX * 4) / 5;
+const int DOOR_POS = (CASE_SPRITE_SIZE / 2 - CASE_SPRITE_SIZE / 10),
+        DOOR_WIDTH = CASE_SPRITE_SIZE / 5;
 QPixmap getSprite(const ArrayFloat_t &spriteData, const LevelDataManager &levelDataManager, const QString &installDir);
 QString getStringFromLevelElementEnum(LevelElement_e num);
 

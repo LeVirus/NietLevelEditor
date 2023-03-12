@@ -17,8 +17,10 @@ public:
     void confWallSelectWidget(GridEditor *parent);
     void confEnemySelectWidget(GridEditor *parent);
     void confDoorSelectWidget(GridEditor *parent, const QVector<DisplayData> &cardData);
+    const DisplayData &getSelectedCardDoor()const;
     QComboBox *confPlayerDeparture(GridEditor *parent);
     void uncheckCheckBox();
+    void uncheckCheckBoxDoor();
     void reinitWallComp();
     std::optional<int> getSelected();
     void setRadioButtonEnabled(bool enable);
@@ -29,10 +31,11 @@ private slots:
     void selected();
     void selectedIndex(int currentIndex);
 private:
+    const QVector<DisplayData> *m_memCardData;
     QRadioButton *m_radio;
     QComboBox *m_comboBox;
     LevelElement_e m_elementType;
-    QComboBox *m_wallComboBox = nullptr;
+    QComboBox *m_wallComboBox = nullptr, *m_comboDoorCard = nullptr;
     QCheckBox *m_wallCheckBox = nullptr, *m_finishLevelCheckBox = nullptr,
     *m_cardDoorCheckBox = nullptr;
 };
