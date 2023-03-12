@@ -63,18 +63,28 @@ void SelectableLineLayout::confEnemySelectWidget(GridEditor *parent)
 //======================================================================
 void SelectableLineLayout::confDoorSelectWidget(GridEditor *parent, const QVector<DisplayData> &cardData)
 {
+    m_memCardData = &cardData;
     m_cardDoorCheckBox = new QCheckBox(parent);
     m_cardDoorCheckBox->setEnabled(false);
     addWidget(new QLabel("Card"));
     addWidget(m_cardDoorCheckBox);
-    QComboBox *combo = new QComboBox(parent);
+    m_comboDoorCard = new QComboBox(parent);
     for(int i = 0; i < cardData.size(); ++i)
     {
-        combo->addItem(cardData[i].m_icon, "");
+        m_comboDoorCard->addItem(cardData[i].m_icon, "");
     }
-    addWidget(combo);
+    addWidget(m_comboDoorCard);
+    m_comboDoorCard->setEnabled(false);
     QObject::connect(m_radio, &QRadioButton::toggled, m_cardDoorCheckBox, &QCheckBox::setEnabled);
-    QObject::connect(m_radio, &QRadioButton::toggled, combo, &QComboBox::setEnabled);
+    QObject::connect(m_radio, &QRadioButton::toggled, m_comboDoorCard, &QComboBox::setEnabled);
+
+    QObject::connect(m_cardDoorCheckBox, SIGNAL(stateChanged(int)), parent, SLOT(setCardDoorMode(int)));
+}
+
+//======================================================================
+const DisplayData &SelectableLineLayout::getSelectedCardDoor()const
+{
+    return m_memCardData->at(m_comboDoorCard->currentIndex());
 }
 
 //======================================================================
@@ -103,6 +113,12 @@ void SelectableLineLayout::uncheckCheckBox()
     {
         m_finishLevelCheckBox->setCheckState(Qt::CheckState::Unchecked);
     }
+}
+
+//======================================================================
+void SelectableLineLayout::uncheckCheckBoxDoor()
+{
+    m_cardDoorCheckBox->setCheckState(Qt::CheckState::Unchecked);
 }
 
 //======================================================================

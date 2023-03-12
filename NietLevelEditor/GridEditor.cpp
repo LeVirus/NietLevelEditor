@@ -45,9 +45,12 @@ bool GridEditor::loadExistingLevelINI(const QString &levelFilePath)
 //======================================================================
 void GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHeight)
 {
+    m_memDoorVertical.clear();
     m_wallMoveableMode = false;
+    m_doorCardMode = false;
     m_wallDrawMode = WallDrawShape_e::LINE_AND_RECT;
     m_elementSelected = false;
+    m_installDir = installDir;
     loadIconPictures(installDir);
     if(!m_moveableWallForm)
     {
@@ -169,7 +172,7 @@ void GridEditor::connectSlots()
 }
 
 //======================================================================
-void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bool dontMemRemovedWall)
+void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bool dontMemRemovedWall, QPixmap *cardDoorCase)
 {
     bool endLevelEnemyCase = (m_currentElementType == LevelElement_e::ENEMY &&
                               m_memFinishLevelEnemySelectLayout->isEndLevelEnemyChecked());
@@ -200,8 +203,18 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
     }
     else
     {
-        bool ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
-                                                        pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
+        bool ok;
+        if(cardDoorCase)
+        {
+            assert(m_currentElementType == LevelElement_e::DOOR);
+            ok = m_tableModel->setData(index, QVariant(QIcon(*cardDoorCase).
+                                                       pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
+        }
+        else
+        {
+            ok = m_tableModel->setData(index, QVariant(getCurrentSelectedIcon().
+                                                            pixmap({CASE_SPRITE_SIZE, CASE_SPRITE_SIZE})));
+        }
         assert(ok);
     }
     if(!caseData || (type != LevelElement_e::TRIGGER && type != LevelElement_e::GROUND_TRIGGER))
@@ -415,6 +428,7 @@ void GridEditor::initSelectableWidgets()
         }
         else if(currentEnum == LevelElement_e::DOOR)
         {
+            m_memDoorSelectLayout = selectLayout;
             selectLayout->confDoorSelectWidget(this, m_cardIcons);
         }
         else if(currentEnum == LevelElement_e::ENEMY)
@@ -478,7 +492,7 @@ void GridEditor::loadIconPictures(const QString &installDir)
 {
     m_mapElementID.clear();
     loadWallsPictures(installDir);
-    loadDoorsPictures(installDir);
+    loadDoorsPictures();
     loadCardPictures(installDir);
     loadStandardPictures(installDir, LevelElement_e::LOG);
     loadStandardPictures(installDir, LevelElement_e::TELEPORT);
@@ -503,6 +517,12 @@ void GridEditor::memPlayerDirection(int direction)
 {
     assert(direction < 4);
     m_memPlayerDirection = static_cast<Direction_e>(direction);
+}
+
+//======================================================================
+void GridEditor::setCardDoorMode(int active)
+{
+    m_doorCardMode = active;
 }
 
 //======================================================================
@@ -545,48 +565,53 @@ void GridEditor::loadWallsPictures(const QString &installDir)
 }
 
 //======================================================================
-void GridEditor::loadDoorsPictures(const QString &installDir)
+void GridEditor::loadDoorsPictures()
 {
     const std::map<QString, DoorData> &doorsMap = m_levelDataManager.getDoorData();
     uint32_t currentIndex = static_cast<uint32_t>(LevelElement_e::DOOR);
     m_drawData[currentIndex].reserve(doorsMap.size());
     std::optional<ArrayFloat_t> spriteData;
-    bool vertical;
-    const int DOOR_POS = (CASE_SPRITE_SIZE / 2 - CASE_SPRITE_SIZE / 10),
-            DOOR_WIDTH = CASE_SPRITE_SIZE / 5;
     m_mapElementID.insert({LevelElement_e::DOOR, QVector<QString>()});
     m_mapElementID[LevelElement_e::DOOR].reserve(doorsMap.size());
     for(std::map<QString, DoorData>::const_iterator it = doorsMap.begin(); it != doorsMap.end(); ++it)
     {
         m_mapElementID[LevelElement_e::DOOR].push_back(it->first);
-        QPixmap final(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
-        final.fill(Qt::transparent);
-        QPainter paint(&final);
-        vertical = it->second.m_vertical;
         spriteData = m_levelDataManager.getPictureData(it->second.m_sprite);
         assert(spriteData);
-        QPixmap baseDoorSprite = getSprite(*spriteData, m_levelDataManager, installDir);
-        if(vertical)
-        {
-            QTransform rotate_disc;
-            rotate_disc.rotate(90.0);
-            baseDoorSprite  = baseDoorSprite .transformed(rotate_disc);
-            paint.drawPixmap(DOOR_POS, 0, DOOR_WIDTH, CASE_SPRITE_SIZE, baseDoorSprite);
-        }
-        else
-        {
-            paint.drawPixmap(0, DOOR_POS, CASE_SPRITE_SIZE , DOOR_WIDTH, baseDoorSprite);
-        }
-        if(it->second.m_cardID)
-        {
-            std::optional<ArrayFloat_t> cardSpriteData = m_levelDataManager.getPictureData(*it->second.m_cardID);
-            assert(cardSpriteData);
-            QPixmap cardSprite = getSprite(*cardSpriteData, m_levelDataManager, installDir);
-            paint.drawPixmap(CASE_SPRITE_SIZE / 5 * 4, CASE_SPRITE_SIZE / 10,
-                             CASE_SPRITE_SIZE / 4, CASE_SPRITE_SIZE / 3, cardSprite);
-        }
+        m_memDoorVertical.push_back(it->second.m_vertical);
+        QPixmap final = getDoorPixmap(it->second.m_vertical, *spriteData, it->second.m_cardID);
         m_drawData[currentIndex].push_back({it->first, it->second.m_sprite, final});
     }
+}
+
+//======================================================================
+QPixmap GridEditor::getDoorPixmap(bool vertical, const ArrayFloat_t &doorSpriteData, std::optional<QString> cardId)
+{
+    QPixmap final(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
+    final.fill(Qt::transparent);
+    QPainter paint(&final);
+    QPixmap baseDoorSprite = getSprite(doorSpriteData, m_levelDataManager, m_installDir);
+    if(vertical)
+    {
+        QTransform rotate_disc;
+        rotate_disc.rotate(90.0);
+        baseDoorSprite  = baseDoorSprite .transformed(rotate_disc);
+        paint.drawPixmap(DOOR_POS, 0, DOOR_WIDTH, CASE_SPRITE_SIZE, baseDoorSprite);
+    }
+    else
+    {
+        paint.drawPixmap(0, DOOR_POS, CASE_SPRITE_SIZE , DOOR_WIDTH, baseDoorSprite);
+    }
+    if(cardId)
+    {
+        std::cerr << cardId->toStdString() << "\n";
+        std::optional<ArrayFloat_t> cardSpriteData = m_levelDataManager.getPictureData(*cardId);
+        assert(cardSpriteData);
+        QPixmap cardSprite = getSprite(*cardSpriteData, m_levelDataManager, m_installDir);
+        paint.drawPixmap(CASE_SPRITE_SIZE / 5 * 4, CASE_SPRITE_SIZE / 10,
+                         CASE_SPRITE_SIZE / 4, CASE_SPRITE_SIZE / 3, cardSprite);
+    }
+    return final;
 }
 
 //======================================================================
@@ -1082,6 +1107,10 @@ void GridEditor::mouseReleaseSelection()
         m_secondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
         treatWallDrawing();
     }
+    else if(m_currentElementType == LevelElement_e::DOOR)
+    {
+        treatDoorDrawing();
+    }
     else if(m_currentElementType == LevelElement_e::DELETE)
     {
         m_secondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
@@ -1142,6 +1171,50 @@ void GridEditor::treatWallDrawing()
         }
     }
     m_displayPreview = false;
+}
+
+//======================================================================
+void GridEditor::treatDoorDrawing()
+{
+    if(m_doorCardMode)
+    {
+        std::optional<QString> cardID;
+        m_memDoorSelectLayout->uncheckCheckBoxDoor();
+        const DisplayData &cardData = m_memDoorSelectLayout->getSelectedCardDoor();
+        if(cardData.m_elementSectionName == "ObjectPurpleCard")
+        {
+            cardID = "SpriteSimetraCardPurple";
+        }
+        else if(cardData.m_elementSectionName == "ObjectBlueCard")
+        {
+            cardID = "SpriteSimetraCardBlue";
+        }
+        else if(cardData.m_elementSectionName == "ObjectGreenCard")
+        {
+            cardID = "SpriteSimetraCardGreen";
+        }
+        else if(cardData.m_elementSectionName == "ObjectGoldCard")
+        {
+            cardID = "SpriteSimetraCardGold";
+        }
+        else
+        {
+            assert(false);
+        }
+        QIcon iconBase = getCurrentSelectedIcon();
+        QString baseSpriteName = m_drawData[static_cast<uint32_t>(LevelElement_e::DOOR)][m_currentSelection].m_spriteName;
+        std::optional<ArrayFloat_t> spriteData = m_levelDataManager.getPictureData(baseSpriteName);
+        assert(spriteData);
+        QPixmap final = getDoorPixmap(m_memDoorVertical[m_currentSelection], *spriteData, cardID);
+        QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
+        setCaseIcon(caseIndex.column(), caseIndex.row(), -1, false, false, &final);
+        m_tableModel->memStdElement({caseIndex.column(), caseIndex.row()}, m_currentElementType,
+                                    m_drawData[static_cast<uint32_t>(LevelElement_e::DOOR)][m_currentSelection].m_elementSectionName);
+    }
+    else
+    {
+        treatElementsDrawing();
+    }
 }
 
 //======================================================================
