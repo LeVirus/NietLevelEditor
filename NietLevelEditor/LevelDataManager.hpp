@@ -157,7 +157,6 @@ private:
     bool loadLogElementLevel(std::string_view levelPath);
     bool generateStructPosWall(const QString &key, bool positionMode);
     void generateWallsIniLevel(const TableModel &tableModel);
-    void generateDoorsIniLevel(const TableModel &tableModel);
     void generateTeleportsIniLevel(const TableModel &tableModel);
     void generateEnemiesIniLevel(const TableModel &tableModel);
     void generateStandardIniLevel(const std::multimap<QString, QPair<int, int>> &datas, const std::optional<QPair<int, int>> &endLevelEnemyPos = {});

@@ -135,6 +135,7 @@ private slots:
     void setWallDrawModeSelected(int wallDrawMode);
     void setWallMoveableMode(int moveableMode);
     void memPlayerDirection(int direction);
+public slots:
     void setCardDoorMode(int active);
 private:
     std::vector<bool> m_memDoorVertical;
