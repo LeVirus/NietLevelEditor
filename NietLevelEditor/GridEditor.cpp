@@ -416,7 +416,7 @@ void GridEditor::initSelectableWidgets()
         }
         SelectableLineLayout *selectLayout = new SelectableLineLayout(getStringFromLevelElementEnum(currentEnum), currentEnum);
         ui->SelectableLayout->addLayout(selectLayout);
-        selectLayout->setIcons(m_drawData[i]);
+        selectLayout->setIcons(m_drawData[i], (currentEnum == LevelElement_e::DOOR));
         if(currentEnum == LevelElement_e::WALL)
         {
             m_memWallSelectLayout = selectLayout;
@@ -604,7 +604,6 @@ QPixmap GridEditor::getDoorPixmap(bool vertical, const ArrayFloat_t &doorSpriteD
     }
     if(cardId)
     {
-        std::cerr << cardId->toStdString() << "\n";
         std::optional<ArrayFloat_t> cardSpriteData = m_levelDataManager.getPictureData(*cardId);
         assert(cardSpriteData);
         QPixmap cardSprite = getSprite(*cardSpriteData, m_levelDataManager, m_installDir);
@@ -1176,45 +1175,46 @@ void GridEditor::treatWallDrawing()
 //======================================================================
 void GridEditor::treatDoorDrawing()
 {
+    QString baseElementSectionName = m_drawData[static_cast<uint32_t>(LevelElement_e::DOOR)][m_currentSelection].m_elementSectionName;
+    bool vertical = baseElementSectionName.contains("Vertical");
+    QString sectionName;
+    std::optional<QString> cardID;
     if(m_doorCardMode)
     {
-        std::optional<QString> cardID;
         m_memDoorSelectLayout->uncheckCheckBoxDoor();
         const DisplayData &cardData = m_memDoorSelectLayout->getSelectedCardDoor();
         if(cardData.m_elementSectionName == "ObjectPurpleCard")
         {
+            sectionName = vertical ? "DoorCardV" : "DoorCardPurpleH";
             cardID = "SpriteSimetraCardPurple";
         }
         else if(cardData.m_elementSectionName == "ObjectBlueCard")
         {
+            sectionName = vertical ? "DoorCardBlueV" : "DoorCardBlueH";
             cardID = "SpriteSimetraCardBlue";
         }
         else if(cardData.m_elementSectionName == "ObjectGreenCard")
         {
+            sectionName = vertical ? "DoorCardGreenV" : "DoorCardGreenH";
             cardID = "SpriteSimetraCardGreen";
         }
         else if(cardData.m_elementSectionName == "ObjectGoldCard")
         {
+            sectionName = vertical ? "DoorCardGoldV" : "DoorCardGoldH";
             cardID = "SpriteSimetraCardGold";
         }
         else
         {
             assert(false);
         }
-        QIcon iconBase = getCurrentSelectedIcon();
-        QString baseSpriteName = m_drawData[static_cast<uint32_t>(LevelElement_e::DOOR)][m_currentSelection].m_spriteName;
-        std::optional<ArrayFloat_t> spriteData = m_levelDataManager.getPictureData(baseSpriteName);
-        assert(spriteData);
-        QPixmap final = getDoorPixmap(m_memDoorVertical[m_currentSelection], *spriteData, cardID);
-        QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
-        setCaseIcon(caseIndex.column(), caseIndex.row(), -1, false, false, &final);
-        m_tableModel->memStdElement({caseIndex.column(), caseIndex.row()}, m_currentElementType,
-                                    m_drawData[static_cast<uint32_t>(LevelElement_e::DOOR)][m_currentSelection].m_elementSectionName);
     }
-    else
-    {
-        treatElementsDrawing();
-    }
+    QString baseSpriteName = m_drawData[static_cast<uint32_t>(LevelElement_e::DOOR)][m_currentSelection].m_spriteName;
+    std::optional<ArrayFloat_t> spriteData = m_levelDataManager.getPictureData(baseSpriteName);
+    assert(spriteData);
+    QPixmap final = getDoorPixmap(m_memDoorVertical[m_currentSelection], *spriteData, cardID);
+    QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
+    setCaseIcon(caseIndex.column(), caseIndex.row(), -1, false, false, &final);
+    m_tableModel->memStdElement({caseIndex.column(), caseIndex.row()}, m_currentElementType, sectionName);
 }
 
 //======================================================================

@@ -13,7 +13,7 @@ class SelectableLineLayout : public QHBoxLayout
     Q_OBJECT
 public:
     SelectableLineLayout(const QString &radioBoxTxt, LevelElement_e typeElement, GridEditor *parent = nullptr);
-    void setIcons(const QVector<DisplayData> &vectIcons);
+    void setIcons(const QVector<DisplayData> &vectIcons, bool doorCase = false);
     void confWallSelectWidget(GridEditor *parent);
     void confEnemySelectWidget(GridEditor *parent);
     void confDoorSelectWidget(GridEditor *parent, const QVector<DisplayData> &cardData);

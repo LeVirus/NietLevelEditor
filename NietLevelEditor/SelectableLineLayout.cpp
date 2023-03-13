@@ -25,11 +25,14 @@ SelectableLineLayout::SelectableLineLayout(const QString &radioBoxTxt,
 }
 
 //======================================================================
-void SelectableLineLayout::setIcons(const QVector<DisplayData> &vectIcons)
+void SelectableLineLayout::setIcons(const QVector<DisplayData> &vectIcons, bool doorCase)
 {
     for(int32_t i = 0; i < vectIcons.size(); ++i)
     {
-        m_comboBox->addItem(vectIcons[i].m_icon, "");
+        if(!doorCase || !vectIcons[i].m_elementSectionName.contains("Card"))
+        {
+            m_comboBox->addItem(vectIcons[i].m_icon, "");
+        }
     }
 }
 
@@ -78,7 +81,8 @@ void SelectableLineLayout::confDoorSelectWidget(GridEditor *parent, const QVecto
     QObject::connect(m_radio, &QRadioButton::toggled, m_cardDoorCheckBox, &QCheckBox::setEnabled);
     QObject::connect(m_radio, &QRadioButton::toggled, m_comboDoorCard, &QComboBox::setEnabled);
 
-    QObject::connect(m_cardDoorCheckBox, SIGNAL(stateChanged(int)), parent, SLOT(setCardDoorMode(int)));
+    QObject::connect(m_cardDoorCheckBox, &QCheckBox::stateChanged, parent, &GridEditor::setCardDoorMode);
+    QObject::connect(m_cardDoorCheckBox, &QCheckBox::stateChanged, m_comboDoorCard, &QComboBox::setEnabled);
 }
 
 //======================================================================
