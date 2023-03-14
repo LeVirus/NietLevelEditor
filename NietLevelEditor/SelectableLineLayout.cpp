@@ -79,7 +79,7 @@ void SelectableLineLayout::confDoorSelectWidget(GridEditor *parent, const QVecto
     addWidget(m_comboDoorCard);
     m_comboDoorCard->setEnabled(false);
     QObject::connect(m_radio, &QRadioButton::toggled, m_cardDoorCheckBox, &QCheckBox::setEnabled);
-    QObject::connect(m_radio, &QRadioButton::toggled, m_comboDoorCard, &QComboBox::setEnabled);
+    QObject::connect(m_radio, &QRadioButton::toggled, this, &SelectableLineLayout::uncheckCheckBoxDoor);
 
     QObject::connect(m_cardDoorCheckBox, &QCheckBox::stateChanged, parent, &GridEditor::setCardDoorMode);
     QObject::connect(m_cardDoorCheckBox, &QCheckBox::stateChanged, m_comboDoorCard, &QComboBox::setEnabled);
