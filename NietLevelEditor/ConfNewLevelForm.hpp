@@ -33,7 +33,7 @@ private slots:
     void toggleLoadLevel(bool selected);
 private:
     Ui::ConfNewLevelForm *ui;
-    GridEditor m_gridEditorForm;
+    GridEditor *m_gridEditorForm = nullptr;
     QString m_installDirectory, m_existingLevelFile;
     FormMode_e m_mode;
 };
