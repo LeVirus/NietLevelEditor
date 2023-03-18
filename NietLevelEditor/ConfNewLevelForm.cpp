@@ -32,6 +32,10 @@ void ConfNewLevelForm::clearForm()
 //======================================================================
 ConfNewLevelForm::~ConfNewLevelForm()
 {
+    if(m_gridEditorForm)
+    {
+        delete m_gridEditorForm;
+    }
     delete ui;
 }
 
@@ -130,14 +134,19 @@ void ConfNewLevelForm::onOkButtonClicked()
         QMessageBox::warning(this, "Error", "Please select editing mode (New or existing level).");
         return;
     }
-    if(!m_gridEditorForm.loadMainInstallDirData(m_installDirectory))
+    if(m_gridEditorForm)
+    {
+        delete m_gridEditorForm;
+    }
+    m_gridEditorForm = new GridEditor();
+    if(!m_gridEditorForm->loadMainInstallDirData(m_installDirectory))
     {
         QMessageBox::warning(this, "Error", "Error while initializing grid.");
         return;
     }
     if(m_mode == FormMode_e::NEW_LEVEL)
     {
-        m_gridEditorForm.initGrid(m_installDirectory, widthLevelspinBox->value(), heightLevelspinBox->value());
+        m_gridEditorForm->initGrid(m_installDirectory, widthLevelspinBox->value(), heightLevelspinBox->value());
     }
     else if(m_mode == FormMode_e::EXISTING_LEVEL)
     {
@@ -146,22 +155,22 @@ void ConfNewLevelForm::onOkButtonClicked()
             QMessageBox::warning(this, "Error", "Please select a correct level file.");
             return;
         }
-        if(!m_gridEditorForm.loadExistingLevelINI(m_existingLevelFile))
+        if(!m_gridEditorForm->loadExistingLevelINI(m_existingLevelFile))
         {
             QMessageBox::warning(this, "Error", "Error while loading level ini file.");
             return;
         }
-        std::optional<QPair<int, int>> levelSize = m_gridEditorForm.getLoadedLevelSize();
+        std::optional<QPair<int, int>> levelSize = m_gridEditorForm->getLoadedLevelSize();
         assert(levelSize);
-        m_gridEditorForm.initGrid(m_installDirectory, levelSize->first, levelSize->second);
-        if(!m_gridEditorForm.loadExistingLevelGrid())
+        m_gridEditorForm->initGrid(m_installDirectory, levelSize->first, levelSize->second);
+        if(!m_gridEditorForm->loadExistingLevelGrid())
         {
             QMessageBox::warning(this, "Error", "Error while loading level on grid.");
             return;
         }
     }
-    m_gridEditorForm.unselectAllRadioButtons();
+    m_gridEditorForm->unselectAllRadioButtons();
     m_existingLevelFile.clear();
-    m_gridEditorForm.exec();
+    m_gridEditorForm->exec();
     close();
 }
