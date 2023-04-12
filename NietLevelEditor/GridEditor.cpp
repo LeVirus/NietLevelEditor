@@ -1208,6 +1208,10 @@ void GridEditor::treatDoorDrawing()
             assert(false);
         }
     }
+    else
+    {
+        sectionName = vertical ? "DoorVertical" : "DoorHorizontal";
+    }
     QString baseSpriteName = m_drawData[static_cast<uint32_t>(LevelElement_e::DOOR)][m_currentSelection].m_spriteName;
     std::optional<ArrayFloat_t> spriteData = m_levelDataManager.getPictureData(baseSpriteName);
     assert(spriteData);
