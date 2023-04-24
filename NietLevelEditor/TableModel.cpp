@@ -105,7 +105,7 @@ bool TableModel::setIdData(const QModelIndex &index, const CaseData &value, bool
 }
 
 //======================================================================
-void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall)
+void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall, std::optional<uint32_t> wallShape)
 {
     if(!checkIndex(index) /*|| index.column() < 0 || index.row() < 0*/)
     {
@@ -138,6 +138,10 @@ void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall)
     else if(caseData->m_type == LevelElement_e::WALL)
     {
         assert(caseData->m_wallShapeNum);
+        if(wallShape && *wallShape == caseData->m_wallShapeNum)
+        {
+            return;
+        }
         --m_memWallShape[*caseData->m_wallShapeNum].second.m_currentWallCount;
         m_memWallShape[*caseData->m_wallShapeNum].second.m_deletedWall.push_back({index.column(), index.row()});
         if(caseData->m_moveWallData->m_triggerPos)
@@ -510,14 +514,14 @@ void TableModel::setTableDeletionZone(const QPair<int, int> &originSelectPos, co
 }
 
 //======================================================================
-void TableModel::setTableWallDiagCaseConf(QPair<int, int> originPoint, bool directionUp)
+void TableModel::setTableWallDiagCaseConf(const QPair<int, int> &originPoint, bool directionUp)
 {
     m_memWallShape.back().second.m_gridCoordTopLeft = originPoint;
     m_memWallShape.back().second.m_diagCaseUp = directionUp;
 }
 
 //======================================================================
-void TableModel::setTableWallDiagRectCaseConf(QPair<int, int> originPoint)
+void TableModel::setTableWallDiagRectCaseConf(const QPair<int, int> &originPoint)
 {
     m_memWallShape.back().second.m_gridCoordTopLeft = originPoint;
 }
