@@ -83,7 +83,7 @@ public:
     void setLevelSize(int tableWidth, int tableHeight);
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole)override;
     bool setIdData(const QModelIndex &index, const CaseData &value, bool endLevelEnemyCase = false);
-    void removeData(const QModelIndex &index, bool dontMemRemovedWall = false);
+    void removeData(const QModelIndex &index, bool dontMemRemovedWall = false, std::optional<uint32_t> wallShape = {});
     inline std::optional<CaseData> &getDataElementCase(const QModelIndex &index)
     {
         return m_vectPic[index.column()][index.row()].second;
@@ -103,8 +103,8 @@ public:
     void memTeleportElement(const QPair<int, int> &teleporterPos, const QPair<int, int> &targetPos, const QString &iniId);
     void updateWallNumber(uint32_t num);
     void setTableDeletionZone(const QPair<int, int> &originSelectPos, const QPair<int, int> &targetSelectPos, bool preview);
-    void setTableWallDiagCaseConf(QPair<int, int> originPoint, bool directionUp);
-    void setTableWallDiagRectCaseConf(QPair<int, int> originPoint);
+    void setTableWallDiagCaseConf(const QPair<int, int> &originPoint, bool directionUp);
+    void setTableWallDiagRectCaseConf(const QPair<int, int> &originPoint);
     inline QPair<int, int> getTableSize()const
     {
         return m_tableSize;

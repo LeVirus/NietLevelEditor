@@ -181,7 +181,7 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
     }
     else
     {
-        m_tableModel->removeData(index, dontMemRemovedWall);
+        m_tableModel->removeData(index, dontMemRemovedWall, wallShapeNum);
     }
     if(deleteMode)
     {
