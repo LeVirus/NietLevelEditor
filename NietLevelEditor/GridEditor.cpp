@@ -1176,7 +1176,7 @@ void GridEditor::treatWallDrawing()
 void GridEditor::treatDoorDrawing()
 {
     QString baseElementSectionName = m_drawData[static_cast<uint32_t>(LevelElement_e::DOOR)][m_currentSelection].m_elementSectionName;
-    bool vertical = baseElementSectionName.contains("Vertical");
+    bool vertical = baseElementSectionName.contains("V");
     QString sectionName;
     std::optional<QString> cardID;
     if(m_doorCardMode)
