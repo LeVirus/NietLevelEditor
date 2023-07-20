@@ -853,21 +853,31 @@ QString getStrNumINIKey(int shapeWallNum)
 //======================================================================
 void LevelDataManager::generateTeleportsIniLevel(const TableModel &tableModel)
 {
-    const std::multimap<QString, TeleportData> teleportData = tableModel.getTeleporterData();
+    const std::multimap<QString, TeleportData> &teleportData = tableModel.getTeleporterData();
     if(teleportData.empty())
     {
         return;
     }
-    QString pos, target, biDirection;
+    QString pos, target, biDirection, currentIni = teleportData.begin()->first;
     for(std::multimap<QString, TeleportData>::const_iterator it = teleportData.begin(); it != teleportData.end(); ++it)
     {
+        if(it->first != currentIni)
+        {
+            m_ini.setValue(currentIni.toStdString(), "PosA", formatToIniFile(pos).toStdString());
+            m_ini.setValue(currentIni.toStdString(), "PosB", formatToIniFile(target).toStdString());
+            m_ini.setValue(currentIni.toStdString(), "BiDirection", formatToIniFile(biDirection).toStdString());
+            pos.clear();
+            target.clear();
+            biDirection.clear();
+            currentIni = it->first;
+        }
         pos += QString::number(it->second.m_teleporterPos.first) + " " + QString::number(it->second.m_teleporterPos.second) + " ";
         target += QString::number(it->second.m_targetPos.first) + " " + QString::number(it->second.m_targetPos.second) + " ";
         biDirection += "0 ";
     }
-    m_ini.setValue(teleportData.begin()->first.toStdString(), "PosA", formatToIniFile(pos).toStdString());
-    m_ini.setValue(teleportData.begin()->first.toStdString(), "PosB", formatToIniFile(target).toStdString());
-    m_ini.setValue(teleportData.begin()->first.toStdString(), "BiDirection", formatToIniFile(biDirection).toStdString());
+    m_ini.setValue(currentIni.toStdString(), "PosA", formatToIniFile(pos).toStdString());
+    m_ini.setValue(currentIni.toStdString(), "PosB", formatToIniFile(target).toStdString());
+    m_ini.setValue(currentIni.toStdString(), "BiDirection", formatToIniFile(biDirection).toStdString());
 }
 
 //======================================================================
