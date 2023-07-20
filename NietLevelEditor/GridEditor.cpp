@@ -381,6 +381,7 @@ QIcon GridEditor::getCurrentSelectedIcon()const
     uint32_t index = static_cast<uint32_t>(m_currentElementType);
     assert(index < m_drawData.size());
     assert(m_currentSelection < m_drawData[index].size());
+    assert(m_currentSelection >= 0);
     return m_drawData[index][m_currentSelection].m_icon;
 }
 

@@ -1219,7 +1219,7 @@ bool LevelDataManager::loadStandardDataINI()
         {
             ok = loadStaticElementCeilingData(keysList.at(i));
         }
-        else if(keysList.at(i) == "Teleport")
+        else if(keysList.at(i).contains("Teleport"))
         {
             ok = loadTeleportData(keysList.at(i));
         }
