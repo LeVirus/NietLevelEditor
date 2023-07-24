@@ -387,6 +387,9 @@ bool LevelDataManager::loadTeleportLevel(const QSettings &ini)
             targetPosStr = ini.value(keys[i] + "/PosB", "").toString();
             targetPos = targetPosStr.split(' ');
             if(teleportPos.size() != targetPos.size())
+            {
+                return false;
+            }
             for(int j = 0; j < teleportPos.size() - 1; j += 2)
             {
                 m_existingLevelData->m_teleportData.insert({keys[i], {{teleportPos[j].toInt(), teleportPos[j + 1].toInt()},
