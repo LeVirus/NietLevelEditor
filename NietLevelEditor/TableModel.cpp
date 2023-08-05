@@ -457,7 +457,6 @@ void TableModel::updateTriggerPos(const QPair<int, int> &pos)
 //======================================================================
 void TableModel::removeTrigger(CaseData &triggerCase, const QPair<int, int> &triggercoord)
 {
-    removeData(this->index(triggercoord.second, triggercoord.first, QModelIndex()));
     if(!triggerCase.m_triggerLinkWall || triggerCase.m_triggerLinkWall->empty())
     {
         return;
@@ -471,20 +470,13 @@ void TableModel::removeTrigger(CaseData &triggerCase, const QPair<int, int> &tri
             continue;
         }
         CaseData &wallCase = *m_vectPic[index.column()][index.row()].second;
+        m_memWallShape[*wallCase.m_wallShapeNum].second.m_memMoveData.reset();
         wallCase.m_moveWallData->clear();
         wallCase.m_moveWallData.reset();
         assert(!wallCase.m_moveWallData);
         wallCase.m_moveWallData = std::nullopt;
     }
-    for(int i = 0; i < m_memWallShape.size(); ++i)
-    {
-        if(m_memWallShape[i].second.m_memMoveData && m_memWallShape[i].second.m_memMoveData->m_triggerPos &&
-                *m_memWallShape[i].second.m_memMoveData->m_triggerPos == triggercoord)
-        {
-            m_memWallShape[i].second.m_memMoveData.reset();
-            return;
-        }
-    }
+    removeData(this->index(triggercoord.second, triggercoord.first, QModelIndex()));
 }
 
 //======================================================================

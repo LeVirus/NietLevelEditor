@@ -769,7 +769,7 @@ void LevelDataManager::generateWallsIniLevel(const TableModel &tableModel)
         ++cmpt;
         gamePos = getIniWallPos(i, wallData);
         removePos = getCurrentWallRemovedINI(i, wallData);
-        if(wallData[i].second.m_memMoveData)
+        if(wallData[i].second.m_memMoveData != std::nullopt)
         {
             memWallData.insert({key, WallDataINI{gamePos, removePos, nullptr, nullptr, wallData[i].second.m_iniId,
                                                  std::make_unique<MoveWallData>()}});

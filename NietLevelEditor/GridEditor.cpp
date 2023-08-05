@@ -170,7 +170,7 @@ void GridEditor::setCaseIcon(int x, int y, int wallShapeNum, bool deleteMode, bo
                               m_memFinishLevelEnemySelectLayout->isEndLevelEnemyChecked());
     QModelIndex index = m_tableModel->index(y, x, QModelIndex());
     std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
-    LevelElement_e type = caseData ? LevelElement_e::TOTAL : caseData->m_type;
+    LevelElement_e type = (caseData == std::nullopt) ? LevelElement_e::TOTAL : caseData->m_type;
     if(type == LevelElement_e::TRIGGER || type == LevelElement_e::GROUND_TRIGGER)
     {
         if(m_currentElementType == LevelElement_e::TRIGGER || m_currentElementType == LevelElement_e::GROUND_TRIGGER)
