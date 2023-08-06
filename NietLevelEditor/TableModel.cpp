@@ -112,7 +112,7 @@ void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall, s
         return;
     }
     std::optional<CaseData> &caseData = m_vectPic[index.column()][index.row()].second;
-    if(!caseData)
+    if(caseData == std::nullopt)
     {
         return;
     }
@@ -469,12 +469,16 @@ void TableModel::removeTrigger(CaseData &triggerCase, const QPair<int, int> &tri
         {
             continue;
         }
-        CaseData &wallCase = *m_vectPic[index.column()][index.row()].second;
-        m_memWallShape[*wallCase.m_wallShapeNum].second.m_memMoveData.reset();
-        wallCase.m_moveWallData->clear();
-        wallCase.m_moveWallData.reset();
-        assert(!wallCase.m_moveWallData);
-        wallCase.m_moveWallData = std::nullopt;
+        std::optional<CaseData> &wallCase = m_vectPic[index.column()][index.row()].second;
+        if(wallCase == std::nullopt || wallCase->m_type != LevelElement_e::WALL)
+        {
+            continue;
+        }
+        m_memWallShape[*wallCase->m_wallShapeNum].second.m_memMoveData.reset();
+        wallCase->m_moveWallData->clear();
+        wallCase->m_moveWallData.reset();
+        assert(!wallCase->m_moveWallData);
+        wallCase->m_moveWallData = std::nullopt;
     }
     removeData(this->index(triggercoord.second, triggercoord.first, QModelIndex()));
 }

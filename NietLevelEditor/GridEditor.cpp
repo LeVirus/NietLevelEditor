@@ -316,6 +316,21 @@ void GridEditor::memWallMove(const QModelIndex &index)
 void GridEditor::setColorCaseData(int x, int y, LevelElement_e type, const QPair<uint32_t, Direction_e> &checkpointData)
 {
     QModelIndex index = m_tableModel->index(y, x, QModelIndex());
+    std::optional<CaseData> &caseData = m_tableModel->getDataElementCase(index);
+    LevelElement_e caseType = (caseData == std::nullopt) ? LevelElement_e::TOTAL : caseData->m_type;
+    if(caseType == LevelElement_e::TRIGGER || caseType == LevelElement_e::GROUND_TRIGGER)
+    {
+        if(m_currentElementType == LevelElement_e::TRIGGER || m_currentElementType == LevelElement_e::GROUND_TRIGGER)
+        {
+            return;
+        }
+        m_tableModel->removeTrigger(*caseData, {x, y});
+    }
+    else
+    {
+        m_tableModel->removeData(index/*, dontMemRemovedWall, wallShapeNum*/);
+    }
+
     QPixmap pix(CASE_SPRITE_SIZE, CASE_SPRITE_SIZE);
     QPainter paint(&pix);
     QString text;
