@@ -457,7 +457,7 @@ void TableModel::updateTriggerPos(const QPair<int, int> &pos)
 //======================================================================
 void TableModel::removeTrigger(CaseData &triggerCase, const QPair<int, int> &triggercoord)
 {
-    if(!triggerCase.m_triggerLinkWall || triggerCase.m_triggerLinkWall->empty())
+    if(triggerCase.m_triggerLinkWall == std::nullopt || triggerCase.m_triggerLinkWall->empty())
     {
         return;
     }
@@ -503,7 +503,15 @@ void TableModel::setTableDeletionZone(const QPair<int, int> &originSelectPos, co
             else
             {
                 index = this->index(i, j, QModelIndex());
-                removeData(index);
+                std::optional<CaseData> &caseData = m_vectPic[index.column()][index.row()].second;
+                if(caseData->m_type == LevelElement_e::TRIGGER || caseData->m_type == LevelElement_e::GROUND_TRIGGER)
+                {
+                    removeTrigger(*caseData, {index.column(), index.row()});
+                }
+                else
+                {
+                    removeData(index);
+                }
             }
         }
     }
