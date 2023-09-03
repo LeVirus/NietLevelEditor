@@ -1713,9 +1713,11 @@ bool GridEditor::loadWallExistingLevelGrid()
             }
             setWallShape(false, true);
             m_wallMoveableMode = false;
+            loadRemovedWallExistingLevelGrid(*it);
             if(it->second.m_moveableData && it->second.m_moveableData->m_triggerType != TriggerType_e::WALL)
             {
                 currentCoord = {it->second.m_moveableData->m_triggerPos->first, it->second.m_moveableData->m_triggerPos->second};
+                confNewTriggerData(m_tableModel->index(currentCoord.second, currentCoord.first));
                 if(it->second.m_moveableData->m_triggerType == TriggerType_e::DISTANT_SWITCH)
                 {
                     m_currentElementType = LevelElement_e::TRIGGER;
@@ -1727,11 +1729,9 @@ bool GridEditor::loadWallExistingLevelGrid()
                     m_currentElementType = LevelElement_e::GROUND_TRIGGER;
                     setColorCaseData(currentCoord.first, currentCoord.second, m_currentElementType);
                 }
-                confNewTriggerData(m_tableModel->index(currentCoord.second, currentCoord.first));
                 m_memCurrentLinkTriggerWall.clear();
             }
         }
-        loadRemovedWallExistingLevelGrid(*it);
     }
     m_loadingExistingLevelMode = false;
     m_loadingDistantTriggerMode = false;

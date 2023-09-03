@@ -155,7 +155,7 @@ void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall, s
             if(triggerIndex.isValid())
             {
                 std::optional<CaseData> &triggerData = getDataElementCase(triggerIndex);
-                if(triggerData)
+                if(triggerData && triggerData->m_triggerLinkWall)
                 {
                     QSet<QPair<int, int>>::iterator it = triggerData->m_triggerLinkWall->find({index.column(), index.row()});
                     if(it != triggerData->m_triggerLinkWall->end())
