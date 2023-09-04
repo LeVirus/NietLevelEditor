@@ -77,6 +77,7 @@ public:
     void unselectAllRadioButtons();
     ~GridEditor();
 private:
+    bool isCaseWall(const QPair<int, int> &coord)const;
     bool loadStandardExistingLevelGrid(LevelElement_e elementType);
     void loadSecretsExistingLevelGrid();
     void loadCheckpointsExistingLevelGrid();

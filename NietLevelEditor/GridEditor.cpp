@@ -1358,8 +1358,7 @@ void GridEditor::confNewTriggerData(const QModelIndex &caseIndex)
     {
         triggerData->m_triggerLinkWall->insert(*it);
         wallIndex = m_tableModel->index(it->second, it->first);
-        assert(m_tableModel->getDataElementCase(wallIndex));
-        if(m_tableModel->getDataElementCase(wallIndex)->m_moveWallData)
+        if(m_tableModel->getDataElementCase(wallIndex) && m_tableModel->getDataElementCase(wallIndex)->m_moveWallData)
         {
             m_tableModel->getDataElementCase(wallIndex)->m_moveWallData->m_triggerPos = {caseIndex.column(), caseIndex.row()};
         }
@@ -1471,6 +1470,17 @@ GridEditor::~GridEditor()
     {
         delete m_backgroundForm;
     }
+}
+
+//======================================================================
+bool GridEditor::isCaseWall(const QPair<int, int> &coord)const
+{
+    std::optional<CaseData> caseData = m_tableModel->getDataElementCase(m_tableModel->index(coord.second, coord.first, QModelIndex()));
+    if(caseData && caseData->m_type == LevelElement_e::WALL)
+    {
+        return true;
+    }
+    return false;
 }
 
 //======================================================================
@@ -1640,12 +1650,12 @@ bool GridEditor::loadWallExistingLevelGrid()
 {
     const std::map<QString, WallDataINI> &wallsData = m_levelDataManager.getExistingLevel()->m_wallsData;
     QString currentINIID;
-    m_currentElementType = LevelElement_e::WALL;
     QPair<int, int> currentCoord;
     m_loadingExistingLevelMode = true;
     m_memCurrentLinkTriggerWall.clear();
     for(std::map<QString, WallDataINI>::const_iterator it = wallsData.begin(); it != wallsData.end(); ++it)
     {
+        m_currentElementType = LevelElement_e::WALL;
         assert(it->second.m_vectPos);
         currentINIID = *it->second.m_iniID;
         m_currentSelection = m_mapElementID[m_currentElementType].indexOf(currentINIID);
@@ -1673,6 +1683,8 @@ bool GridEditor::loadWallExistingLevelGrid()
             }
             setWallShape(false, true);
             m_wallMoveableMode = false;
+            loadRemovedWallExistingLevelGrid(*it);
+            //OOOOK
             if(it->second.m_moveableData && it->second.m_moveableData->m_triggerType != TriggerType_e::WALL)
             {
                 currentCoord = {it->second.m_moveableData->m_triggerPos->first, it->second.m_moveableData->m_triggerPos->second};
@@ -1691,7 +1703,6 @@ bool GridEditor::loadWallExistingLevelGrid()
                 m_memCurrentLinkTriggerWall.clear();
             }
         }
-        loadRemovedWallExistingLevelGrid(*it);
     }
     m_loadingExistingLevelMode = false;
     m_loadingDistantTriggerMode = false;
@@ -1708,12 +1719,14 @@ bool GridEditor::loadRemovedWallExistingLevelGrid(const std::pair<const QString,
     for(int32_t i = 0; i < currentTreat.second.m_vectRem->size(); ++i)
     {
         QPair<int, int> origin = (*currentTreat.second.m_vectRem)[i].second.m_gridCoordTopLeft,
-                bottomRight = (*currentTreat.second.m_vectRem)[i].second.m_gridCoordTopLeft;
+                bottomRight = (*currentTreat.second.m_vectRem)[i].second.m_gridCoordBottomRight;
         //point case
-        if((*currentTreat.second.m_vectRem)[i].second.m_gridCoordTopLeft ==
-                (*currentTreat.second.m_vectRem)[i].second.m_gridCoordBottomRight)
+        if(origin == bottomRight)
         {
-            m_tableModel->removeData(m_tableModel->index(origin.second, origin.first));
+            if(isCaseWall(origin))
+            {
+                m_tableModel->removeData(m_tableModel->index(origin.second, origin.first));
+            }
             continue;
         }
         switch((*currentTreat.second.m_vectRem)[i].first)
