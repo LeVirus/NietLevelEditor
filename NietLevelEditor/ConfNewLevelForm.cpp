@@ -138,8 +138,13 @@ void ConfNewLevelForm::onOkButtonClicked()
     m_gridEditorForm = new GridEditor();
     if(!m_gridEditorForm->loadMainInstallDirData(m_installDirectory))
     {
-        QMessageBox::warning(this, "Error", "Error while initializing grid.");
-        return;
+        QMessageBox::warning(this, "Error", "Error while initializing grid. Please select install directory.");
+        onBrowseIniFileClicked();
+        if(!m_directoryOK)
+        {
+            QMessageBox::warning(this, "Error", "Bad install directory.");
+            return;
+        }
     }
     if(m_mode == FormMode_e::NEW_LEVEL)
     {
