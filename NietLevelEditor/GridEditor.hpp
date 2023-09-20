@@ -76,6 +76,10 @@ public:
     bool loadExistingLevelGrid();
     void unselectAllRadioButtons();
     ~GridEditor();
+signals:
+    void keyPressed(QKeyEvent * e);
+protected:
+    void keyPressEvent(QKeyEvent * e)override;
 private:
     bool isCaseWall(const QPair<int, int> &coord)const;
     bool loadStandardExistingLevelGrid(LevelElement_e elementType);

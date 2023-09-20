@@ -161,6 +161,7 @@ void GridEditor::connectSlots()
     ui->tableView->viewport()->installEventFilter(m_eventFilter);
     QObject::connect(ui->tableView, &QAbstractItemView::pressed, this, &GridEditor::wallSelection);
     QObject::connect(m_eventFilter, &EventFilter::mouseReleased, this, &GridEditor::mouseReleaseSelection);
+    QObject::connect(this, &GridEditor::keyPressed, m_eventFilter, &EventFilter::keyPressEvent);
 }
 
 //======================================================================
@@ -1470,6 +1471,12 @@ GridEditor::~GridEditor()
     {
         delete m_backgroundForm;
     }
+}
+
+//======================================================================
+void GridEditor::keyPressEvent(QKeyEvent *e)
+{
+    emit keyPressed(e);
 }
 
 //======================================================================
