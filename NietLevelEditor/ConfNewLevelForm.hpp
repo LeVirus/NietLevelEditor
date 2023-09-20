@@ -21,6 +21,10 @@ class ConfNewLevelForm : public QDialog
 public:
     explicit ConfNewLevelForm(QWidget *parent = nullptr);
     void clearForm();
+    inline bool isDirectorySelected()const
+    {
+        return m_directoryOK;
+    }
     ~ConfNewLevelForm();
 private:
     void linkButtons();
@@ -35,6 +39,7 @@ private:
     Ui::ConfNewLevelForm *ui;
     GridEditor *m_gridEditorForm = nullptr;
     QString m_installDirectory, m_existingLevelFile;
+    bool m_directoryOK = false;
     FormMode_e m_mode;
 };
 
