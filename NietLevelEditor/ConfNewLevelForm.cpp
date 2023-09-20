@@ -97,24 +97,22 @@ void ConfNewLevelForm::onBrowseIniFileClicked()
 {
     QFileDialog dialog;
     QStringList files;
-    do
+    m_directoryOK = false;
+    m_installDirectory = dialog.getExistingDirectory();
+    QDir dir(m_installDirectory);
+    if(dir.exists())
     {
-        m_installDirectory = dialog.getExistingDirectory();
-        QDir dir(m_installDirectory);
-        if(dir.exists())
+        if(dir.cd("Ressources") && dir.exists())
         {
-            if(dir.cd("Ressources") && dir.exists())
+            files = dir.entryList(QStringList() << "*.ini", QDir::Files);
+            if(files.contains("pictureData.ini") && files.contains("standardData.ini"))
             {
-                files = dir.entryList(QStringList() << "*.ini", QDir::Files);
-                if(files.contains("pictureData.ini") && files.contains("standardData.ini"))
-                {
-                    //OK
-                    break;
-                }
+                 m_directoryOK = true;
+                //OK
+                return;
             }
         }
-        QMessageBox::information(nullptr, "Install directory selection", "Please select game install directory.");
-    }while(true);
+    }
 }
 
 //======================================================================

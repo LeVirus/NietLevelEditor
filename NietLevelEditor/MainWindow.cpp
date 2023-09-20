@@ -20,8 +20,11 @@ void MainWindow::linkButtons()
 void MainWindow::openEmptyEditorGrid()
 {
     m_confNewLevelForm.clearForm();
-    QMessageBox::information(nullptr, "Install directory selection", "Please select game install directory.");
-    m_confNewLevelForm.onBrowseIniFileClicked();
+    if(!m_confNewLevelForm.isDirectorySelected())
+    {
+        QMessageBox::information(nullptr, "Install directory selection", "Please select game install directory.");
+        m_confNewLevelForm.onBrowseIniFileClicked();
+    }
     m_confNewLevelForm.exec();
 }
 

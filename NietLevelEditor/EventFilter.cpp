@@ -14,6 +14,7 @@ bool EventFilter::keyPressEvent(QKeyEvent *e)
     {
         return true;
     }
+    return true;
 }
 
 //======================================================================
