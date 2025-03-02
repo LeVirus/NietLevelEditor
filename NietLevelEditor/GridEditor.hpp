@@ -131,6 +131,7 @@ private:
 private slots:
     void execConfCeilingBackground();
     void execConfGroundBackground();
+    void execConfMiddleBackground();
     void generateLevel();
     void setElementSelected(LevelElement_e num, int currentSelect);
     void stdElementCaseSelectedChanged(const QModelIndex &current, const QModelIndex &previous);

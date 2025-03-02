@@ -63,6 +63,7 @@ struct LevelData
     std::optional<QString> m_music;
     //first ground
     std::unique_ptr<QPair<BackgroundData, BackgroundData>> m_backgroundData;
+    std::unique_ptr<BackgroundData> m_middleBackground;
     QPair<int, int> m_playerDeparture;
     std::optional<QPair<QString, QPair<int, int>>> m_endLevelEnemyPos;
     Direction_e m_playerDirection;
@@ -145,10 +146,10 @@ public:
     std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
     std::optional<QPair<int, int>> getLoadedLevelSize()const;
     void generateLevel(const TableModel &tableModel, const QString &musicFilename,
-                       const BackgroundPairData_t &backgroundData, Direction_e playerDirection);    
+                       const BackgroundPairData_t &backgroundData, BackgroundData const* middleBackgroundData, Direction_e playerDirection);
 private:
     std::optional<QTemporaryFile *> loadEncryptedINIFile(const QString &filePath, uint32_t encryptKey);
-    bool loadBackgroundLevel(bool ground, const QSettings &ini);
+    bool loadBackgroundLevel(bool ground, const QSettings &ini, bool middle = false);
     bool loadStandardElementLevel(const QSettings &ini, StandardElement_e elementType);
     bool loadWallLevel(const QSettings &ini);
     bool loadBasicSecretsElementLevel(const QSettings &ini);
@@ -166,7 +167,7 @@ private:
     void writeWallData(const std::map<QString, WallDataINI> &wallData);
     QString getCurrentWallRemovedINI(int index, const WallDataContainer_t &wallData)const;
     QString getIniWallPos(int index, const WallDataContainer_t &wallData) const;
-    void loadBackgroundData(const BackgroundPairData_t &backgroundData);
+    void loadBackgroundData(const BackgroundPairData_t &backgroundData, const BackgroundData *middleBackground);
     void clear();
     inline bool spriteExists(const QString &sprite)const
     {

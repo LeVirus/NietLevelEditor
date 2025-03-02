@@ -33,6 +33,11 @@ public:
     inline void confCeilingOrGroundMode(bool ceiling)
     {
         m_ceilingMode = ceiling;
+        m_middleMode = false;
+    }
+    inline void confMiddleBackgroundMode()
+    {
+        m_middleMode = true;
     }
     inline const BackgroundData &getGroundData()const
     {
@@ -42,10 +47,14 @@ public:
     {
         return m_ceilingBackground;
     }
+    inline const BackgroundData &getMiddleData()const
+    {
+        return m_middleBackground;
+    }
     void modifBackgroundDisplayMode(BackgroundDisplayMode_e mode);
     void unckeckAll();
     bool backgroundSetted();
-    void setBackgroundData(const BackgroundData &background, bool ground);
+    void setBackgroundData(const BackgroundData &background, bool ground, bool middle = false);
     ~BackgroundForm();
 private slots:
     void modifDisplayModeColor(bool toggled);
@@ -60,8 +69,8 @@ private:
 private:
     Ui::BackgroundForm *ui;
     QString m_pictureDirectory;
-    bool m_ceilingMode;
+    bool m_ceilingMode, m_middleMode = false;
     BackgroundDisplayMode_e m_displayMode;
-    BackgroundData m_groundBackground, m_ceilingBackground;
-    bool m_ceilingSet = false, m_groundSet = false;
+    BackgroundData m_groundBackground, m_ceilingBackground, m_middleBackground;
+    bool m_ceilingSet = false, m_groundSet = false, m_middleSet = false;
 };

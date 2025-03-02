@@ -87,6 +87,10 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     {
         return false;
     }
+    if(!loadBackgroundLevel(false, levelFile, true))
+    {
+        return false;
+    }
     //PlayerInit
     varA = levelFile.value("PlayerInit/playerDepartureX", -1), varB = levelFile.value("PlayerInit/playerDepartureY", -1);
     if(varA.toInt() == -1 || varB.toInt() == -1)
@@ -591,7 +595,7 @@ std::optional<QPair<int, int>> LevelDataManager::getLoadedLevelSize()const
 
 //======================================================================
 void LevelDataManager::generateLevel(const TableModel &tableModel, const QString &musicFilename,
-                                     const QPair<BackgroundData const*, BackgroundData const*> &backgroundData, Direction_e playerDirection)
+                                     const QPair<BackgroundData const*, BackgroundData const*> &backgroundData, BackgroundData const* middleBackgroundData,  Direction_e playerDirection)
 {
     if(!tableModel.checkLevelData())
     {
@@ -613,7 +617,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     {
         m_ini.setValue("Level", "music", musicFilename.toStdString());
     }
-    loadBackgroundData(backgroundData);
+    loadBackgroundData(backgroundData, middleBackgroundData);
     m_ini.setValue("PlayerInit", "playerDepartureX", std::to_string(tableModel.getPlayerDepartureData()->first));
     m_ini.setValue("PlayerInit", "playerDepartureY", std::to_string(tableModel.getPlayerDepartureData()->second));
     m_ini.setValue("PlayerInit", "PlayerOrientation", std::to_string(static_cast<int>(playerDirection)));
@@ -691,14 +695,26 @@ std::string decrypt(const std::string &str, uint32_t key)
 }
 
 //======================================================================
-bool LevelDataManager::loadBackgroundLevel(bool ground, const QSettings &ini)
+bool LevelDataManager::loadBackgroundLevel(bool ground, const QSettings &ini, bool middle)
 {
-    QString id = ground ? "Ground" : "Ceiling";
+    QString id;
+    if(middle)
+    {
+        id = "Middle";
+    }
+    else
+    {
+        id = ground ? "Ground" : "Ceiling";
+    }
     if(!m_existingLevelData->m_backgroundData)
     {
         m_existingLevelData->m_backgroundData = std::make_unique<QPair<BackgroundData, BackgroundData>>();
     }
-    BackgroundData &currentBackground = ground ? m_existingLevelData->m_backgroundData->first : m_existingLevelData->m_backgroundData->second;
+    if(!m_existingLevelData->m_middleBackground)
+    {
+        m_existingLevelData->m_middleBackground = std::make_unique<BackgroundData>();
+    }
+    BackgroundData &currentBackground = middle ? *m_existingLevelData->m_middleBackground : ground ? m_existingLevelData->m_backgroundData->first : m_existingLevelData->m_backgroundData->second;
     BackgroundDisplayMode_e mode = BackgroundDisplayMode_e::NONE;
     QVariant varA;
     //SIMPLE
@@ -1051,7 +1067,7 @@ QString LevelDataManager::getCurrentWallRemovedINI(int index, const WallDataCont
 }
 
 //======================================================================
-void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &backgroundData)
+void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &backgroundData, const BackgroundData* middleBackground)
 {
     assert(m_INIFile);
     //GROUND====
@@ -1110,6 +1126,12 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
             mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
     {
         m_ini.setValue("TiledTextureCeilingBackground", "sprite", backgroundData.second->m_tiledTexture.toStdString());
+    }
+
+    mode = middleBackground->m_displayMode;
+    if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
+    {
+        m_ini.setValue("SimpleTextureMiddleBackground", "sprite", backgroundData.second->m_simpleTexture.toStdString());
     }
 }
 
