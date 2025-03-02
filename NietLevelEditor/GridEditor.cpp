@@ -460,12 +460,17 @@ void GridEditor::initSelectableWidgets()
 //======================================================================
 void GridEditor::initButtons()
 {
-    QPushButton *button = new QPushButton("Set Ceiling Background");
+    QPushButton *button = new QPushButton("Set Background");
     ui->SelectableLayout->addWidget(button);
     QObject::connect(button, &QPushButton::clicked, this, &GridEditor::execConfCeilingBackground);
-    button = new QPushButton("Set Ground Background");
+    button = new QPushButton("Set Ground");
     ui->SelectableLayout->addWidget(button);
     QObject::connect(button, &QPushButton::clicked, this, &GridEditor::execConfGroundBackground);
+
+    button = new QPushButton("Set Middle Background");
+    ui->SelectableLayout->addWidget(button);
+    QObject::connect(button, &QPushButton::clicked, this, &GridEditor::execConfMiddleBackground);
+
     button = new QPushButton("General Conf Level");
     ui->SelectableLayout->addWidget(button);
     QObject::connect(button, &QPushButton::clicked, this, &GridEditor::execConfGlobalLevel);
@@ -1336,6 +1341,14 @@ void GridEditor::execConfGroundBackground()
 }
 
 //======================================================================
+void GridEditor::execConfMiddleBackground()
+{
+    m_backgroundForm->confMiddleBackgroundMode();
+    m_backgroundForm->unckeckAll();
+    m_backgroundForm->exec();
+}
+
+//======================================================================
 void GridEditor::execConfGlobalLevel()
 {
     LevelData const *level = m_levelDataManager.getExistingLevel();
@@ -1372,8 +1385,7 @@ void GridEditor::generateLevel()
         return;
     }
     m_levelDataManager.generateLevel(*m_tableModel, m_musicWidget->currentText(),
-                                     {&m_backgroundForm->getGroundData(), &m_backgroundForm->getCeilingData()},
-                                     m_memPlayerDirection, *m_globalLevelData);
+                                     {&m_backgroundForm->getGroundData(), &m_backgroundForm->getCeilingData()}, &m_backgroundForm->getMiddleData(), m_memPlayerDirection, *m_globalLevelData);
 }
 
 //======================================================================
@@ -1689,6 +1701,14 @@ bool GridEditor::loadBackgroundGeneralExistingLevelGrid()
     m_backgroundForm->setBackgroundData(backgroundData->first, true);
     //CEILING
     m_backgroundForm->setBackgroundData(backgroundData->second, false);
+
+    BackgroundData *middle = m_levelDataManager.getExistingLevel()->m_middleBackground.get();
+    if(!middle)
+    {
+        return false;
+    }
+    //MIDDLE
+    m_backgroundForm->setBackgroundData(backgroundData->second, false, true);
     return true;
 }
 

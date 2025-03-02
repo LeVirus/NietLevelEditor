@@ -132,6 +132,7 @@ private:
 private slots:
     void execConfCeilingBackground();
     void execConfGroundBackground();
+    void execConfMiddleBackground();
     void execConfGlobalLevel();
     void generateLevel();
     void setElementSelected(LevelElement_e num, int currentSelect);
