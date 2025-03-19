@@ -84,16 +84,16 @@ void BackgroundForm::confirmForm()
         QMessageBox::warning(nullptr, "Error", "No background mode are selected.");
         return;
     }
-    BackgroundData *currentBackground;
-    if(m_middleMode)
-    {
-        currentBackground = &m_middleBackground;
-    }
-    else
-    {
-        currentBackground = (m_ceilingMode) ? &m_ceilingBackground : &m_groundBackground;
-    }
-    currentBackground->m_displayMode = m_displayMode;
+    BackgroundData &currentBackground = m_middleMode ? m_middleBackground : m_ceilingMode ? m_ceilingBackground : m_groundBackground;
+    // if(m_middleMode)
+    // {
+    //     currentBackground = &m_middleBackground;
+    // }
+    // else
+    // {
+    //     currentBackground = (m_ceilingMode) ? &m_ceilingBackground : &m_groundBackground;
+    // }
+    currentBackground.m_displayMode = m_displayMode;
     if(ui->colorContainer->isEnabled())
     {
         for(int i = 0; i < ui->colorContainer->children().size(); ++i)
@@ -110,11 +110,11 @@ void BackgroundForm::confirmForm()
     }
     if(ui->spriteSimpleTextureComboBox->isEnabled())
     {
-        currentBackground->m_simpleTexture = ui->spriteSimpleTextureComboBox->currentText();
+        currentBackground.m_simpleTexture = ui->spriteSimpleTextureComboBox->currentText();
     }
     if(ui->spriteTiledTextureComboBox->isEnabled())
     {
-        currentBackground->m_tiledTexture = ui->spriteTiledTextureComboBox->currentText();
+        currentBackground.m_tiledTexture = ui->spriteTiledTextureComboBox->currentText();
     }
     if(m_middleMode)
     {
@@ -134,16 +134,8 @@ void BackgroundForm::confirmForm()
 //======================================================================
 void BackgroundForm::setBackgroundData(const BackgroundData &background, bool ground, bool middle)
 {
-    BackgroundData *currentBackground;
-    if(m_middleMode)
-    {
-        currentBackground = &m_middleBackground;
-    }
-    else
-    {
-        currentBackground = (m_ceilingMode) ? &m_ceilingBackground : &m_groundBackground;
-    }
-    *currentBackground = background;
+    BackgroundData &currentBackground = middle ? m_middleBackground : ground ? m_groundBackground : m_ceilingBackground;
+    currentBackground = background;
     if(middle)
     {
         m_middleSet = true;

@@ -1170,10 +1170,11 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
         m_ini.setValue("TiledTextureCeilingBackground", "sprite", backgroundData.second->m_tiledTexture.toStdString());
     }
 
+    //MIDDLE========
     mode = middleBackground->m_displayMode;
     if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
     {
-        m_ini.setValue("SimpleTextureMiddleBackground", "sprite", backgroundData.second->m_simpleTexture.toStdString());
+        m_ini.setValue("SimpleTextureMiddleBackground", "sprite", middleBackground->m_simpleTexture.toStdString());
     }
 }
 
