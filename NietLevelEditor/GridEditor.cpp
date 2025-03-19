@@ -1708,7 +1708,7 @@ bool GridEditor::loadBackgroundGeneralExistingLevelGrid()
         return false;
     }
     //MIDDLE
-    m_backgroundForm->setBackgroundData(backgroundData->second, false, true);
+    m_backgroundForm->setBackgroundData(*middle, false, true);
     return true;
 }
 
