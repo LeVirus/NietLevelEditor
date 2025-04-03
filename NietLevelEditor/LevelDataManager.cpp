@@ -154,10 +154,10 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
         std::cout << "Error loading level : logs" << std::endl;
         return false;
     }
-    //Barrel
-    if(!loadStandardElementLevel(levelFile, StandardElement_e::BARREL))
+    //Trap
+    if(!loadStandardElementLevel(levelFile, StandardElement_e::TRAP))
     {
-        std::cout << "Error loading level : barrels" << std::endl;
+        std::cout << "Error loading level : traps" << std::endl;
         return false;
     }
     //Enemy
@@ -185,7 +185,7 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
         return false;
     }
     //Ceiling
-    if(!loadStandardElementLevel(levelFile, StandardElement_e::STATIC_CEILING_ELEMENT))
+    if(!loadStandardElementLevel(levelFile, StandardElement_e::VEHICULE))
     {
         std::cout << "Error loading level : static ceiling elements" << std::endl;
         return false;
@@ -206,9 +206,9 @@ bool LevelDataManager::loadStandardElementLevel(const QSettings &ini, StandardEl
     QString str;
     switch(elementType)
     {
-    case StandardElement_e::BARREL:
-        str = "Barrel";
-        currentMap = &m_existingLevelData->m_barrelsData;
+    case StandardElement_e::TRAP:
+        str = "Trap";
+        currentMap = &m_existingLevelData->m_trapsData;
         break;
     case StandardElement_e::DOOR:
         str = "Door";
@@ -226,8 +226,8 @@ bool LevelDataManager::loadStandardElementLevel(const QSettings &ini, StandardEl
         str = "Object";
         currentMap = &m_existingLevelData->m_objectsData;
         break;
-    case StandardElement_e::STATIC_CEILING_ELEMENT:
-        str = "Ceiling";
+    case StandardElement_e::VEHICULE:
+        str = "Vehicule";
         currentMap = &m_existingLevelData->m_ceilingElementsData;
         break;
     case StandardElement_e::STATIC_GROUND_ELEMENT:
@@ -675,7 +675,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     generateStandardIniLevel(tableModel.getObjectsData());
     generateStandardIniLevel(tableModel.getStaticCeilingData());
     generateStandardIniLevel(tableModel.getStaticGroundData());
-    generateStandardIniLevel(tableModel.getBarrelsData());
+    generateStandardIniLevel(tableModel.getTrapsData());
     generateCheckpointElementsIniLevel(tableModel.getCheckpointsData());
     generateLogsElementsIniLevel(tableModel.getLogData());
     generateSecretsElementsIniLevel(tableModel.getSecretsData());
@@ -1259,9 +1259,9 @@ bool LevelDataManager::loadStandardDataINI()
         {
             ok = loadLogData(keysList.at(i));
         }
-        else if(keysList.at(i) == "Barrel")
+        else if(keysList.at(i) == "Trap")
         {
-            ok = loadBarrelData(keysList.at(i));
+            ok = loadTrapData(keysList.at(i));
         }
         else if(keysList.at(i) == "Exit")
         {
@@ -1400,7 +1400,7 @@ bool LevelDataManager::loadLogData(const QString &key)
 }
 
 //======================================================================
-bool LevelDataManager::loadBarrelData(const QString &key)
+bool LevelDataManager::loadTrapData(const QString &key)
 {
     QString sprites = m_INIFile->value(key + "/StaticSprite", "").toString();
     if(sprites.isEmpty())
@@ -1412,7 +1412,7 @@ bool LevelDataManager::loadBarrelData(const QString &key)
     {
         return false;
     }
-    m_barrelElement.insert({key, strList.at(0)});
+    m_trapElement.insert({key, strList.at(0)});
     return true;
 }
 

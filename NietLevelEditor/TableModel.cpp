@@ -227,7 +227,7 @@ void TableModel::clearModel()
     m_vectPic.clear();
     m_departurePlayer = {};
     m_vectPreview.clear();
-    m_memBarrel.clear();
+    m_memTrap.clear();
     m_memDoor.clear();
     m_memEnemy.clear();
     m_memExit.clear();
@@ -289,9 +289,9 @@ int TableModel::memWallShape(WallDrawShape_e wallShape, const QPair<int, int> &t
 void TableModel::memStdElement(const QPair<int, int> &pos, LevelElement_e elementType,
                                const QString &iniId)
 {
-    if(elementType == LevelElement_e::BARREL)
+    if(elementType == LevelElement_e::TRAP)
     {
-        m_memBarrel.insert({iniId, pos});
+        m_memTrap.insert({iniId, pos});
     }
     else if(elementType == LevelElement_e::DOOR)
     {
@@ -310,7 +310,7 @@ void TableModel::memStdElement(const QPair<int, int> &pos, LevelElement_e elemen
     {
         m_memObject.insert({iniId, pos});
     }
-    else if(elementType == LevelElement_e::STATIC_CEILING)
+    else if(elementType == LevelElement_e::VEHICULE)
     {
         m_memStaticCeiling.insert({iniId, pos});
     }
@@ -324,13 +324,13 @@ void TableModel::memStdElement(const QPair<int, int> &pos, LevelElement_e elemen
 void TableModel::rmStdElement(const QPair<int, int> &pos, LevelElement_e elementType)
 {
     std::multimap<QString, QPair<int, int>>::iterator it;
-    if(elementType == LevelElement_e::BARREL)
+    if(elementType == LevelElement_e::TRAP)
     {
-        for(it = m_memBarrel.begin(); it != m_memBarrel.end(); ++it)
+        for(it = m_memTrap.begin(); it != m_memTrap.end(); ++it)
         {
             if(it->second == pos)
             {
-                m_memBarrel.erase(it);
+                m_memTrap.erase(it);
                 return;
             }
         }
@@ -379,7 +379,7 @@ void TableModel::rmStdElement(const QPair<int, int> &pos, LevelElement_e element
             }
         }
     }
-    else if(elementType == LevelElement_e::STATIC_CEILING)
+    else if(elementType == LevelElement_e::VEHICULE)
     {
         for(it = m_memStaticCeiling.begin(); it != m_memStaticCeiling.end(); ++it)
         {

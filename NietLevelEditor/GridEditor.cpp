@@ -135,10 +135,10 @@ bool GridEditor::loadExistingLevelGrid()
     loadSecretsExistingLevelGrid();
     loadCheckpointsExistingLevelGrid();
     loadLogsExistingLevelGrid();
-    loadStandardExistingLevelGrid(LevelElement_e::BARREL);
+    loadStandardExistingLevelGrid(LevelElement_e::TRAP);
     loadStandardExistingLevelGrid(LevelElement_e::DOOR);
     loadStandardExistingLevelGrid(LevelElement_e::ENEMY);
-    loadStandardExistingLevelGrid(LevelElement_e::STATIC_CEILING);
+    loadStandardExistingLevelGrid(LevelElement_e::VEHICULE);
     loadStandardExistingLevelGrid(LevelElement_e::STATIC_GROUND);
     loadStandardExistingLevelGrid(LevelElement_e::EXIT);
     loadStandardExistingLevelGrid(LevelElement_e::OBJECT);
@@ -522,8 +522,8 @@ void GridEditor::loadIconPictures(const QString &installDir)
     loadStandardPictures(installDir, LevelElement_e::OBJECT);
     loadStandardPictures(installDir, LevelElement_e::TRIGGER);
     loadStandardPictures(installDir, LevelElement_e::STATIC_GROUND);
-    loadStandardPictures(installDir, LevelElement_e::STATIC_CEILING);
-    loadStandardPictures(installDir, LevelElement_e::BARREL);
+    loadStandardPictures(installDir, LevelElement_e::VEHICULE);
+    loadStandardPictures(installDir, LevelElement_e::TRAP);
     loadStandardPictures(installDir, LevelElement_e::EXIT);
 }
 
@@ -664,14 +664,14 @@ void GridEditor::loadStandardPictures(const QString &installDir, LevelElement_e 
     case LevelElement_e::OBJECT:
         currentMap = &m_levelDataManager.getObjectData();
         break;
-    case LevelElement_e::STATIC_CEILING:
+    case LevelElement_e::VEHICULE:
         currentMap = &m_levelDataManager.getStaticCeilingData();
         break;
     case LevelElement_e::STATIC_GROUND:
         currentMap = &m_levelDataManager.getStaticGroundData();
         break;
-    case LevelElement_e::BARREL:
-        currentMap = &m_levelDataManager.getBarrelData();
+    case LevelElement_e::TRAP:
+        currentMap = &m_levelDataManager.getTrapData();
         break;
     case LevelElement_e::LOG:
         currentMap = &m_levelDataManager.getLogData();
@@ -1550,9 +1550,9 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
     std::multimap<QString, QPair<int, int>> const *currentContainer = nullptr;
     switch(m_currentElementType)
     {
-    case LevelElement_e::BARREL:
+    case LevelElement_e::TRAP:
     {
-        currentContainer = &existingLevel->m_barrelsData;
+        currentContainer = &existingLevel->m_trapsData;
         break;
     }
     case LevelElement_e::DOOR:
@@ -1575,7 +1575,7 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
         currentContainer = &existingLevel->m_objectsData;
         break;
     }
-    case LevelElement_e::STATIC_CEILING:
+    case LevelElement_e::VEHICULE:
     {
         currentContainer = &existingLevel->m_ceilingElementsData;
         break;
@@ -1827,8 +1827,8 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
 {
     switch(num)
     {
-    case LevelElement_e::BARREL:
-        return "Barrels";
+    case LevelElement_e::TRAP:
+        return "Traps";
     case LevelElement_e::DOOR:
         return "Doors";
     case LevelElement_e::ENEMY:
@@ -1839,8 +1839,8 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
         return "Objects";
     case LevelElement_e::LOG:
         return "MessageLog";
-    case LevelElement_e::STATIC_CEILING:
-        return "Static ceiling objects";
+    case LevelElement_e::VEHICULE:
+        return "Vehicules";
     case LevelElement_e::STATIC_GROUND:
         return "Static ground objects";
     case LevelElement_e::TELEPORT:
