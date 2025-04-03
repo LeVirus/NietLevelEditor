@@ -117,10 +117,10 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
         return false;
     }
     //Boss Zone
-    if(!loadBasicBossZoneElementLevel(levelFile))
+    varA = levelFile.value("BossZone/GamePositionX", -1), varB = levelFile.value("BossZone/GamePositionY", -1);
+    if(varA.toInt() != -1 && varB.toInt() != -1)
     {
-        std::cout << "Error loading level : Boss Zone" << std::endl;
-        return false;
+        m_existingLevelData->m_bossZone = {varA.toInt(), varB.toInt()};
     }
     //Wall
     if(!loadWallLevel(levelFile))
@@ -327,35 +327,6 @@ bool LevelDataManager::loadWallLevel(const QSettings &ini)
                 }
                 m_existingLevelData->m_wallsData[keys[i]].m_moveableData->m_triggerPos = {listDir[0].toInt(), listDir[1].toInt()};
             }
-        }
-    }
-    return true;
-}
-
-//======================================================================
-bool LevelDataManager::loadBasicBossZoneElementLevel(const QSettings &ini)
-{
-    QStringList keys = ini.childGroups(), posList;
-    QString pos;
-    for(int i = 0; i < keys.size(); ++i)
-    {
-        if(keys[i].contains("BossZone"))
-        {
-            pos = ini.value(keys[i] + "/GamePosition", "").toString();
-            if(pos.isEmpty())
-            {
-                return true;
-            }
-            posList = pos.split(' ');
-            if(posList.size() % 2 != 0)
-            {
-                return false;
-            }
-            for(int j = 0; j < posList.size(); j += 2)
-            {
-                m_existingLevelData->m_bossZone.push_back({posList[j].toInt(), posList[j + 1].toInt()});
-            }
-            break;
         }
     }
     return true;
@@ -949,18 +920,14 @@ void LevelDataManager::generateLogsElementsIniLevel(const QVector<LogData> &data
 }
 
 //======================================================================
-void LevelDataManager::generateBossZoneElementsIniLevel(const QVector<QPair<int, int>> &datas)
+void LevelDataManager::generateBossZoneElementsIniLevel(const std::optional<QPair<int, int>> &data)
 {
-    if(datas.empty())
+    if(!data)
     {
         return;
     }
-    std::string pos;
-    for(int i = 0; i < datas.size(); ++i)
-    {
-        pos += std::to_string(datas[i].first) + " " + std::to_string(datas[i].second) + " ";
-    }
-    m_ini.setValue("BossZone", "GamePosition", pos);
+    m_ini.setValue("BossZone", "GamePositionX", std::to_string(data->first));
+    m_ini.setValue("BossZone", "GamePositionY", std::to_string(data->second));
 }
 
 //======================================================================

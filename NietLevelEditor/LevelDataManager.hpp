@@ -67,7 +67,7 @@ struct LevelData
     QPair<int, int> m_playerDeparture;
     std::optional<QPair<QString, QPair<int, int>>> m_endLevelEnemyPos;
     Direction_e m_playerDirection;
-    QVector<QPair<int, int>> m_bossZone;
+    std::optional<QPair<int, int>> m_bossZone;
     QVector<QPair<QPair<int, int>, Direction_e>> m_checkpoints;
     std::map<QString, WallDataINI> m_wallsData;
     std::multimap<QString, TeleportData> m_teleportData;
@@ -152,7 +152,6 @@ private:
     bool loadBackgroundLevel(bool ground, const QSettings &ini, bool middle = false);
     bool loadStandardElementLevel(const QSettings &ini, StandardElement_e elementType);
     bool loadWallLevel(const QSettings &ini);
-    bool loadBasicBossZoneElementLevel(const QSettings &ini);
     bool loadBasicCheckpointsElementLevel(const QSettings &ini);
     bool loadTeleportLevel(const QSettings &ini);
     bool loadLogElementLevel(std::string_view levelPath);
@@ -163,7 +162,7 @@ private:
     void generateStandardIniLevel(const std::multimap<QString, QPair<int, int>> &datas, const std::optional<QPair<int, int>> &endLevelEnemyPos = {});
     void generateCheckpointElementsIniLevel(const QVector<QPair<QPair<int, int>, Direction_e>> &datas);
     void generateLogsElementsIniLevel(const QVector<LogData> &datas);
-    void generateBossZoneElementsIniLevel(const QVector<QPair<int, int>> &datas);
+    void generateBossZoneElementsIniLevel(const std::optional<QPair<int, int> > &data);
     void writeWallData(const std::map<QString, WallDataINI> &wallData);
     QString getCurrentWallRemovedINI(int index, const WallDataContainer_t &wallData)const;
     QString getIniWallPos(int index, const WallDataContainer_t &wallData) const;

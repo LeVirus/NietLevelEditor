@@ -77,6 +77,14 @@ bool TableModel::setIdData(const QModelIndex &index, const CaseData &value, bool
         }
         m_departurePlayer = {index.column(), index.row()};
     }
+    else if(value.m_type == LevelElement_e::BOSS_ZONE)
+    {
+        if(m_bossZone)
+        {
+            removeData(this->index(m_bossZone->second, m_bossZone->first, QModelIndex()));
+        }
+        m_bossZone = {index.column(), index.row()};
+    }
     else if(value.m_type == LevelElement_e::EXIT)
     {
         if(m_exitPos)
@@ -199,15 +207,7 @@ void TableModel::removeCheckpoint(const QPair<int, int> &pos)
 //======================================================================
 void TableModel::removeBossZone(const QPair<int, int> &pos)
 {
-    for(int32_t i = 0; i < m_vectBossZone.size(); ++i)
-    {
-        if(m_vectBossZone[i] == pos)
-        {
-            m_vectBossZone.erase(m_vectBossZone.begin() + i);
-            return;
-        }
-    }
-    assert(false);
+    m_bossZone = std::nullopt;
 }
 
 //======================================================================
@@ -237,7 +237,7 @@ void TableModel::clearModel()
     m_memTeleport.clear();
     m_memLog.clear();
     m_vectCheckpoints.clear();
-    m_vectBossZone.clear();
+    m_bossZone.reset();
 }
 
 //======================================================================
