@@ -228,7 +228,7 @@ bool LevelDataManager::loadStandardElementLevel(const QSettings &ini, StandardEl
         break;
     case StandardElement_e::VEHICULE:
         str = "Vehicule";
-        currentMap = &m_existingLevelData->m_ceilingElementsData;
+        currentMap = &m_existingLevelData->m_vehiculesData;
         break;
     case StandardElement_e::STATIC_GROUND_ELEMENT:
         str = "Ground";
@@ -673,7 +673,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     generateStandardIniLevel(tableModel.getDoorsData());
     generateStandardIniLevel(tableModel.getEnemiesData(), tableModel.getEndLevelEnemyPos());
     generateStandardIniLevel(tableModel.getObjectsData());
-    generateStandardIniLevel(tableModel.getStaticCeilingData());
+    generateStandardIniLevel(tableModel.getVehiculeData());
     generateStandardIniLevel(tableModel.getStaticGroundData());
     generateStandardIniLevel(tableModel.getTrapsData());
     generateCheckpointElementsIniLevel(tableModel.getCheckpointsData());
@@ -1247,9 +1247,9 @@ bool LevelDataManager::loadStandardDataINI()
         {
             ok = loadStaticElementGroundData(keysList.at(i));
         }
-        else if(keysList.at(i).contains("Ceiling"))
+        else if(keysList.at(i).contains("Vehicule"))
         {
-            ok = loadStaticElementCeilingData(keysList.at(i));
+            ok = loadVehiculesData(keysList.at(i));
         }
         else if(keysList.at(i).contains("Teleport"))
         {
@@ -1364,14 +1364,14 @@ bool LevelDataManager::loadStaticElementGroundData(const QString &key)
 }
 
 //======================================================================
-bool LevelDataManager::loadStaticElementCeilingData(const QString &key)
+bool LevelDataManager::loadVehiculesData(const QString &key)
 {
     QString sprite = m_INIFile->value(key + "/Sprite", "").toString();
     if(sprite.isEmpty())
     {
         return false;
     }
-    m_staticCeilingElement.insert({key, sprite});
+    m_vehiculesElement.insert({key, sprite});
     return true;
 }
 

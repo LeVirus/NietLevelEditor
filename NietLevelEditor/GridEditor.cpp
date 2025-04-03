@@ -665,7 +665,7 @@ void GridEditor::loadStandardPictures(const QString &installDir, LevelElement_e 
         currentMap = &m_levelDataManager.getObjectData();
         break;
     case LevelElement_e::VEHICULE:
-        currentMap = &m_levelDataManager.getStaticCeilingData();
+        currentMap = &m_levelDataManager.getVehiculesData();
         break;
     case LevelElement_e::STATIC_GROUND:
         currentMap = &m_levelDataManager.getStaticGroundData();
@@ -1577,7 +1577,7 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
     }
     case LevelElement_e::VEHICULE:
     {
-        currentContainer = &existingLevel->m_ceilingElementsData;
+        currentContainer = &existingLevel->m_vehiculesData;
         break;
     }
     case LevelElement_e::STATIC_GROUND:

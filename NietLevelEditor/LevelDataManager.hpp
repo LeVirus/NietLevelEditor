@@ -74,7 +74,7 @@ struct LevelData
     std::map<QString, WallDataINI> m_wallsData;
     std::multimap<QString, TeleportData> m_teleportData;
     std::map<QString, LogData> m_logsData;
-    std::multimap<QString, QPair<int, int>> m_exitData, m_trapsData, m_groundElementsData, m_ceilingElementsData,
+    std::multimap<QString, QPair<int, int>> m_exitData, m_trapsData, m_groundElementsData, m_vehiculesData,
     m_enemiesData, m_objectsData, m_doorsData;
 };
 
@@ -113,9 +113,9 @@ public:
     {
         return m_cardElement;
     }
-    inline const std::map<QString, QString> &getStaticCeilingData()const
+    inline const std::map<QString, QString> &getVehiculesData()const
     {
-        return m_staticCeilingElement;
+        return m_vehiculesElement;
     }
     inline const std::map<QString, QString> &getStaticGroundData()const
     {
@@ -184,7 +184,7 @@ private:
     bool loadEnemyData(const QString &key);
     bool loadObjectData(const QString &key);
     bool loadStaticElementGroundData(const QString &key);
-    bool loadStaticElementCeilingData(const QString &key);
+    bool loadVehiculesData(const QString &key);
     bool loadTeleportData(const QString &key);
     bool loadLogData(const QString &key);
     bool loadTrapData(const QString &key);
@@ -197,7 +197,7 @@ private:
     std::map<QString, ArrayFloat_t> m_memPictureElement;
     std::map<QString, QStringList> m_wallElement;
     std::map<QString, DoorData> m_doorElement;
-    std::map<QString, QString> m_triggerElement, m_teleportElement, m_enemyElement, m_objectElement, m_staticCeilingElement,
+    std::map<QString, QString> m_triggerElement, m_teleportElement, m_enemyElement, m_objectElement, m_vehiculesElement,
     m_staticGroundElement, m_trapElement, m_exitElement, m_logElement, m_cardElement;
     std::unique_ptr<LevelData> m_existingLevelData;
     inipp::Ini<char> m_ini;
