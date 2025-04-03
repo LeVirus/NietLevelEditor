@@ -360,7 +360,7 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type, const QPair
         text = "BS";
         pix.fill(Qt::darkRed);
         m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
-        m_tableModel->addBossZone({x, y});
+        m_tableModel->setBossZone({x, y});
     }
     if(type == LevelElement_e::PLAYER_DEPARTURE || !m_tableModel->getDataElementCase(index))
     {
@@ -1632,11 +1632,12 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
 //======================================================================
 void GridEditor::loadBossZoneExistingLevelGrid()
 {
-    for(int i = 0; i < m_levelDataManager.getExistingLevel()->m_bossZone.size(); ++i)
+    if(!m_levelDataManager.getExistingLevel()->m_bossZone)
     {
-        setColorCaseData(m_levelDataManager.getExistingLevel()->m_bossZone[i].first,
-                         m_levelDataManager.getExistingLevel()->m_bossZone[i].second, LevelElement_e::BOSS_ZONE);
+        return;
     }
+    setColorCaseData(m_levelDataManager.getExistingLevel()->m_bossZone->first,
+                     m_levelDataManager.getExistingLevel()->m_bossZone->second, LevelElement_e::BOSS_ZONE);
 }
 
 //======================================================================

@@ -170,9 +170,9 @@ public:
     {
         return m_memLog;
     }
-    inline const QVector<QPair<int, int>> &getBossZoneData()const
+    inline const std::optional<QPair<int, int>> &getBossZoneData()const
     {
-        return m_vectBossZone;
+        return m_bossZone;
     }
     inline Direction_e getPlayerDirectionDeparture()const
     {
@@ -185,9 +185,9 @@ public:
     std::optional<LogData> getLogDataPos(const QPair<int, int> &pos)const;
     void addCheckpoint(const QPair<int, int> &pos, const QPair<uint32_t, Direction_e> &checkpointData);
     void addLog(const QPair<int, int> &pos, const QString &message, const QString &displayID);
-    inline void addBossZone(const QPair<int, int> &pos)
+    inline void setBossZone(const QPair<int, int> &pos)
     {
-        m_vectBossZone.push_back(pos);
+        m_bossZone = pos;
     }
     inline uint32_t getNumberOfCheckpoints()
     {
@@ -211,7 +211,6 @@ private:
     QVector<QBitArray> m_vectPreview;
     std::optional<QPair<int, int>> m_departurePlayer, m_exitPos, m_levelEndEnemy, m_bossZone;
     QVector<QPair<QPair<int, int>, Direction_e>> m_vectCheckpoints;
-    QVector<QPair<int, int>> m_vectBossZone;
     Direction_e m_playerDirectionDeparture = Direction_e::NORTH;
 signals:
     void editCompleted(const QString &str);
