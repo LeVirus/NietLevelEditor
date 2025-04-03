@@ -170,9 +170,9 @@ public:
     {
         return m_memLog;
     }
-    inline const QVector<QPair<int, int>> &getSecretsData()const
+    inline const QVector<QPair<int, int>> &getBossZoneData()const
     {
-        return m_vectSecrets;
+        return m_vectBossZone;
     }
     inline Direction_e getPlayerDirectionDeparture()const
     {
@@ -185,9 +185,9 @@ public:
     std::optional<LogData> getLogDataPos(const QPair<int, int> &pos)const;
     void addCheckpoint(const QPair<int, int> &pos, const QPair<uint32_t, Direction_e> &checkpointData);
     void addLog(const QPair<int, int> &pos, const QString &message, const QString &displayID);
-    inline void addSecret(const QPair<int, int> &pos)
+    inline void addBossZone(const QPair<int, int> &pos)
     {
-        m_vectSecrets.push_back(pos);
+        m_vectBossZone.push_back(pos);
     }
     inline uint32_t getNumberOfCheckpoints()
     {
@@ -199,7 +199,7 @@ public:
 private:
     void rmStdElement(const QPair<int, int> &pos, LevelElement_e elementType);
     void removeCheckpoint(const QPair<int, int> &pos);
-    void removeSecret(const QPair<int, int> &pos);
+    void removeBossZone(const QPair<int, int> &pos);
 private:
     WallDataContainer_t m_memWallShape;
     std::multimap<QString, QPair<int, int>> m_memEnemy, m_memTrap, m_memDoor, m_memExit, m_memObject, m_memVehicules,
@@ -209,9 +209,9 @@ private:
     QPair<int, int> m_tableSize;
     QVector<QVector<QPair<QPixmap, std::optional<CaseData>>>> m_vectPic;
     QVector<QBitArray> m_vectPreview;
-    std::optional<QPair<int, int>> m_departurePlayer, m_exitPos, m_levelEndEnemy;
+    std::optional<QPair<int, int>> m_departurePlayer, m_exitPos, m_levelEndEnemy, m_bossZone;
     QVector<QPair<QPair<int, int>, Direction_e>> m_vectCheckpoints;
-    QVector<QPair<int, int>> m_vectSecrets;
+    QVector<QPair<int, int>> m_vectBossZone;
     Direction_e m_playerDirectionDeparture = Direction_e::NORTH;
 signals:
     void editCompleted(const QString &str);

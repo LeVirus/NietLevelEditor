@@ -38,7 +38,7 @@ enum class LevelElement_e
     EXIT,
     PLAYER_DEPARTURE,
     CHECKPOINT,
-    SECRET,
+    BOSS_ZONE,
     SELECTION,
     DELETE,
     TOTAL
@@ -84,7 +84,7 @@ protected:
 private:
     bool isCaseWall(const QPair<int, int> &coord)const;
     bool loadStandardExistingLevelGrid(LevelElement_e elementType);
-    void loadSecretsExistingLevelGrid();
+    void loadBossZoneExistingLevelGrid();
     void loadCheckpointsExistingLevelGrid();
     void loadLogsExistingLevelGrid();
     bool loadTeleportExistingLevelGrid();
