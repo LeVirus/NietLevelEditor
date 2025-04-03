@@ -27,10 +27,10 @@ enum class LevelElement_e;
 enum class StandardElement_e
 {
     DOOR,
-    STATIC_CEILING_ELEMENT,
+    VEHICULE,
     STATIC_GROUND_ELEMENT,
     EXIT,
-    BARREL,
+    TRAP,
     ENEMY,
     OBJECT
 };
@@ -72,7 +72,7 @@ struct LevelData
     std::map<QString, WallDataINI> m_wallsData;
     std::multimap<QString, TeleportData> m_teleportData;
     std::map<QString, LogData> m_logsData;
-    std::multimap<QString, QPair<int, int>> m_exitData, m_barrelsData, m_groundElementsData, m_ceilingElementsData,
+    std::multimap<QString, QPair<int, int>> m_exitData, m_trapsData, m_groundElementsData, m_vehiculesData,
     m_enemiesData, m_objectsData, m_doorsData;
 };
 
@@ -111,17 +111,17 @@ public:
     {
         return m_cardElement;
     }
-    inline const std::map<QString, QString> &getStaticCeilingData()const
+    inline const std::map<QString, QString> &getVehiculesData()const
     {
-        return m_staticCeilingElement;
+        return m_vehiculesElement;
     }
     inline const std::map<QString, QString> &getStaticGroundData()const
     {
         return m_staticGroundElement;
     }
-    inline const std::map<QString, QString> &getBarrelData()const
+    inline const std::map<QString, QString> &getTrapData()const
     {
-        return m_barrelElement;
+        return m_trapElement;
     }
     inline const std::map<QString, QString> &getExitData()const
     {
@@ -182,7 +182,7 @@ private:
     bool loadEnemyData(const QString &key);
     bool loadObjectData(const QString &key);
     bool loadStaticElementGroundData(const QString &key);
-    bool loadStaticElementCeilingData(const QString &key);
+    bool loadVehiculesData(const QString &key);
     bool loadTeleportData(const QString &key);
     bool loadLogData(const QString &key);
     bool loadBarrelData(const QString &key);
@@ -195,8 +195,10 @@ private:
     std::map<QString, ArrayFloat_t> m_memPictureElement;
     std::map<QString, QStringList> m_wallElement;
     std::map<QString, DoorData> m_doorElement;
+==== BASE ====
     std::map<QString, QString> m_triggerElement, m_teleportElement, m_enemyElement, m_objectElement, m_staticCeilingElement,
-    m_staticGroundElement, m_barrelElement, m_exitElement, m_logElement, m_cardElement;
+    m_staticGroundElement, m_trapElement, m_exitElement, m_logElement, m_cardElement;
+==== BASE ====
     std::unique_ptr<LevelData> m_existingLevelData;
     inipp::Ini<char> m_ini;
     const uint32_t ENCRYPTION_KEY_CONF_FILE = 42, ENCRYPTION_KEY_STANDARD_LEVEL = 17,

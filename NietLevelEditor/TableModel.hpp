@@ -138,9 +138,9 @@ public:
     {
         return m_memEnemy;
     }
-    inline const std::multimap<QString, QPair<int, int>> &getBarrelsData()const
+    inline const std::multimap<QString, QPair<int, int>> &getTrapsData()const
     {
-        return m_memBarrel;
+        return m_memTrap;
     }
     inline const std::multimap<QString, QPair<int, int>> &getDoorsData()const
     {
@@ -154,9 +154,9 @@ public:
     {
         return m_memObject;
     }
-    inline const std::multimap<QString, QPair<int, int>> &getStaticCeilingData()const
+    inline const std::multimap<QString, QPair<int, int>> &getVehiculeData()const
     {
-        return m_memStaticCeiling;
+        return m_memVehicules;
     }
     inline const std::multimap<QString, QPair<int, int>> &getStaticGroundData()const
     {
@@ -202,7 +202,7 @@ private:
     void removeSecret(const QPair<int, int> &pos);
 private:
     WallDataContainer_t m_memWallShape;
-    std::multimap<QString, QPair<int, int>> m_memEnemy, m_memBarrel, m_memDoor, m_memExit, m_memObject, m_memStaticCeiling,
+    std::multimap<QString, QPair<int, int>> m_memEnemy, m_memTrap, m_memDoor, m_memExit, m_memObject, m_memVehicules,
     m_memStaticGround;
     QVector<LogData> m_memLog;
     std::multimap<QString, TeleportData> m_memTeleport;

@@ -70,6 +70,7 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     QVariant varA = levelFile.value("Level/weight", -1), varB = levelFile.value("Level/height", -1);
     if(varA.toInt() == -1 || varB.toInt() == -1)
     {
+        std::cout << "Error loading level : weight height." << std::endl;
         return false;
     }
     m_existingLevelData->m_levelSize = {varA.toInt(), varB.toInt()};
@@ -81,10 +82,12 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     //Background
     if(!loadBackgroundLevel(true, levelFile))
     {
+        std::cout << "Error loading level : background ground" << std::endl;
         return false;
     }
     if(!loadBackgroundLevel(false, levelFile))
     {
+        std::cout << "Error loading level : background ceiling" << std::endl;
         return false;
     }
     if(!loadBackgroundLevel(false, levelFile, true))
@@ -95,6 +98,7 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     varA = levelFile.value("PlayerInit/playerDepartureX", -1), varB = levelFile.value("PlayerInit/playerDepartureY", -1);
     if(varA.toInt() == -1 || varB.toInt() == -1)
     {
+        std::cout << "Error loading level : playerDepartureY" << std::endl;
         return false;
     }
     m_existingLevelData->m_playerDeparture = {varA.toInt(), varB.toInt()};
@@ -102,67 +106,80 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     int playerOrientation = varA.toInt();
     if(playerOrientation < 0 || playerOrientation > 3)
     {
+        std::cout << "Error loading level : playerOrientation" << std::endl;
         return false;
     }
     m_existingLevelData->m_playerDirection = static_cast<Direction_e>(playerOrientation);
     //Checkpoint
     if(!loadBasicCheckpointsElementLevel(levelFile))
     {
+        std::cout << "Error loading level : checkpoints" << std::endl;
         return false;
     }
     //Secret
     if(!loadBasicSecretsElementLevel(levelFile))
     {
+        std::cout << "Error loading level : secrets" << std::endl;
         return false;
     }
     //Wall
     if(!loadWallLevel(levelFile))
     {
+        std::cout << "Error loading level : walls" << std::endl;
         return false;
     }
     //Teleport
     if(!loadTeleportLevel(levelFile))
     {
+        std::cout << "Error loading level : teleports" << std::endl;
         return false;
     }
     //Log
     if(!loadLogElementLevel(levelFilePath.toStdString()))
     {
+        std::cout << "Error loading level : logs" << std::endl;
         return false;
     }
-    //Barrel
-    if(!loadStandardElementLevel(levelFile, StandardElement_e::BARREL))
+    //Trap
+    if(!loadStandardElementLevel(levelFile, StandardElement_e::TRAP))
     {
+        std::cout << "Error loading level : traps" << std::endl;
         return false;
     }
     //Enemy
     if(!loadStandardElementLevel(levelFile, StandardElement_e::ENEMY))
     {
+        std::cout << "Error loading level : enemies" << std::endl;
         return false;
     }
     //Door
     if(!loadStandardElementLevel(levelFile, StandardElement_e::DOOR))
     {
+        std::cout << "Error loading level : doors" << std::endl;
         return false;
     }
     //Exit
     if(!loadStandardElementLevel(levelFile, StandardElement_e::EXIT))
     {
+        std::cout << "Error loading level : exits" << std::endl;
         return false;
     }
     //Object
     if(!loadStandardElementLevel(levelFile, StandardElement_e::OBJECT))
     {
+        std::cout << "Error loading level : objects" << std::endl;
         return false;
     }
     //Ceiling
-    if(!loadStandardElementLevel(levelFile, StandardElement_e::STATIC_CEILING_ELEMENT))
+    if(!loadStandardElementLevel(levelFile, StandardElement_e::VEHICULE))
     {
+        std::cout << "Error loading level : static ceiling elements" << std::endl;
         return false;
     }
     //Ground
     if(!loadStandardElementLevel(levelFile, StandardElement_e::STATIC_GROUND_ELEMENT))
     {
+        std::cout << "Error loading level : static ground elements" << std::endl;
         return false;
     }
     return true;
@@ -175,9 +192,9 @@ bool LevelDataManager::loadStandardElementLevel(const QSettings &ini, StandardEl
     QString str;
     switch(elementType)
     {
-    case StandardElement_e::BARREL:
-        str = "Barrel";
-        currentMap = &m_existingLevelData->m_barrelsData;
+    case StandardElement_e::TRAP:
+        str = "Trap";
+        currentMap = &m_existingLevelData->m_trapsData;
         break;
     case StandardElement_e::DOOR:
         str = "Door";
@@ -195,9 +212,9 @@ bool LevelDataManager::loadStandardElementLevel(const QSettings &ini, StandardEl
         str = "Object";
         currentMap = &m_existingLevelData->m_objectsData;
         break;
-    case StandardElement_e::STATIC_CEILING_ELEMENT:
-        str = "Ceiling";
-        currentMap = &m_existingLevelData->m_ceilingElementsData;
+    case StandardElement_e::VEHICULE:
+        str = "Vehicule";
+        currentMap = &m_existingLevelData->m_vehiculesData;
         break;
     case StandardElement_e::STATIC_GROUND_ELEMENT:
         str = "Ground";
@@ -631,9 +648,9 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     generateStandardIniLevel(tableModel.getDoorsData());
     generateStandardIniLevel(tableModel.getEnemiesData(), tableModel.getEndLevelEnemyPos());
     generateStandardIniLevel(tableModel.getObjectsData());
-    generateStandardIniLevel(tableModel.getStaticCeilingData());
+    generateStandardIniLevel(tableModel.getVehiculeData());
     generateStandardIniLevel(tableModel.getStaticGroundData());
-    generateStandardIniLevel(tableModel.getBarrelsData());
+    generateStandardIniLevel(tableModel.getTrapsData());
     generateCheckpointElementsIniLevel(tableModel.getCheckpointsData());
     generateLogsElementsIniLevel(tableModel.getLogData());
     generateSecretsElementsIniLevel(tableModel.getSecretsData());
@@ -1205,9 +1222,9 @@ bool LevelDataManager::loadStandardDataINI()
         {
             ok = loadStaticElementGroundData(keysList.at(i));
         }
-        else if(keysList.at(i).contains("Ceiling"))
+        else if(keysList.at(i).contains("Vehicule"))
         {
-            ok = loadStaticElementCeilingData(keysList.at(i));
+            ok = loadVehiculesData(keysList.at(i));
         }
         else if(keysList.at(i).contains("Teleport"))
         {
@@ -1322,14 +1339,14 @@ bool LevelDataManager::loadStaticElementGroundData(const QString &key)
 }
 
 //======================================================================
-bool LevelDataManager::loadStaticElementCeilingData(const QString &key)
+bool LevelDataManager::loadVehiculesData(const QString &key)
 {
     QString sprite = m_INIFile->value(key + "/Sprite", "").toString();
     if(sprite.isEmpty())
     {
         return false;
     }
-    m_staticCeilingElement.insert({key, sprite});
+    m_vehiculesElement.insert({key, sprite});
     return true;
 }
 

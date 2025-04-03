@@ -232,7 +232,7 @@ void TableModel::clearModel()
     m_memEnemy.clear();
     m_memExit.clear();
     m_memObject.clear();
-    m_memStaticCeiling.clear();
+    m_memVehicules.clear();
     m_memStaticGround.clear();
     m_memTeleport.clear();
     m_memLog.clear();
@@ -312,7 +312,7 @@ void TableModel::memStdElement(const QPair<int, int> &pos, LevelElement_e elemen
     }
     else if(elementType == LevelElement_e::STATIC_CEILING)
     {
-        m_memStaticCeiling.insert({iniId, pos});
+        m_memVehicules.insert({iniId, pos});
     }
     else if(elementType == LevelElement_e::STATIC_GROUND)
     {
@@ -381,11 +381,11 @@ void TableModel::rmStdElement(const QPair<int, int> &pos, LevelElement_e element
     }
     else if(elementType == LevelElement_e::STATIC_CEILING)
     {
-        for(it = m_memStaticCeiling.begin(); it != m_memStaticCeiling.end(); ++it)
+        for(it = m_memVehicules.begin(); it != m_memVehicules.end(); ++it)
         {
             if(it->second == pos)
             {
-                m_memStaticCeiling.erase(it);
+                m_memVehicules.erase(it);
                 return;
             }
         }
