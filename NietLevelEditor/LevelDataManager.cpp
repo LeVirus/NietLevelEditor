@@ -116,10 +116,10 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
         std::cout << "Error loading level : checkpoints" << std::endl;
         return false;
     }
-    //Secret
-    if(!loadBasicSecretsElementLevel(levelFile))
+    //Boss Zone
+    if(!loadBasicBossZoneElementLevel(levelFile))
     {
-        std::cout << "Error loading level : secrets" << std::endl;
+        std::cout << "Error loading level : Boss Zone" << std::endl;
         return false;
     }
     //Wall
@@ -333,13 +333,13 @@ bool LevelDataManager::loadWallLevel(const QSettings &ini)
 }
 
 //======================================================================
-bool LevelDataManager::loadBasicSecretsElementLevel(const QSettings &ini)
+bool LevelDataManager::loadBasicBossZoneElementLevel(const QSettings &ini)
 {
     QStringList keys = ini.childGroups(), posList;
     QString pos;
     for(int i = 0; i < keys.size(); ++i)
     {
-        if(keys[i].contains("Secrets"))
+        if(keys[i].contains("BossZone"))
         {
             pos = ini.value(keys[i] + "/GamePosition", "").toString();
             if(pos.isEmpty())
@@ -353,7 +353,7 @@ bool LevelDataManager::loadBasicSecretsElementLevel(const QSettings &ini)
             }
             for(int j = 0; j < posList.size(); j += 2)
             {
-                m_existingLevelData->m_secrets.push_back({posList[j].toInt(), posList[j + 1].toInt()});
+                m_existingLevelData->m_bossZone.push_back({posList[j].toInt(), posList[j + 1].toInt()});
             }
             break;
         }
@@ -653,7 +653,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     generateStandardIniLevel(tableModel.getTrapsData());
     generateCheckpointElementsIniLevel(tableModel.getCheckpointsData());
     generateLogsElementsIniLevel(tableModel.getLogData());
-    generateSecretsElementsIniLevel(tableModel.getSecretsData());
+    generateBossZoneElementsIniLevel(tableModel.getBossZoneData());
     std::stringstream stringStream;
     std::string str;
     std::ofstream outputStream;
@@ -949,7 +949,7 @@ void LevelDataManager::generateLogsElementsIniLevel(const QVector<LogData> &data
 }
 
 //======================================================================
-void LevelDataManager::generateSecretsElementsIniLevel(const QVector<QPair<int, int>> &datas)
+void LevelDataManager::generateBossZoneElementsIniLevel(const QVector<QPair<int, int>> &datas)
 {
     if(datas.empty())
     {
@@ -960,7 +960,7 @@ void LevelDataManager::generateSecretsElementsIniLevel(const QVector<QPair<int, 
     {
         pos += std::to_string(datas[i].first) + " " + std::to_string(datas[i].second) + " ";
     }
-    m_ini.setValue("Secrets", "GamePosition", pos);
+    m_ini.setValue("BossZone", "GamePosition", pos);
 }
 
 //======================================================================

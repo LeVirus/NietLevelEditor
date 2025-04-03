@@ -124,7 +124,7 @@ bool GridEditor::loadExistingLevelGrid()
     }
     loadBackgroundGeneralExistingLevelGrid();
     loadTeleportExistingLevelGrid();
-    loadSecretsExistingLevelGrid();
+    loadBossZoneExistingLevelGrid();
     loadCheckpointsExistingLevelGrid();
     loadLogsExistingLevelGrid();
     loadStandardExistingLevelGrid(LevelElement_e::TRAP);
@@ -347,12 +347,12 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type, const QPair
         m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
         m_tableModel->addCheckpoint({x, y}, checkpointData);
     }
-    else if(type == LevelElement_e::SECRET)
+    else if(type == LevelElement_e::BOSS_ZONE)
     {
-        text = "S";
+        text = "BS";
         pix.fill(Qt::darkRed);
         m_tableModel->setIdData(index, CaseData{type, "", {}, {}, {}, {}});
-        m_tableModel->addSecret({x, y});
+        m_tableModel->addBossZone({x, y});
     }
     if(type == LevelElement_e::PLAYER_DEPARTURE || !m_tableModel->getDataElementCase(index))
     {
@@ -675,7 +675,7 @@ void GridEditor::loadStandardPictures(const QString &installDir, LevelElement_e 
     case LevelElement_e::DOOR:
     case LevelElement_e::PLAYER_DEPARTURE:
     case LevelElement_e::CHECKPOINT:
-    case LevelElement_e::SECRET:
+    case LevelElement_e::BOSS_ZONE:
     case LevelElement_e::GROUND_TRIGGER:
     case LevelElement_e::TARGET_TELEPORT:
     case LevelElement_e::SELECTION:
@@ -1239,7 +1239,7 @@ void GridEditor::treatElementsDrawing()
     QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
     int index = static_cast<int>(m_currentElementType);
     if(m_currentElementType == LevelElement_e::PLAYER_DEPARTURE || m_currentElementType == LevelElement_e::CHECKPOINT ||
-            m_currentElementType == LevelElement_e::SECRET)
+            m_currentElementType == LevelElement_e::BOSS_ZONE)
     {
         setColorElement(caseIndex, m_currentElementType);
         return;
@@ -1555,7 +1555,7 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
     case LevelElement_e::DELETE:
     case LevelElement_e::SELECTION:
     case LevelElement_e::CHECKPOINT:
-    case LevelElement_e::SECRET:
+    case LevelElement_e::BOSS_ZONE:
     case LevelElement_e::LOG:
     case LevelElement_e::TOTAL:
         assert(false);
@@ -1591,12 +1591,12 @@ bool GridEditor::loadStandardExistingLevelGrid(LevelElement_e elementType)
 }
 
 //======================================================================
-void GridEditor::loadSecretsExistingLevelGrid()
+void GridEditor::loadBossZoneExistingLevelGrid()
 {
-    for(int i = 0; i < m_levelDataManager.getExistingLevel()->m_secrets.size(); ++i)
+    for(int i = 0; i < m_levelDataManager.getExistingLevel()->m_bossZone.size(); ++i)
     {
-        setColorCaseData(m_levelDataManager.getExistingLevel()->m_secrets[i].first,
-                         m_levelDataManager.getExistingLevel()->m_secrets[i].second, LevelElement_e::SECRET);
+        setColorCaseData(m_levelDataManager.getExistingLevel()->m_bossZone[i].first,
+                         m_levelDataManager.getExistingLevel()->m_bossZone[i].second, LevelElement_e::BOSS_ZONE);
     }
 }
 
@@ -1822,8 +1822,8 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
         return "Selection";
     case LevelElement_e::CHECKPOINT:
         return "Checkpoint";
-    case LevelElement_e::SECRET:
-        return "Secret";
+    case LevelElement_e::BOSS_ZONE:
+        return "Boss Zone";
     case LevelElement_e::TOTAL:
         assert(false);
     }

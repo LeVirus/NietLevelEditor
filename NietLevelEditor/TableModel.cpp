@@ -170,9 +170,9 @@ void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall, s
     {
         removeCheckpoint({index.column(), index.row()});
     }
-    else if(caseData->m_type == LevelElement_e::SECRET)
+    else if(caseData->m_type == LevelElement_e::BOSS_ZONE)
     {
-        removeSecret({index.column(), index.row()});
+        removeBossZone({index.column(), index.row()});
     }
     else
     {
@@ -197,13 +197,13 @@ void TableModel::removeCheckpoint(const QPair<int, int> &pos)
 }
 
 //======================================================================
-void TableModel::removeSecret(const QPair<int, int> &pos)
+void TableModel::removeBossZone(const QPair<int, int> &pos)
 {
-    for(int32_t i = 0; i < m_vectSecrets.size(); ++i)
+    for(int32_t i = 0; i < m_vectBossZone.size(); ++i)
     {
-        if(m_vectSecrets[i] == pos)
+        if(m_vectBossZone[i] == pos)
         {
-            m_vectSecrets.erase(m_vectSecrets.begin() + i);
+            m_vectBossZone.erase(m_vectBossZone.begin() + i);
             return;
         }
     }
@@ -237,7 +237,7 @@ void TableModel::clearModel()
     m_memTeleport.clear();
     m_memLog.clear();
     m_vectCheckpoints.clear();
-    m_vectSecrets.clear();
+    m_vectBossZone.clear();
 }
 
 //======================================================================
