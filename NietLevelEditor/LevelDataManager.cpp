@@ -121,6 +121,8 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     if(varA.toInt() != -1 && varB.toInt() != -1)
     {
         m_existingLevelData->m_bossZone = {varA.toInt(), varB.toInt()};
+        varA = levelFile.value("BossZone/music", "");
+        m_existingLevelData->m_bossMusic = varA.toString();
     }
     //Wall
     if(!loadWallLevel(levelFile))
@@ -582,7 +584,7 @@ std::optional<QPair<int, int>> LevelDataManager::getLoadedLevelSize()const
 }
 
 //======================================================================
-void LevelDataManager::generateLevel(const TableModel &tableModel, const QString &musicFilename,
+void LevelDataManager::generateLevel(const TableModel &tableModel, const QString &musicFilename, const QString &bossMusicFilename,
                                      const QPair<BackgroundData const*, BackgroundData const*> &backgroundData, BackgroundData const* middleBackgroundData,  Direction_e playerDirection)
 {
     if(!tableModel.checkLevelData())
@@ -605,6 +607,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     {
         m_ini.setValue("Level", "music", musicFilename.toStdString());
     }
+    m_ini.setValue("BossZone", "music", bossMusicFilename.toStdString());
     loadBackgroundData(backgroundData, middleBackgroundData);
     m_ini.setValue("PlayerInit", "playerDepartureX", std::to_string(tableModel.getPlayerDepartureData()->first));
     m_ini.setValue("PlayerInit", "playerDepartureY", std::to_string(tableModel.getPlayerDepartureData()->second));
@@ -1201,9 +1204,9 @@ bool LevelDataManager::loadStandardDataINI()
         {
             ok = loadLogData(keysList.at(i));
         }
-        else if(keysList.at(i) == "Barrel")
+        else if(keysList.at(i) == "Trap")
         {
-            ok = loadBarrelData(keysList.at(i));
+            ok = loadTrapData(keysList.at(i));
         }
         else if(keysList.at(i) == "Exit")
         {
@@ -1342,7 +1345,7 @@ bool LevelDataManager::loadLogData(const QString &key)
 }
 
 //======================================================================
-bool LevelDataManager::loadBarrelData(const QString &key)
+bool LevelDataManager::loadTrapData(const QString &key)
 {
     QString sprites = m_INIFile->value(key + "/StaticSprite", "").toString();
     if(sprites.isEmpty())
@@ -1354,7 +1357,7 @@ bool LevelDataManager::loadBarrelData(const QString &key)
     {
         return false;
     }
-    m_barrelElement.insert({key, strList.at(0)});
+    m_trapElement.insert({key, strList.at(0)});
     return true;
 }
 

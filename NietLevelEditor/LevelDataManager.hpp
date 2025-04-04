@@ -68,6 +68,7 @@ struct LevelData
     std::optional<QPair<QString, QPair<int, int>>> m_endLevelEnemyPos;
     Direction_e m_playerDirection;
     std::optional<QPair<int, int>> m_bossZone;
+    QString m_bossMusic;
     QVector<QPair<QPair<int, int>, Direction_e>> m_checkpoints;
     std::map<QString, WallDataINI> m_wallsData;
     std::multimap<QString, TeleportData> m_teleportData;
@@ -145,8 +146,8 @@ public:
     }
     std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
     std::optional<QPair<int, int>> getLoadedLevelSize()const;
-    void generateLevel(const TableModel &tableModel, const QString &musicFilename,
-                       const BackgroundPairData_t &backgroundData, BackgroundData const* middleBackgroundData, Direction_e playerDirection);
+    void generateLevel(const TableModel &tableModel, const QString &musicFilename, const QString &bossMusicFilename,
+                       const BackgroundPairData_t &backgroundData, BackgroundData const* middleBackgroundData, Direction_e playerDirectio);
 private:
     std::optional<QTemporaryFile *> loadEncryptedINIFile(const QString &filePath, uint32_t encryptKey);
     bool loadBackgroundLevel(bool ground, const QSettings &ini, bool middle = false);
@@ -184,7 +185,7 @@ private:
     bool loadVehiculesData(const QString &key);
     bool loadTeleportData(const QString &key);
     bool loadLogData(const QString &key);
-    bool loadBarrelData(const QString &key);
+    bool loadTrapData(const QString &key);
     bool loadExitData(const QString &key);
     bool loadCardData(const QString &key);
 private:
@@ -194,10 +195,8 @@ private:
     std::map<QString, ArrayFloat_t> m_memPictureElement;
     std::map<QString, QStringList> m_wallElement;
     std::map<QString, DoorData> m_doorElement;
-==== BASE ====
-    std::map<QString, QString> m_triggerElement, m_teleportElement, m_enemyElement, m_objectElement, m_staticCeilingElement,
+    std::map<QString, QString> m_triggerElement, m_teleportElement, m_enemyElement, m_objectElement, m_vehiculesElement,
     m_staticGroundElement, m_trapElement, m_exitElement, m_logElement, m_cardElement;
-==== BASE ====
     std::unique_ptr<LevelData> m_existingLevelData;
     inipp::Ini<char> m_ini;
     const uint32_t ENCRYPTION_KEY_CONF_FILE = 42, ENCRYPTION_KEY_STANDARD_LEVEL = 17,

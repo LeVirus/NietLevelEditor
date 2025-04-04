@@ -115,6 +115,18 @@ bool GridEditor::loadExistingLevelGrid()
             }
         }
     }
+    if(!existingLevel->m_bossMusic.isEmpty())
+    {
+        for(int i = 0; i < m_bossMusicWidget->count(); ++i)
+        {
+            if(m_bossMusicWidget->itemText(i) == existingLevel->m_bossMusic)
+            {
+                m_bossMusicWidget->setCurrentIndex(i);
+                break;
+            }
+        }
+    }
+
     m_memPlayerDirection = existingLevel->m_playerDirection;
     m_memPlayerDepartureWidget->setCurrentIndex(static_cast<uint32_t>(existingLevel->m_playerDirection));
     setColorElement(caseIndex, LevelElement_e::PLAYER_DEPARTURE);
