@@ -165,6 +165,12 @@ bool SelectableLineLayout::isEndLevelEnemyChecked()
 }
 
 //======================================================================
+void SelectableLineLayout::linkBossMusicCombobox(QComboBox &musicCombo)
+{
+    QObject::connect(m_radio, &QRadioButton::toggled, &musicCombo, &QComboBox::setEnabled);
+}
+
+//======================================================================
 void SelectableLineLayout::selectedIndex(int currentIndex)
 {
     emit lineSelected(m_elementType, currentIndex);

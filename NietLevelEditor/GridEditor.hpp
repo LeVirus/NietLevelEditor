@@ -169,7 +169,7 @@ private:
     QSet<QPair<int, int>> m_memCurrentLinkTriggerWall;
     CheckpointForm *m_checkpointForm = nullptr;
     QPushButton *m_generateButton;
-    QComboBox *m_musicWidget;
+    QComboBox *m_musicWidget = nullptr, *m_bossMusicWidget = nullptr;
     Direction_e m_memPlayerDirection = Direction_e::NORTH;
     bool m_widgetInit = false, m_loadingExistingLevelMode = false, m_loadingDistantTriggerMode = false;
 };

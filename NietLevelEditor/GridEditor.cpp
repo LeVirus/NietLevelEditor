@@ -445,6 +445,17 @@ void GridEditor::initSelectableWidgets()
             m_memFinishLevelEnemySelectLayout = selectLayout;
             selectLayout->confEnemySelectWidget(this);
         }
+        else if(currentEnum == LevelElement_e::BOSS_ZONE)
+        {
+            if(!m_bossMusicWidget)
+            {
+                m_bossMusicWidget = new QComboBox();
+            }
+            m_bossMusicWidget->setEnabled(false);
+            selectLayout->addWidget(new QLabel("Boss Music"));
+            selectLayout->addWidget(m_bossMusicWidget);
+            selectLayout->linkBossMusicCombobox(*m_bossMusicWidget);
+        }
         QObject::connect(selectLayout, &SelectableLineLayout::lineSelected, this, &GridEditor::setElementSelected);
     }
 }
@@ -486,6 +497,7 @@ void GridEditor::initMusicDir(const QString &installDir, bool widgetInit)
         if(fileInfo.suffix() == "flac")
         {
             m_musicWidget->addItem(fileInfo.fileName());
+            m_bossMusicWidget->addItem(fileInfo.fileName());
         }
     }
     if(!widgetInit)
