@@ -26,6 +26,7 @@ public:
     void setRadioButtonEnabled(bool enable);
     void uncheckRadioButton();
     bool isEndLevelEnemyChecked();
+    void linkBossMusicCombobox(QComboBox &musicCombo);
     Q_SIGNAL void lineSelected(LevelElement_e, int);
 private slots:
     void selected();
