@@ -70,6 +70,7 @@ struct LevelData
     std::optional<QPair<QString, QPair<int, int>>> m_endLevelEnemyPos;
     Direction_e m_playerDirection;
     std::optional<QPair<int, int>> m_bossZone;
+    QString m_bossMusic;
     QVector<QPair<QPair<int, int>, Direction_e>> m_checkpoints;
     std::map<QString, WallDataINI> m_wallsData;
     std::multimap<QString, TeleportData> m_teleportData;
@@ -147,7 +148,7 @@ public:
     }
     std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
     std::optional<QPair<int, int>> getLoadedLevelSize()const;
-    void generateLevel(const TableModel &tableModel, const QString &musicFilename,
+    void generateLevel(const TableModel &tableModel, const QString &musicFilename, const QString &bossMusicFilename,
                        const BackgroundPairData_t &backgroundData, BackgroundData const* middleBackgroundData, Direction_e playerDirectio, const GlobalLevelData &globalLevelData);
 private:
     std::optional<QTemporaryFile *> loadEncryptedINIFile(const QString &filePath, uint32_t encryptKey);

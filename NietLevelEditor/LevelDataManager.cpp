@@ -135,6 +135,8 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     if(varA.toInt() != -1 && varB.toInt() != -1)
     {
         m_existingLevelData->m_bossZone = {varA.toInt(), varB.toInt()};
+        varA = levelFile.value("BossZone/music", "");
+        m_existingLevelData->m_bossMusic = varA.toString();
     }
     //Wall
     if(!loadWallLevel(levelFile))
@@ -597,7 +599,7 @@ std::optional<QPair<int, int>> LevelDataManager::getLoadedLevelSize()const
 }
 
 //======================================================================
-void LevelDataManager::generateLevel(const TableModel &tableModel, const QString &musicFilename,
+void LevelDataManager::generateLevel(const TableModel &tableModel, const QString &musicFilename, const QString &bossMusicFilename,
                                      const QPair<BackgroundData const*, BackgroundData const*> &backgroundData, BackgroundData const* middleBackgroundData,  Direction_e playerDirection, const GlobalLevelData &globalLevelData)
 {
     if(!tableModel.checkLevelData())
@@ -620,6 +622,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     {
         m_ini.setValue("Level", "music", musicFilename.toStdString());
     }
+    m_ini.setValue("BossZone", "music", bossMusicFilename.toStdString());
     loadBackgroundData(backgroundData, middleBackgroundData);
     if(!globalLevelData.m_prologue.isEmpty())
     {
