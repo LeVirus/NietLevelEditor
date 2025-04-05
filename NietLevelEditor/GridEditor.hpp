@@ -3,6 +3,7 @@
 #include <QIcon>
 #include <QDialog>
 #include <QModelIndex>
+#include <QCheckBox>
 #include <QSet>
 #include <limits>
 #include "LevelDataManager.hpp"
@@ -95,7 +96,7 @@ private:
     void setStdTableSize();
     void initSelectableWidgets();
     void initButtons();
-    void initMusicDir(const QString &installDir, bool widgetInit);
+    void initMusicDirAndScrolling(const QString &installDir, bool widgetInit);
     void loadIconPictures(const QString &installDir);
     void loadSpritesForBackgroundForm();
     void loadWallsPictures(const QString &installDir);
@@ -172,6 +173,7 @@ private:
     QSet<QPair<int, int>> m_memCurrentLinkTriggerWall;
     CheckpointForm *m_checkpointForm = nullptr;
     QPushButton *m_generateButton;
+    QCheckBox *m_scrollingLoclCheckbox;
     QComboBox *m_musicWidget = nullptr, *m_bossMusicWidget = nullptr;
     Direction_e m_memPlayerDirection = Direction_e::NORTH;
     std::optional<GlobalLevelData> m_globalLevelData;

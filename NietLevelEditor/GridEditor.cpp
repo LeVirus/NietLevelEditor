@@ -88,7 +88,7 @@ void GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
         initButtons();
         connectSlots();
     }
-    initMusicDir(installDir, m_widgetInit);
+    initMusicDirAndScrolling(installDir, m_widgetInit);
     m_widgetInit = true;
 }
 
@@ -120,6 +120,10 @@ bool GridEditor::loadExistingLevelGrid()
             }
         }
     }
+    if(existingLevel->m_scrollingLock)
+    {
+        m_scrollingLoclCheckbox->setChecked(true);
+    }
     if(!existingLevel->m_bossMusic.isEmpty())
     {
         for(int i = 0; i < m_bossMusicWidget->count(); ++i)
@@ -131,7 +135,6 @@ bool GridEditor::loadExistingLevelGrid()
             }
         }
     }
-
     m_memPlayerDirection = existingLevel->m_playerDirection;
     m_memPlayerDepartureWidget->setCurrentIndex(static_cast<uint32_t>(existingLevel->m_playerDirection));
     setColorElement(caseIndex, LevelElement_e::PLAYER_DEPARTURE);
@@ -504,7 +507,7 @@ void GridEditor::initButtons()
 }
 
 //======================================================================
-void GridEditor::initMusicDir(const QString &installDir, bool widgetInit)
+void GridEditor::initMusicDirAndScrolling(const QString &installDir, bool widgetInit)
 {
     m_musicWidget = new QComboBox();
     QString musicDir = installDir + "/Ressources/Audio/Music/";
@@ -528,9 +531,13 @@ void GridEditor::initMusicDir(const QString &installDir, bool widgetInit)
         QVBoxLayout *layout = new QVBoxLayout();
         layout->addWidget(new QLabel("Music"));
         layout->addWidget(m_musicWidget);
+        layout->addWidget(new QLabel("Scrolling lock"));
+        m_scrollingLoclCheckbox = new QCheckBox();
+        layout->addWidget(m_scrollingLoclCheckbox);
         layout->setAlignment(Qt::AlignmentFlag::AlignTop);
         ui->SelectableLayout->addLayout(layout);
     }
+    m_scrollingLoclCheckbox->setChecked(false);
 }
 
 //======================================================================
@@ -1409,7 +1416,8 @@ void GridEditor::generateLevel()
         return;
     }
     m_levelDataManager.generateLevel(*m_tableModel, m_musicWidget->currentText(), m_bossMusicWidget->currentText(),
-                                     {&m_backgroundForm->getGroundData(), &m_backgroundForm->getCeilingData()}, &m_backgroundForm->getMiddleData(), m_memPlayerDirection, *m_globalLevelData);
+                                     {&m_backgroundForm->getGroundData(), &m_backgroundForm->getCeilingData()}, &m_backgroundForm->getMiddleData(),
+                                     m_memPlayerDirection, *m_globalLevelData, m_scrollingLoclCheckbox->isChecked());
 }
 
 //======================================================================

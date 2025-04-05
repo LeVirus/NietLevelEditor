@@ -79,6 +79,11 @@ bool LevelDataManager::loadExistingLevel(const QString &levelFilePath)
     {
         m_existingLevelData->m_music = varA.toString();
     }
+    varA = levelFile.value("Level/scrollingLock");
+    if(!varA.isNull())
+    {
+        m_existingLevelData->m_scrollingLock = varA.toBool();
+    }
 
     varA = levelFile.value("PlayerInit/levelNum", 0);
     if(varA.toInt() < 1)
@@ -600,7 +605,8 @@ std::optional<QPair<int, int>> LevelDataManager::getLoadedLevelSize()const
 
 //======================================================================
 void LevelDataManager::generateLevel(const TableModel &tableModel, const QString &musicFilename, const QString &bossMusicFilename,
-                                     const QPair<BackgroundData const*, BackgroundData const*> &backgroundData, BackgroundData const* middleBackgroundData,  Direction_e playerDirection, const GlobalLevelData &globalLevelData)
+                                     const QPair<BackgroundData const*, BackgroundData const*> &backgroundData, BackgroundData const* middleBackgroundData,
+                                     Direction_e playerDirection, const GlobalLevelData &globalLevelData, bool lockScrolling)
 {
     if(!tableModel.checkLevelData())
     {
@@ -621,6 +627,10 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     if(musicFilename != "None")
     {
         m_ini.setValue("Level", "music", musicFilename.toStdString());
+    }
+    if(lockScrolling)
+    {
+        m_ini.setValue("Level", "scrollingLock", "true");
     }
     m_ini.setValue("BossZone", "music", bossMusicFilename.toStdString());
     loadBackgroundData(backgroundData, middleBackgroundData);

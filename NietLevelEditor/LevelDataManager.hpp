@@ -63,6 +63,7 @@ struct LevelData
     uint32_t m_levelNum;
     QPair<int, int> m_levelSize;
     std::optional<QString> m_music, m_prologueText, m_epilogueText, m_epilogueMusic;
+    bool m_scrollingLock = false;
     //first ground
     std::unique_ptr<QPair<BackgroundData, BackgroundData>> m_backgroundData;
     std::unique_ptr<BackgroundData> m_middleBackground;
@@ -149,7 +150,8 @@ public:
     std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
     std::optional<QPair<int, int>> getLoadedLevelSize()const;
     void generateLevel(const TableModel &tableModel, const QString &musicFilename, const QString &bossMusicFilename,
-                       const BackgroundPairData_t &backgroundData, BackgroundData const* middleBackgroundData, Direction_e playerDirectio, const GlobalLevelData &globalLevelData);
+                       const BackgroundPairData_t &backgroundData, BackgroundData const* middleBackgroundData,
+                       Direction_e playerDirectio, const GlobalLevelData &globalLevelData, bool lockScrolling);
 private:
     std::optional<QTemporaryFile *> loadEncryptedINIFile(const QString &filePath, uint32_t encryptKey);
     bool loadBackgroundLevel(bool ground, const QSettings &ini, bool middle = false);
