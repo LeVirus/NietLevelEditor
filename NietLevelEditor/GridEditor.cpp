@@ -358,6 +358,11 @@ void GridEditor::setColorCaseData(int x, int y, LevelElement_e type, const QPair
         text = "D" + getStrDir(m_memPlayerDirection);
         m_tableModel->setPlayerDirectionDeparture(m_memPlayerDirection);
     }
+    else if(type == LevelElement_e::LOG)
+    {
+        text = "CS";
+        pix.fill(Qt::lightGray);
+    }
     else if(type == LevelElement_e::GROUND_TRIGGER)
     {
         text = "GT";
@@ -1324,7 +1329,9 @@ void GridEditor::treatElementsDrawing()
         {
             return;
         }
+        setColorCaseData(caseIndex.column(), caseIndex.row(), m_currentElementType);
         m_tableModel->addLog({caseIndex.column(), caseIndex.row()}, m_logForm->getMessage(), m_mapElementID[m_currentElementType][m_currentSelection]);
+        return;
     }
     setCaseIcon(caseIndex.column(), caseIndex.row(), -1, deleteMode);
     if(!deleteMode)
@@ -1695,7 +1702,7 @@ void GridEditor::loadLogsExistingLevelGrid()
         {
             return;
         }
-        setCaseIcon(it->second.m_position.first, it->second.m_position.second, -1);
+        setColorCaseData(it->second.m_position.first, it->second.m_position.second, LevelElement_e::LOG);
         m_tableModel->addLog(it->second.m_position, it->second.m_message, it->second.m_displayID);
     }
 }
