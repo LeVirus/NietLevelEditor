@@ -75,6 +75,7 @@ struct LevelData
     std::map<QString, LogData> m_logsData;
     std::multimap<QString, QPair<int, int>> m_exitData, m_trapsData, m_groundElementsData, m_vehiculesData,
     m_enemiesData, m_objectsData, m_doorsData;
+    bool m_scrollingLock;
 };
 
 class LevelDataManager
@@ -147,7 +148,7 @@ public:
     std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
     std::optional<QPair<int, int>> getLoadedLevelSize()const;
     void generateLevel(const TableModel &tableModel, const QString &musicFilename, const QString &bossMusicFilename,
-                       const BackgroundPairData_t &backgroundData, BackgroundData const* middleBackgroundData, Direction_e playerDirectio);
+                       const BackgroundPairData_t &backgroundData, BackgroundData const* middleBackgroundData, Direction_e playerDirectio, bool scrollingLock);
 private:
     std::optional<QTemporaryFile *> loadEncryptedINIFile(const QString &filePath, uint32_t encryptKey);
     bool loadBackgroundLevel(bool ground, const QSettings &ini, bool middle = false);
