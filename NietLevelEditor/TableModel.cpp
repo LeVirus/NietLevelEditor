@@ -180,7 +180,7 @@ void TableModel::removeData(const QModelIndex &index, bool dontMemRemovedWall, s
     }
     else if(caseData->m_type == LevelElement_e::BOSS_ZONE)
     {
-        removeBossZone({index.column(), index.row()});
+        removeBossZone();
     }
     else
     {
@@ -205,7 +205,7 @@ void TableModel::removeCheckpoint(const QPair<int, int> &pos)
 }
 
 //======================================================================
-void TableModel::removeBossZone(const QPair<int, int> &pos)
+void TableModel::removeBossZone()
 {
     m_bossZone = std::nullopt;
 }
