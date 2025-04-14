@@ -632,7 +632,6 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     {
         m_ini.setValue("Level", "scrollingLock", "true");
     }
-    m_ini.setValue("BossZone", "music", bossMusicFilename.toStdString());
     loadBackgroundData(backgroundData, middleBackgroundData);
     if(!globalLevelData.m_prologue.isEmpty())
     {
@@ -662,7 +661,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     generateStandardIniLevel(tableModel.getTrapsData());
     generateCheckpointElementsIniLevel(tableModel.getCheckpointsData());
     generateLogsElementsIniLevel(tableModel.getLogData());
-    generateBossZoneElementsIniLevel(tableModel.getBossZoneData());
+    generateBossZoneElementsIniLevel(tableModel.getBossZoneData(), bossMusicFilename);
     std::stringstream stringStream;
     std::string str;
     std::ofstream outputStream;
@@ -958,7 +957,7 @@ void LevelDataManager::generateLogsElementsIniLevel(const QVector<LogData> &data
 }
 
 //======================================================================
-void LevelDataManager::generateBossZoneElementsIniLevel(const std::optional<QPair<int, int>> &data)
+void LevelDataManager::generateBossZoneElementsIniLevel(const std::optional<QPair<int, int>> &data, const QString &bossMusicFilename)
 {
     if(!data)
     {
@@ -966,6 +965,7 @@ void LevelDataManager::generateBossZoneElementsIniLevel(const std::optional<QPai
     }
     m_ini.setValue("BossZone", "GamePositionX", std::to_string(data->first));
     m_ini.setValue("BossZone", "GamePositionY", std::to_string(data->second));
+    m_ini.setValue("BossZone", "music", bossMusicFilename.toStdString());
 }
 
 //======================================================================

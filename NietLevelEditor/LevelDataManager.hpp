@@ -167,7 +167,7 @@ private:
     void generateStandardIniLevel(const std::multimap<QString, QPair<int, int>> &datas, const std::optional<QPair<int, int>> &endLevelEnemyPos = {});
     void generateCheckpointElementsIniLevel(const QVector<QPair<QPair<int, int>, Direction_e>> &datas);
     void generateLogsElementsIniLevel(const QVector<LogData> &datas);
-    void generateBossZoneElementsIniLevel(const std::optional<QPair<int, int> > &data);
+    void generateBossZoneElementsIniLevel(const std::optional<QPair<int, int> > &data, const QString &bossMusicFilename);
     void writeWallData(const std::map<QString, WallDataINI> &wallData);
     QString getCurrentWallRemovedINI(int index, const WallDataContainer_t &wallData)const;
     QString getIniWallPos(int index, const WallDataContainer_t &wallData) const;

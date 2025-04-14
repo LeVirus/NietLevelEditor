@@ -199,7 +199,7 @@ public:
 private:
     void rmStdElement(const QPair<int, int> &pos, LevelElement_e elementType);
     void removeCheckpoint(const QPair<int, int> &pos);
-    void removeBossZone(const QPair<int, int> &pos);
+    void removeBossZone();
 private:
     WallDataContainer_t m_memWallShape;
     std::multimap<QString, QPair<int, int>> m_memEnemy, m_memTrap, m_memDoor, m_memExit, m_memObject, m_memVehicules,
