@@ -1279,7 +1279,7 @@ bool LevelDataManager::loadTriggerData(const QString &key)
 //======================================================================
 bool LevelDataManager::loadEnemyData(const QString &key)
 {
-    QString sprites = m_INIFile->value(key + "/StaticSpriteFront", "").toString();
+    QString sprites = m_INIFile->value(key + "/StaticSpriteLeft", "").toString();
     if(sprites.isEmpty())
     {
         return false;
