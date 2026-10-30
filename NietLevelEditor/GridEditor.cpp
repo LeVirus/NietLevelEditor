@@ -27,6 +27,7 @@ GridEditor::GridEditor(QWidget *parent) : QDialog(parent), ui(new Ui::GridEditor
 {
     ui->setupUi(this);
     setWindowFlags(Qt::WindowSystemMenuHint);
+    setWindowState(Qt::WindowMaximized);
 }
 
 //======================================================================
