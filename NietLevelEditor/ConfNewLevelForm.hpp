@@ -21,6 +21,7 @@ class ConfNewLevelForm : public QDialog
 public:
     explicit ConfNewLevelForm(QWidget *parent = nullptr);
     void clearForm();
+    bool checkInstallDirectory(const QString &directory);
     inline bool isDirectorySelected()const
     {
         return m_directoryOK;

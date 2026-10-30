@@ -95,10 +95,16 @@ void ConfNewLevelForm::toggleLoadLevel(bool selected)
 //======================================================================
 void ConfNewLevelForm::onBrowseIniFileClicked()
 {
+    checkInstallDirectory(QFileDialog().getExistingDirectory());
+}
+
+//======================================================================
+bool ConfNewLevelForm::checkInstallDirectory(const QString &directory)
+{
     QFileDialog dialog;
     QStringList files;
     m_directoryOK = false;
-    m_installDirectory = dialog.getExistingDirectory();
+    m_installDirectory = directory;
     QDir dir(m_installDirectory);
     if(dir.exists())
     {
@@ -107,12 +113,13 @@ void ConfNewLevelForm::onBrowseIniFileClicked()
             files = dir.entryList(QStringList() << "*.ini", QDir::Files);
             if(files.contains("pictureData.ini") && files.contains("standardData.ini"))
             {
-                 m_directoryOK = true;
+                m_directoryOK = true;
                 //OK
-                return;
+                return true;
             }
         }
     }
+    return false;
 }
 
 //======================================================================
