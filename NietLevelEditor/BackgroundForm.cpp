@@ -217,8 +217,12 @@ void BackgroundForm::confWidgets(const std::map<QString, ArrayFloat_t> &iconData
 {
     for(std::map<QString, ArrayFloat_t>::const_iterator it = iconData.begin(); it != iconData.end(); ++it)
     {
-        ui->spriteSimpleTextureComboBox->addItem(it->first);
-        ui->spriteTiledTextureComboBox->addItem(it->first);
+        if((it->first.contains("Wall") || it->first.contains("Grass") || it->first.contains("Ceiling") || it->first.contains("Ground") || it->first.contains("BackStar") ||
+             it->first.contains("SimetraLogo") || it->first.contains("SimetraWrite")) && !it->first.contains("Giger"))
+        {
+            ui->spriteSimpleTextureComboBox->addItem(it->first);
+            ui->spriteTiledTextureComboBox->addItem(it->first);
+        }
     }
     QObject::connect(ui->coloredRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeColor);
     QObject::connect(ui->simpleTextRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeSimpleTexture);
