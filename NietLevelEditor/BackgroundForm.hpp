@@ -29,7 +29,7 @@ class BackgroundForm : public QDialog
 {
     Q_OBJECT
 public:
-    explicit BackgroundForm(const std::map<QString, ArrayFloat_t> &iconData, QWidget *parent = nullptr);
+    explicit BackgroundForm(const QVector<BackgroundDataPic> &iconData, QWidget *parent = nullptr);
     inline void confCeilingOrGroundMode(bool ceiling)
     {
         m_ceilingMode = ceiling;
@@ -56,7 +56,7 @@ private slots:
     void confirmForm();
     void memColorCase(const QObject *widget);
 private:
-    void confWidgets(const std::map<QString, ArrayFloat_t> &iconData);
+    void confWidgets(const QVector<BackgroundDataPic> &iconData);
 private:
     Ui::BackgroundForm *ui;
     QString m_pictureDirectory;

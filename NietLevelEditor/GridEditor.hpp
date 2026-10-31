@@ -56,6 +56,12 @@ struct DisplayData
     QIcon m_icon;
 };
 
+struct BackgroundDataPic
+{
+    QString m_spriteName;
+    QIcon m_icon;
+};
+
 inline const float EPSILON_FLOAT = std::numeric_limits<float>::epsilon();
 
 using IconArray_t = std::array<QVector<DisplayData>, static_cast<uint32_t>(LevelElement_e::TOTAL)>;
@@ -101,6 +107,7 @@ private:
     void loadDoorsPictures();
     QPixmap getDoorPixmap(bool vertical, const ArrayFloat_t &doorSpriteData, std::optional<QString> cardId);
     void loadCardPictures(const QString &installDir);
+    void loadBackgroundPictures(const QString &installDir);
     void loadStandardPictures(const QString &installDir, LevelElement_e elementType);
     bool setWallShape(bool preview = false, bool loadFromIni = false);
     void setWallDiagCaseConf();
@@ -156,6 +163,7 @@ private:
     bool m_wallMoveableMode, m_doorCardMode;
     IconArray_t m_drawData;
     QVector<DisplayData> m_cardIcons;
+    QVector<BackgroundDataPic> m_backgroundIcons;
     bool m_elementSelected, m_displayPreview = false;
     EventFilter *m_eventFilter;
     QModelIndex m_firstCaseSelection, m_secondCaseSelection;

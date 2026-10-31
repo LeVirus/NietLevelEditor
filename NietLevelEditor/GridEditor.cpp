@@ -501,6 +501,7 @@ void GridEditor::loadIconPictures(const QString &installDir)
     loadWallsPictures(installDir);
     loadDoorsPictures();
     loadCardPictures(installDir);
+    loadBackgroundPictures(installDir);
     loadStandardPictures(installDir, LevelElement_e::LOG);
     loadStandardPictures(installDir, LevelElement_e::TELEPORT);
     loadStandardPictures(installDir, LevelElement_e::ENEMY);
@@ -515,8 +516,7 @@ void GridEditor::loadIconPictures(const QString &installDir)
 //======================================================================
 void GridEditor::loadSpritesForBackgroundForm()
 {
-    const std::map<QString, ArrayFloat_t> &picData = m_levelDataManager.getSpriteData();
-    m_backgroundForm = new BackgroundForm(picData);
+    m_backgroundForm = new BackgroundForm(m_backgroundIcons);
 }
 
 //======================================================================
@@ -635,6 +635,24 @@ void GridEditor::loadCardPictures(const QString &installDir)
 }
 
 //======================================================================
+void GridEditor::loadBackgroundPictures(const QString &installDir)
+{
+    std::optional<ArrayFloat_t> spriteData;
+    const std::map<QString, ArrayFloat_t> &picData = m_levelDataManager.getSpriteData();
+
+    for(std::map<QString, ArrayFloat_t>::const_iterator it = picData.begin(); it != picData.end(); ++it)
+    {
+        if((it->first.contains("Wall") || it->first.contains("Grass") || it->first.contains("Ceiling") || it->first.contains("Ground") || it->first.contains("BackStar") ||
+             it->first.contains("SimetraLogo") || it->first.contains("SimetraWrite")) && !it->first.contains("Giger"))
+        {
+            spriteData = m_levelDataManager.getPictureData(it->first);
+            assert(spriteData);
+            m_backgroundIcons.push_back({it->first, getSprite(*spriteData, m_levelDataManager, installDir)});
+        }
+    }
+}
+
+//======================================================================
 void GridEditor::loadStandardPictures(const QString &installDir, LevelElement_e elementType)
 {
     const std::map<QString, QString> *currentMap;
@@ -687,7 +705,7 @@ void GridEditor::loadStandardPictures(const QString &installDir, LevelElement_e 
     m_mapElementID[elementType].reserve(currentMap->size());
     for(std::map<QString, QString>::const_iterator it = currentMap->begin(); it != currentMap->end(); ++it)
     {
-        m_mapElementID[elementType].push_back(it->first);
+        m_mapElementID[elementType].emplace_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
         m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});

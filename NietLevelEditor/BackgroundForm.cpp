@@ -5,7 +5,7 @@
 #include <iostream>
 
 //======================================================================
-BackgroundForm::BackgroundForm(const std::map<QString, ArrayFloat_t> &iconData, QWidget *parent) :
+BackgroundForm::BackgroundForm(const QVector<BackgroundDataPic> &iconData, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::BackgroundForm)
 {
@@ -213,16 +213,12 @@ bool BackgroundForm::backgroundSetted()
 }
 
 //======================================================================
-void BackgroundForm::confWidgets(const std::map<QString, ArrayFloat_t> &iconData)
+void BackgroundForm::confWidgets(const QVector<BackgroundDataPic> &iconData)
 {
-    for(std::map<QString, ArrayFloat_t>::const_iterator it = iconData.begin(); it != iconData.end(); ++it)
+    for(QVector<BackgroundDataPic>::const_iterator it = iconData.begin(); it != iconData.end(); ++it)
     {
-        if((it->first.contains("Wall") || it->first.contains("Grass") || it->first.contains("Ceiling") || it->first.contains("Ground") || it->first.contains("BackStar") ||
-             it->first.contains("SimetraLogo") || it->first.contains("SimetraWrite")) && !it->first.contains("Giger"))
-        {
-            ui->spriteSimpleTextureComboBox->addItem(it->first);
-            ui->spriteTiledTextureComboBox->addItem(it->first);
-        }
+        ui->spriteSimpleTextureComboBox->addItem(it->m_icon, it->m_spriteName);
+        ui->spriteTiledTextureComboBox->addItem(it->m_icon, it->m_spriteName);
     }
     QObject::connect(ui->coloredRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeColor);
     QObject::connect(ui->simpleTextRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeSimpleTexture);
