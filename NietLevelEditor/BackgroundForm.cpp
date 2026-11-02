@@ -217,8 +217,14 @@ void BackgroundForm::confWidgets(const QVector<BackgroundDataPic> &iconData)
 {
     for(QVector<BackgroundDataPic>::const_iterator it = iconData.begin(); it != iconData.end(); ++it)
     {
-        ui->spriteSimpleTextureComboBox->addItem(it->m_icon, it->m_spriteName);
-        ui->spriteTiledTextureComboBox->addItem(it->m_icon, it->m_spriteName);
+        if(it->m_spriteName.contains("BackStar"))
+        {
+            ui->spriteSimpleTextureComboBox->addItem(it->m_icon, it->m_spriteName);
+        }
+        else
+        {
+            ui->spriteTiledTextureComboBox->addItem(it->m_icon, it->m_spriteName);
+        }
     }
     QObject::connect(ui->coloredRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeColor);
     QObject::connect(ui->simpleTextRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeSimpleTexture);
