@@ -11,7 +11,7 @@ ConfNewLevelForm::ConfNewLevelForm(QWidget *parent) :
 {
     ui->setupUi(this);
     linkButtons();
-    setWindowFlags(Qt::WindowSystemMenuHint);
+    setWindowFlags(Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 }
 
 //======================================================================

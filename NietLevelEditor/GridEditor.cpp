@@ -26,7 +26,7 @@ GridEditor::GridEditor(QWidget *parent) : QDialog(parent), ui(new Ui::GridEditor
     m_checkpointForm(new CheckpointForm(this))
 {
     ui->setupUi(this);
-    setWindowFlags(Qt::WindowSystemMenuHint);
+    setWindowFlags(Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
     setWindowState(Qt::WindowMaximized);
 }
 
@@ -705,7 +705,7 @@ void GridEditor::loadStandardPictures(const QString &installDir, LevelElement_e 
     m_mapElementID[elementType].reserve(currentMap->size());
     for(std::map<QString, QString>::const_iterator it = currentMap->begin(); it != currentMap->end(); ++it)
     {
-        m_mapElementID[elementType].emplace_back(it->first);
+        m_mapElementID[elementType].push_back(it->first);
         spriteData = m_levelDataManager.getPictureData(it->second);
         assert(spriteData);
         m_drawData[currentIndex].push_back({it->first, it->second, getSprite(*spriteData, m_levelDataManager, installDir)});
