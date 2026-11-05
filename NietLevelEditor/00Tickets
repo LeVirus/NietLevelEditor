@@ -2,13 +2,16 @@
 Add windows to ask saving level while closing grid
 
 ))
-Add info windows to tell that level was successfully generated
-
-))
 Change form select new grid or load existing Replace Radio button for existing
 
+))
+If install dir already set don't ask again
+
 ============================================================================================
 ============================================================================================
+
+))
+Add info windows to tell that level was successfully generated===============OK
 
 ))
 Add loading windows while loading level grid========================OK
