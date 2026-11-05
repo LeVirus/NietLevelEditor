@@ -36,8 +36,11 @@ private slots:
     void openExistingLevel();
     void toggleNewLevel(bool selected);
     void toggleLoadLevel(bool selected);
+    void showProgressBar();
+    void hideProgressBar();
 private:
     Ui::ConfNewLevelForm *ui;
+    QDialog *m_progressDialog = nullptr;
     GridEditor *m_gridEditorForm = nullptr;
     QString m_installDirectory, m_existingLevelFile;
     bool m_directoryOK = false;

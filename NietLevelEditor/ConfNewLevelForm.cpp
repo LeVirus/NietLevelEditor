@@ -3,6 +3,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSpinBox>
+#include <QProgressBar>
+#include <QTimer>
 
 //======================================================================
 ConfNewLevelForm::ConfNewLevelForm(QWidget *parent) :
@@ -35,6 +37,10 @@ ConfNewLevelForm::~ConfNewLevelForm()
     if(m_gridEditorForm)
     {
         delete m_gridEditorForm;
+    }
+    if(m_progressDialog)
+    {
+        delete m_progressDialog;
     }
     delete ui;
 }
@@ -123,6 +129,37 @@ bool ConfNewLevelForm::checkInstallDirectory(const QString &directory)
 }
 
 //======================================================================
+void ConfNewLevelForm::showProgressBar()
+{
+    if (m_progressDialog)
+    {
+        return;
+    }
+    m_progressDialog = new QDialog(nullptr);
+    m_progressDialog->setWindowTitle("Loading");
+    m_progressDialog->setWindowModality(Qt::ApplicationModal);
+    m_progressDialog->setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowStaysOnTopHint);
+    m_progressDialog->setFixedSize(280, 80);
+
+    QVBoxLayout *layout = new QVBoxLayout(m_progressDialog);
+    layout->addWidget(new QLabel("Loading...", m_progressDialog));
+    QProgressBar *bar = new QProgressBar(m_progressDialog);
+    bar->setRange(0, 100);
+    bar->setTextVisible(false);
+    layout->addWidget(bar);
+    layout->setContentsMargins(20, 15, 20, 15);
+
+    m_progressDialog->show();
+    m_progressDialog->raise();
+    m_progressDialog->activateWindow();
+
+    // Force une petite boucle d’événements (comme QMessageBox)
+    QEventLoop loop;
+    QTimer::singleShot(100, &loop, &QEventLoop::quit);  // 100 ms pour laisser le temps de peindre
+    loop.exec();
+}
+
+//======================================================================
 void ConfNewLevelForm::onOkButtonClicked()
 {
     QSpinBox *widthLevelspinBox = findChild<QSpinBox*>("widthLevelspinBox"), *heightLevelspinBox = findChild<QSpinBox*>("heightLevelspinBox");
@@ -154,6 +191,7 @@ void ConfNewLevelForm::onOkButtonClicked()
             return;
         }
     }
+    showProgressBar();
     if(m_mode == FormMode_e::NEW_LEVEL)
     {
         m_gridEditorForm->initGrid(m_installDirectory, widthLevelspinBox->value(), heightLevelspinBox->value());
@@ -181,6 +219,18 @@ void ConfNewLevelForm::onOkButtonClicked()
     }
     m_gridEditorForm->unselectAllRadioButtons();
     m_existingLevelFile.clear();
+    hideProgressBar();
     m_gridEditorForm->exec();
     close();
+}
+
+//======================================================================
+void ConfNewLevelForm::hideProgressBar()
+{
+    if (m_progressDialog)
+    {
+        m_progressDialog->close();
+        delete m_progressDialog;
+        m_progressDialog = nullptr;
+    }
 }
