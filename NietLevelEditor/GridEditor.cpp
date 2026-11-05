@@ -1419,8 +1419,8 @@ void GridEditor::generateLevel()
         return;
     }
     m_levelDataManager.generateLevel(*m_tableModel, m_musicWidget->currentText(),
-                                     {&m_backgroundForm->getGroundData(), &m_backgroundForm->getCeilingData()},
-                                     m_memPlayerDirection, *m_globalLevelData);
+                                     {&m_backgroundForm->getGroundData(), &m_backgroundForm->getCeilingData()}, m_memPlayerDirection);
+    QMessageBox::information(nullptr, "Level", "The level has been successfully generated");
 }
 
 //======================================================================
