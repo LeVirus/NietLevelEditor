@@ -19,6 +19,7 @@ struct MoveWallData;
 class QComboBox;
 class CheckpointForm;
 class LogForm;
+class QProgressBar;
 class GlobalLevelConfForm;
 
 enum class LevelElement_e
@@ -78,7 +79,7 @@ public:
     explicit GridEditor(QWidget *parent = nullptr);
     bool loadMainInstallDirData(const QString &installDir);
     bool loadExistingLevelINI(const QString &levelFilePath);
-    void initGrid(const QString &installDir, int levelWidth, int levelHeight);
+    void initGrid(const QString &installDir, int levelWidth, int levelHeight, QProgressBar *bar);
     std::optional<QPair<int, int>> getLoadedLevelSize()const;
     bool loadExistingLevelGrid();
     void unselectAllRadioButtons();
@@ -102,7 +103,7 @@ private:
     void initSelectableWidgets();
     void initButtons();
     void initMusicDir(const QString &installDir, bool widgetInit);
-    void loadIconPictures(const QString &installDir);
+    void loadIconPictures(const QString &installDir, QProgressBar *bar);
     void loadSpritesForBackgroundForm();
     void loadWallsPictures(const QString &installDir);
     void loadDoorsPictures();
