@@ -131,7 +131,7 @@ bool ConfNewLevelForm::checkInstallDirectory(const QString &directory)
 //======================================================================
 void ConfNewLevelForm::showProgressBar()
 {
-    if (m_progressDialog)
+    if(m_progressDialog)
     {
         return;
     }
@@ -143,10 +143,13 @@ void ConfNewLevelForm::showProgressBar()
 
     QVBoxLayout *layout = new QVBoxLayout(m_progressDialog);
     layout->addWidget(new QLabel("Loading...", m_progressDialog));
-    QProgressBar *bar = new QProgressBar(m_progressDialog);
-    bar->setRange(0, 100);
-    bar->setTextVisible(false);
-    layout->addWidget(bar);
+    if(!m_bar)
+    {
+        m_bar = new QProgressBar(m_progressDialog);
+        m_bar->setRange(0, 100);
+        m_bar->setTextVisible(false);
+    }
+    layout->addWidget(m_bar);
     layout->setContentsMargins(20, 15, 20, 15);
 
     m_progressDialog->show();
@@ -194,7 +197,7 @@ void ConfNewLevelForm::onOkButtonClicked()
     showProgressBar();
     if(m_mode == FormMode_e::NEW_LEVEL)
     {
-        m_gridEditorForm->initGrid(m_installDirectory, widthLevelspinBox->value(), heightLevelspinBox->value());
+        m_gridEditorForm->initGrid(m_installDirectory, widthLevelspinBox->value(), heightLevelspinBox->value(), m_bar);
     }
     else if(m_mode == FormMode_e::EXISTING_LEVEL)
     {
@@ -210,7 +213,7 @@ void ConfNewLevelForm::onOkButtonClicked()
         }
         std::optional<QPair<int, int>> levelSize = m_gridEditorForm->getLoadedLevelSize();
         assert(levelSize);
-        m_gridEditorForm->initGrid(m_installDirectory, levelSize->first, levelSize->second);
+        m_gridEditorForm->initGrid(m_installDirectory, levelSize->first, levelSize->second, m_bar);
         if(!m_gridEditorForm->loadExistingLevelGrid())
         {
             QMessageBox::warning(this, "Error", "Error while loading level on grid.");
@@ -219,6 +222,7 @@ void ConfNewLevelForm::onOkButtonClicked()
     }
     m_gridEditorForm->unselectAllRadioButtons();
     m_existingLevelFile.clear();
+    m_bar->setValue(100);
     hideProgressBar();
     m_gridEditorForm->exec();
     close();
@@ -232,5 +236,6 @@ void ConfNewLevelForm::hideProgressBar()
         m_progressDialog->close();
         delete m_progressDialog;
         m_progressDialog = nullptr;
+        m_bar = nullptr;
     }
 }

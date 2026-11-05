@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include <iostream>
 #include <QDir>
+#include <QProgressBar>
 #include <algorithm>
 #include "TableModel.hpp"
 #include "SelectableLineLayout.hpp"
@@ -43,7 +44,7 @@ bool GridEditor::loadExistingLevelINI(const QString &levelFilePath)
 }
 
 //======================================================================
-void GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHeight)
+void GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHeight, QProgressBar *bar)
 {
     m_memDoorVertical.clear();
     m_wallMoveableMode = false;
@@ -51,7 +52,8 @@ void GridEditor::initGrid(const QString &installDir, int levelWidth, int levelHe
     m_wallDrawMode = WallDrawShape_e::LINE_AND_RECT;
     m_elementSelected = false;
     m_installDir = installDir;
-    loadIconPictures(installDir);
+    loadIconPictures(installDir, bar);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     if(!m_moveableWallForm)
     {
         m_moveableWallForm = new MoveableWallForm(this);
@@ -495,22 +497,48 @@ void GridEditor::initMusicDir(const QString &installDir, bool widgetInit)
 }
 
 //======================================================================
-void GridEditor::loadIconPictures(const QString &installDir)
+void GridEditor::loadIconPictures(const QString &installDir, QProgressBar *bar)
 {
     m_mapElementID.clear();
     loadWallsPictures(installDir);
+    bar->setValue(8);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     loadDoorsPictures();
+    bar->setValue(16);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     loadCardPictures(installDir);
+    bar->setValue(24);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     loadBackgroundPictures(installDir);
+    bar->setValue(32);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     loadStandardPictures(installDir, LevelElement_e::LOG);
+    bar->setValue(40);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     loadStandardPictures(installDir, LevelElement_e::TELEPORT);
+    bar->setValue(48);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     loadStandardPictures(installDir, LevelElement_e::ENEMY);
+    bar->setValue(56);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     loadStandardPictures(installDir, LevelElement_e::OBJECT);
+    bar->setValue(64);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     loadStandardPictures(installDir, LevelElement_e::TRIGGER);
+    bar->setValue(72);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     loadStandardPictures(installDir, LevelElement_e::STATIC_GROUND);
+    bar->setValue(80);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     loadStandardPictures(installDir, LevelElement_e::STATIC_CEILING);
+    bar->setValue(88);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     loadStandardPictures(installDir, LevelElement_e::BARREL);
+    bar->setValue(96);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     loadStandardPictures(installDir, LevelElement_e::EXIT);
+    bar->setValue(100);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 }
 
 //======================================================================

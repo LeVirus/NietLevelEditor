@@ -8,6 +8,8 @@ namespace Ui
 class ConfNewLevelForm;
 }
 
+class QProgressBar;
+
 enum class FormMode_e
 {
     UNSELECTED,
@@ -41,6 +43,7 @@ private slots:
 private:
     Ui::ConfNewLevelForm *ui;
     QDialog *m_progressDialog = nullptr;
+    QProgressBar *m_bar = nullptr;
     GridEditor *m_gridEditorForm = nullptr;
     QString m_installDirectory, m_existingLevelFile;
     bool m_directoryOK = false;
