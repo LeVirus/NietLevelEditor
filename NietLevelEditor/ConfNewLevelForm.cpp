@@ -107,24 +107,35 @@ void ConfNewLevelForm::onBrowseIniFileClicked()
 //======================================================================
 bool ConfNewLevelForm::checkInstallDirectory(const QString &directory)
 {
+    uint32_t i = 0;
     QFileDialog dialog;
     QStringList files;
     m_directoryOK = false;
-    m_installDirectory = directory;
-    QDir dir(m_installDirectory);
-    if(dir.exists())
+    if(m_installDirectory.isEmpty())
     {
-        if(dir.cd("Ressources") && dir.exists())
+        m_installDirectory = directory;
+        ++i;
+    }
+    for(;i < 2; ++i)
+    {
+        //if m_installDirectory not empty check initial value first
+        QDir dir(m_installDirectory);
+        if(dir.exists())
         {
-            files = dir.entryList(QStringList() << "*.ini", QDir::Files);
-            if(files.contains("pictureData.ini") && files.contains("standardData.ini"))
+            if(dir.cd("Ressources") && dir.exists())
             {
-                m_directoryOK = true;
-                //OK
-                return true;
+                files = dir.entryList(QStringList() << "*.ini", QDir::Files);
+                if(files.contains("pictureData.ini") && files.contains("standardData.ini"))
+                {
+                    m_directoryOK = true;
+                    //OK
+                    return true;
+                }
             }
         }
+        m_installDirectory = directory;
     }
+
     return false;
 }
 
