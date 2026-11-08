@@ -16,3 +16,6 @@ If install dir already set don't ask again==================OK
 ))
 Change form select new grid or load existing Replace Radio button for existing=======================OK
 
+))
+Don't close select level window after validation=============OK
+
