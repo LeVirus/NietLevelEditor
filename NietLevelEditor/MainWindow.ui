@@ -17,10 +17,10 @@
    <widget class="QPushButton" name="NewLevelButton">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>240</y>
-      <width>131</width>
-      <height>28</height>
+      <x>290</x>
+      <y>150</y>
+      <width>221</width>
+      <height>111</height>
      </rect>
     </property>
     <property name="text">
@@ -30,10 +30,10 @@
    <widget class="QPushButton" name="QuitButton">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>290</x>
       <y>290</y>
-      <width>131</width>
-      <height>28</height>
+      <width>221</width>
+      <height>121</height>
      </rect>
     </property>
     <property name="text">
@@ -47,7 +47,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>
