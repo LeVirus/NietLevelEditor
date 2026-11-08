@@ -17,16 +17,7 @@ ConfNewLevelForm::ConfNewLevelForm(QWidget *parent) :
 //======================================================================
 void ConfNewLevelForm::clearForm()
 {
-    ui->browseExistingLevel->setEnabled(false);
-    ui->widthLevelspinBox->setEnabled(false);
-    ui->heightLevelspinBox->setEnabled(false);
-    ui->radioExistingLevel->setAutoExclusive(false);
-    ui->radioExistingLevel->setChecked(false);
-    ui->radioExistingLevel->setAutoExclusive(true);
-    ui->radioNewLevel->setAutoExclusive(false);
-    ui->radioNewLevel->setChecked(false);
-    ui->radioNewLevel->setAutoExclusive(true);
-    m_mode = FormMode_e::UNSELECTED;
+    m_mode = FormMode_e::EXISTING_LEVEL;
 }
 
 //======================================================================
@@ -42,12 +33,10 @@ ConfNewLevelForm::~ConfNewLevelForm()
 //======================================================================
 void ConfNewLevelForm::linkButtons()
 {
-    QObject::connect(ui->browseButton, SIGNAL(clicked()), this, SLOT(onBrowseIniFileClicked()));
+    // QObject::connect(ui->browseButton, SIGNAL(clicked()), this, SLOT(onBrowseIniFileClicked()));
     QObject::connect(ui->browseExistingLevel, SIGNAL(clicked()), this, SLOT(openExistingLevel()));
     QObject::connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(close()));
     QObject::connect(ui->okButton, SIGNAL(clicked()), this, SLOT(onOkButtonClicked()));
-    QObject::connect(ui->radioNewLevel, SIGNAL(toggled(bool)), this, SLOT(toggleNewLevel(bool)));
-    QObject::connect(ui->radioExistingLevel, SIGNAL(toggled(bool)), this, SLOT(toggleLoadLevel(bool)));
 }
 
 //======================================================================
@@ -64,31 +53,8 @@ void ConfNewLevelForm::openExistingLevel()
     }
     else
     {
-        onOkButtonClicked();
-    }
-}
-
-//======================================================================
-void ConfNewLevelForm::toggleNewLevel(bool selected)
-{
-    if(selected)
-    {
-        ui->widthLevelspinBox->setEnabled(selected);
-        ui->heightLevelspinBox->setEnabled(selected);
-        ui->browseExistingLevel->setEnabled(!selected);
-        m_mode = FormMode_e::NEW_LEVEL;
-    }
-}
-
-//======================================================================
-void ConfNewLevelForm::toggleLoadLevel(bool selected)
-{
-    if(selected)
-    {
-        ui->widthLevelspinBox->setEnabled(!selected);
-        ui->heightLevelspinBox->setEnabled(!selected);
-        ui->browseExistingLevel->setEnabled(selected);
         m_mode = FormMode_e::EXISTING_LEVEL;
+        onOkButtonClicked();
     }
 }
 
@@ -122,6 +88,7 @@ bool ConfNewLevelForm::checkInstallDirectory(const QString &directory)
                 if(files.contains("pictureData.ini") && files.contains("standardData.ini"))
                 {
                     m_directoryOK = true;
+                    m_mode = FormMode_e::NEW_LEVEL;
                     //OK
                     return true;
                 }
@@ -176,12 +143,6 @@ void ConfNewLevelForm::onOkButtonClicked()
     if(m_installDirectory.isEmpty())
     {
         QMessageBox::warning(this, "Error", "Please select install directory.");
-        return;
-    }
-
-    if(m_mode == FormMode_e::UNSELECTED)
-    {
-        QMessageBox::warning(this, "Error", "Please select editing mode (New or existing level).");
         return;
     }
     if(m_gridEditorForm)

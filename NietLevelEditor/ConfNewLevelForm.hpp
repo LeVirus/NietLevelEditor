@@ -12,7 +12,6 @@ class QProgressBar;
 
 enum class FormMode_e
 {
-    UNSELECTED,
     NEW_LEVEL,
     EXISTING_LEVEL
 };
@@ -38,6 +37,8 @@ private slots:
     void openExistingLevel();
     void toggleNewLevel(bool selected);
     void toggleLoadLevel(bool selected);
+    void showProgressBar();
+    void hideProgressBar();
 private:
     Ui::ConfNewLevelForm *ui;
     QDialog *m_progressDialog = nullptr;
