@@ -12,7 +12,6 @@ class QProgressBar;
 
 enum class FormMode_e
 {
-    UNSELECTED,
     NEW_LEVEL,
     EXISTING_LEVEL
 };
@@ -36,8 +35,6 @@ public slots:
 private slots:
     void onOkButtonClicked();
     void openExistingLevel();
-    void toggleNewLevel(bool selected);
-    void toggleLoadLevel(bool selected);
     void showProgressBar();
     void hideProgressBar();
 private:
