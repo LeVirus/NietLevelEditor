@@ -137,6 +137,7 @@ private:
     void setTargetTeleport(const QModelIndex &caseIndex);
     void setColorElement(const QModelIndex &caseIndex, LevelElement_e elementType);
     void setTeleporter(const QModelIndex &caseIndex);
+    void closeEvent(QCloseEvent *event)override;
 private slots:
     void execConfCeilingBackground();
     void execConfGroundBackground();
@@ -183,7 +184,7 @@ private:
     QComboBox *m_musicWidget;
     Direction_e m_memPlayerDirection = Direction_e::NORTH;
     std::optional<GlobalLevelData> m_globalLevelData;
-    bool m_widgetInit = false, m_loadingExistingLevelMode = false, m_loadingDistantTriggerMode = false;
+    bool m_widgetInit = false, m_loadingExistingLevelMode = false, m_loadingDistantTriggerMode = false, m_change = false;
 };
 
 QString getStrDir(Direction_e direction);
