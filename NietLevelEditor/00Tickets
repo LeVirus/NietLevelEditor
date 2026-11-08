@@ -1,5 +1,8 @@
 ))
-Add windows to ask saving level while closing grid
+If save and cancel, Window saved success appear.
+
+))
+Clean up background wizard
 
 ============================================================================================
 ============================================================================================
@@ -18,4 +21,7 @@ Change form select new grid or load existing Replace Radio button for existing==
 
 ))
 Don't close select level window after validation=============OK
+
+))
+Add windows to ask saving level while closing grid================OK
 

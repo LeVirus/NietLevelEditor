@@ -1153,8 +1153,11 @@ void GridEditor::mouseReleaseSelection()
     {
         return;
     }
+    bool currentChange = m_change;
+    m_change = true;
     if(m_currentElementType == LevelElement_e::WALL)
     {
+        m_change = true;
         assert(ui->tableView->selectionModel()->selection().indexes().size() == 1);
         m_secondCaseSelection = ui->tableView->selectionModel()->selection().indexes()[0];
         treatWallDrawing();
@@ -1171,6 +1174,10 @@ void GridEditor::mouseReleaseSelection()
     }
     else
     {
+        if(!currentChange)
+        {
+            m_change = false;
+        }
         treatElementsDrawing();
     }
     m_firstCaseSelection = m_tableModel->index(-1, -1, QModelIndex());
@@ -1277,6 +1284,8 @@ void GridEditor::treatDoorDrawing()
 //======================================================================
 void GridEditor::treatElementsDrawing()
 {
+    bool currentChange = m_change;
+    m_change = true;
     bool deleteMode = m_currentElementType == LevelElement_e::DELETE;
     QModelIndex caseIndex = ui->tableView->selectionModel()->selection().indexes()[0];
     int index = static_cast<int>(m_currentElementType);
@@ -1306,6 +1315,10 @@ void GridEditor::treatElementsDrawing()
     }
     else if(m_currentElementType == LevelElement_e::SELECTION)
     {
+        if(!currentChange)
+        {
+            m_change = false;
+        }
         treatSelection(caseIndex);
         return;
     }
@@ -1382,6 +1395,7 @@ void GridEditor::generateLevel()
     m_levelDataManager.generateLevel(*m_tableModel, m_musicWidget->currentText(),
                                      {&m_backgroundForm->getGroundData(), &m_backgroundForm->getCeilingData()}, m_memPlayerDirection);
     QMessageBox::information(nullptr, "Level", "The level has been successfully generated");
+    m_change = false;
 }
 
 //======================================================================
@@ -1483,6 +1497,29 @@ void GridEditor::setColorElement(const QModelIndex &caseIndex, LevelElement_e el
         m_tableModel->removeData(caseIndex);
     }
     setColorCaseData(caseIndex.column(), caseIndex.row(), elementType, checkpointData);
+}
+
+//======================================================================
+void GridEditor::closeEvent(QCloseEvent *event)
+{
+    if(m_change)
+    {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Save", "All your changes have not been saved.\nDo you want to close?",
+                                      QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes)
+        {
+            event->accept();
+        }
+        else
+        {
+            event->ignore();
+        }
+    }
+    else
+    {
+        event->accept();
+    }
 }
 
 //======================================================================
