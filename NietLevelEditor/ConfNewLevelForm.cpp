@@ -33,7 +33,6 @@ ConfNewLevelForm::~ConfNewLevelForm()
 //======================================================================
 void ConfNewLevelForm::linkButtons()
 {
-    // QObject::connect(ui->browseButton, SIGNAL(clicked()), this, SLOT(onBrowseIniFileClicked()));
     QObject::connect(ui->browseExistingLevel, SIGNAL(clicked()), this, SLOT(openExistingLevel()));
     QObject::connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(close()));
     QObject::connect(ui->okButton, SIGNAL(clicked()), this, SLOT(onOkButtonClicked()));
@@ -190,7 +189,7 @@ void ConfNewLevelForm::onOkButtonClicked()
     m_bar->setValue(100);
     hideProgressBar();
     m_gridEditorForm->exec();
-    close();
+    // close();
 }
 
 //======================================================================
