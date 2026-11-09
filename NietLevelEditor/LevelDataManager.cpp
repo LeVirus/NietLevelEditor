@@ -590,17 +590,21 @@ std::optional<QPair<int, int>> LevelDataManager::getLoadedLevelSize()const
 }
 
 //======================================================================
-void LevelDataManager::generateLevel(const TableModel &tableModel, const QString &musicFilename,
+bool LevelDataManager::generateLevel(const TableModel &tableModel, const QString &musicFilename,
                                      const QPair<BackgroundData const*, BackgroundData const*> &backgroundData, Direction_e playerDirection)
 {
     if(!tableModel.checkLevelData())
     {
         QMessageBox::warning(nullptr, "Error", "Player departure or end level enemy, and Exit have to be defined");
-        return;
+        return false;
     }
     QFileDialog dialog;
     QString selfilter = "CLVL (*.clvl)", filename;
     filename = dialog.getSaveFileName(nullptr, "Level file selection", m_installDirectory + "/Ressources/", selfilter, &selfilter);
+    if(filename.isEmpty())
+    {
+        return false;
+    }
     QFile file(filename);
     if(file.exists())
     {
@@ -641,6 +645,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     str = encrypt(stringStream.str(), ENCRYPTION_KEY_CUSTOM_LEVEL);
     outputStream << str;
     outputStream.close();
+    return true;
 }
 
 //===================================================================
