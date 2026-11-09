@@ -23,12 +23,9 @@ BackgroundForm::~BackgroundForm()
 void BackgroundForm::modifBackgroundDisplayMode(BackgroundDisplayMode_e mode)
 {
     m_displayMode = mode;
-    ui->colorContainer->setEnabled(mode == BackgroundDisplayMode_e::COLOR || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE);
-    ui->spriteSimpleTextureComboBox->setEnabled(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE ||
-                                          mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE);
-    ui->spriteTiledTextureComboBox->setEnabled(mode == BackgroundDisplayMode_e::TILED_TEXTURE ||
-                                         mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE ||
-                                         mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE);
+    ui->colorContainer->setEnabled(mode == BackgroundDisplayMode_e::COLOR);
+    ui->spriteSimpleTextureComboBox->setEnabled(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE);
+    ui->spriteTiledTextureComboBox->setEnabled(mode == BackgroundDisplayMode_e::TILED_TEXTURE);
 }
 
 //======================================================================
@@ -55,24 +52,6 @@ void BackgroundForm::modifDisplayModeSimpleTexture(bool toggled)
     if(toggled)
     {
         modifBackgroundDisplayMode(BackgroundDisplayMode_e::SIMPLE_TEXTURE);
-    }
-}
-
-//======================================================================
-void BackgroundForm::modifDisplayModeColorAndTiledTexture(bool toggled)
-{
-    if(toggled)
-    {
-        modifBackgroundDisplayMode(BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE);
-    }
-}
-
-//======================================================================
-void BackgroundForm::modifDisplayModeSimpleTextureAndTiledTexture(bool toggled)
-{
-    if(toggled)
-    {
-        modifBackgroundDisplayMode(BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE);
     }
 }
 
@@ -195,12 +174,6 @@ void BackgroundForm::unckeckAll()
     ui->tiledTextRadioButton->setAutoExclusive(false);
     ui->tiledTextRadioButton->setChecked(false);
     ui->tiledTextRadioButton->setAutoExclusive(true);
-    ui->simpleTextureAndTiledTextRadioButton->setAutoExclusive(false);
-    ui->simpleTextureAndTiledTextRadioButton->setChecked(false);
-    ui->simpleTextureAndTiledTextRadioButton->setAutoExclusive(true);
-    ui->colorAndTiledTextRadioButton->setAutoExclusive(false);
-    ui->colorAndTiledTextRadioButton->setChecked(false);
-    ui->colorAndTiledTextRadioButton->setAutoExclusive(true);
     ui->colorContainer->setEnabled(false);
     ui->spriteSimpleTextureComboBox->setEnabled(false);
     ui->spriteTiledTextureComboBox->setEnabled(false);
@@ -229,9 +202,6 @@ void BackgroundForm::confWidgets(const QVector<BackgroundDataPic> &iconData)
     QObject::connect(ui->coloredRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeColor);
     QObject::connect(ui->simpleTextRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeSimpleTexture);
     QObject::connect(ui->tiledTextRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeTiledTexture);
-    QObject::connect(ui->simpleTextureAndTiledTextRadioButton, &QRadioButton::toggled,
-                     this, &BackgroundForm::modifDisplayModeSimpleTextureAndTiledTexture);
-    QObject::connect(ui->colorAndTiledTextRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeColorAndTiledTexture);
     QObject::connect(ui->OkButton, &QRadioButton::clicked, this, &BackgroundForm::confirmForm);
     QObject::connect(ui->CancelButton, &QRadioButton::clicked, this, &BackgroundForm::close);
     unckeckAll();
