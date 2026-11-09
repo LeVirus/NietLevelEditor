@@ -744,14 +744,6 @@ bool LevelDataManager::loadBackgroundLevel(bool ground, const QSettings &ini)
         {
             mode = BackgroundDisplayMode_e::TILED_TEXTURE;
         }
-        else if(mode == BackgroundDisplayMode_e::COLOR)
-        {
-            mode = BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE;
-        }
-        else if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE)
-        {
-            mode = BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE;
-        }
     }
     currentBackground.m_displayMode = mode;
     return true;
@@ -1062,7 +1054,7 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
     //GROUND====
     BackgroundDisplayMode_e mode = backgroundData.first->m_displayMode;
     //COLOR
-    if(mode == BackgroundDisplayMode_e::COLOR || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE)
+    if(mode == BackgroundDisplayMode_e::COLOR)
     {
         QString colorR, colorG, colorB;
         for(uint32_t i = 0; i < 4; ++i)
@@ -1077,13 +1069,12 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
         m_ini.setValue("ColorGroundBackground", "colorB", formatToIniFile(colorB).toStdString());
     }
     //SIMPLE TEXTURE
-    if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
+    if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE)
     {
         m_ini.setValue("SimpleTextureGroundBackground", "sprite", backgroundData.first->m_simpleTexture.toStdString());
     }
     //TILED TEXTURE
-    if(mode == BackgroundDisplayMode_e::TILED_TEXTURE || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE ||
-            mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
+    if(mode == BackgroundDisplayMode_e::TILED_TEXTURE)
     {
         m_ini.setValue("TiledTextureGroundBackground", "sprite", backgroundData.first->m_tiledTexture.toStdString());
     }
@@ -1091,7 +1082,7 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
     //CEILING====
     mode = backgroundData.second->m_displayMode;
     //COLOR
-    if(mode == BackgroundDisplayMode_e::COLOR || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE)
+    if(mode == BackgroundDisplayMode_e::COLOR)
     {
         QString colorR, colorG, colorB;
         for(uint32_t i = 0; i < 4; ++i)
@@ -1106,13 +1097,12 @@ void LevelDataManager::loadBackgroundData(const BackgroundPairData_t &background
         m_ini.setValue("ColorCeilingBackground", "colorB", formatToIniFile(colorB).toStdString());
     }
     //SIMPLE TEXTURE
-    if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE || mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
+    if(mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE)
     {
         m_ini.setValue("SimpleTextureCeilingBackground", "sprite", backgroundData.second->m_simpleTexture.toStdString());
     }
     //TILED TEXTURE
-    if(mode == BackgroundDisplayMode_e::TILED_TEXTURE || mode == BackgroundDisplayMode_e::COLOR_AND_TILED_TEXTURE ||
-            mode == BackgroundDisplayMode_e::SIMPLE_TEXTURE_AND_TILED_TEXTURE)
+    if(mode == BackgroundDisplayMode_e::TILED_TEXTURE)
     {
         m_ini.setValue("TiledTextureCeilingBackground", "sprite", backgroundData.second->m_tiledTexture.toStdString());
     }
