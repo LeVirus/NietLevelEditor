@@ -24,6 +24,8 @@ class GlobalLevelConfForm;
 
 enum class LevelElement_e
 {
+    PLAYER_DEPARTURE,
+    EXIT,
     WALL,
     DOOR,
     TELEPORT,
@@ -36,8 +38,6 @@ enum class LevelElement_e
     LOG,
     TRIGGER,
     GROUND_TRIGGER,
-    EXIT,
-    PLAYER_DEPARTURE,
     CHECKPOINT,
     SECRET,
     SELECTION,
