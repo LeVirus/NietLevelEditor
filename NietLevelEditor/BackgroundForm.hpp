@@ -40,6 +40,14 @@ public:
     {
         return m_ceilingBackground;
     }
+    inline bool ceilingDataSet()const
+    {
+        return m_ceilingSet;
+    }
+    inline bool groundDataSet()const
+    {
+        return m_groundSet;
+    }
     void modifBackgroundDisplayMode(BackgroundDisplayMode_e mode);
     void unckeckAll();
     bool backgroundSetted();
