@@ -629,7 +629,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     if(!tableModel.checkLevelData())
     {
         QMessageBox::warning(nullptr, "Error", "Player departure or end level enemy, and Exit have to be defined");
-        return;
+        return false;
     }
     QFileDialog dialog;
     QString selfilter = "INI (*.ini)", filename;
@@ -684,6 +684,7 @@ void LevelDataManager::generateLevel(const TableModel &tableModel, const QString
     str = encrypt(stringStream.str(), ENCRYPTION_KEY_STANDARD_LEVEL);
     outputStream << str;
     outputStream.close();
+    return true;
 }
 
 //===================================================================

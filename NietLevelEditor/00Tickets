@@ -1,7 +1,4 @@
 ))
-If save and cancel, Window saved success appear.
-
-))
 Clean up background wizard
 
 ============================================================================================
@@ -24,4 +21,7 @@ Don't close select level window after validation=============OK
 
 ))
 Add windows to ask saving level while closing grid================OK
+
+))
+If save and cancel, Window saved success appear.=================OK
 
