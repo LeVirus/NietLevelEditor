@@ -94,7 +94,7 @@ public:
     }
     inline bool endLevelSet()const
     {
-        return m_exitPos && m_levelEndEnemy;
+        return m_exitPos || m_levelEndEnemy;
     }
     inline bool playerDepartureLevelSet()const
     {
