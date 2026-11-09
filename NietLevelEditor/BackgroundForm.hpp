@@ -12,8 +12,6 @@ enum class BackgroundDisplayMode_e
     COLOR,
     TILED_TEXTURE,
     SIMPLE_TEXTURE,
-    COLOR_AND_TILED_TEXTURE,
-    SIMPLE_TEXTURE_AND_TILED_TEXTURE,
     NONE
 };
 
@@ -51,8 +49,6 @@ private slots:
     void modifDisplayModeColor(bool toggled);
     void modifDisplayModeTiledTexture(bool toggled);
     void modifDisplayModeSimpleTexture(bool toggled);
-    void modifDisplayModeColorAndTiledTexture(bool toggled);
-    void modifDisplayModeSimpleTextureAndTiledTexture(bool toggled);
     void confirmForm();
     void memColorCase(const QObject *widget);
 private:

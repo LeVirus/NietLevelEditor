@@ -1384,6 +1384,7 @@ void GridEditor::execConfCeilingBackground()
 {
     m_backgroundForm->confCeilingOrGroundMode(true);
     m_backgroundForm->unckeckAll();
+    m_backgroundForm->setWindowTitle("Ceiling");
     m_backgroundForm->exec();
 }
 
@@ -1392,6 +1393,7 @@ void GridEditor::execConfGroundBackground()
 {
     m_backgroundForm->confCeilingOrGroundMode(false);
     m_backgroundForm->unckeckAll();
+    m_backgroundForm->setWindowTitle("Ground");
     m_backgroundForm->exec();
 }
 

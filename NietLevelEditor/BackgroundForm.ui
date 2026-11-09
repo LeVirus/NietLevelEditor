@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>615</width>
-    <height>430</height>
+    <width>937</width>
+    <height>554</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QWidget" name="colorContainer" native="true">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>80</y>
+     <x>270</x>
+     <y>20</y>
      <width>601</width>
      <height>231</height>
     </rect>
@@ -294,8 +294,8 @@
   <widget class="QPushButton" name="OkButton">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>370</y>
+     <x>370</x>
+     <y>480</y>
      <width>88</width>
      <height>28</height>
     </rect>
@@ -307,8 +307,8 @@
   <widget class="QPushButton" name="CancelButton">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>370</y>
+     <x>500</x>
+     <y>480</y>
      <width>88</width>
      <height>28</height>
     </rect>
@@ -317,90 +317,66 @@
     <string>Cancel</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>300</y>
+     <x>290</x>
+     <y>270</y>
      <width>561</width>
      <height>30</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QLabel" name="label_9">
-      <property name="text">
-       <string>Simple Texture</string>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QComboBox" name="spriteSimpleTextureComboBox"/>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_10">
-      <property name="text">
-       <string>Tiled Texture</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QComboBox" name="spriteTiledTextureComboBox"/>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>20</y>
-     <width>396</width>
-     <height>60</height>
+     <x>80</x>
+     <y>80</y>
+     <width>182</width>
+     <height>401</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
-      <item>
-       <widget class="QRadioButton" name="coloredRadioButton">
-        <property name="text">
-         <string>Color</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="colorAndTiledTextRadioButton">
-        <property name="text">
-         <string>Color and Tiled Picture</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="simpleTextureAndTiledTextRadioButton">
-        <property name="text">
-         <string>Simple and Tiled Picture</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <widget class="QRadioButton" name="coloredRadioButton">
+      <property name="text">
+       <string>Color</string>
+      </property>
+     </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_6">
-      <item>
-       <widget class="QRadioButton" name="simpleTextRadioButton">
-        <property name="text">
-         <string>Simple Picture</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="tiledTextRadioButton">
-        <property name="text">
-         <string>Tiled Picture</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <widget class="QRadioButton" name="simpleTextRadioButton">
+      <property name="text">
+       <string>Simple Picture</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QRadioButton" name="tiledTextRadioButton">
+      <property name="text">
+       <string>Tiled Picture</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>380</y>
+     <width>561</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <widget class="QComboBox" name="spriteTiledTextureComboBox"/>
     </item>
    </layout>
   </widget>

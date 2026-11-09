@@ -1,8 +1,11 @@
 ))
-Clean up background wizard
+For teleport add Qmessagebox to tell that target has to be set
 
 ============================================================================================
 ============================================================================================
+
+))
+Clean up background wizard================OK
 
 ))
 Add info windows to tell that level was successfully generated===============OK
