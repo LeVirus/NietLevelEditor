@@ -1392,10 +1392,13 @@ void GridEditor::generateLevel()
         QMessageBox::warning(nullptr, "Error", "Ground OR/AND Ceiling background are not been setted.");
         return;
     }
-    m_levelDataManager.generateLevel(*m_tableModel, m_musicWidget->currentText(),
+    bool generated = m_levelDataManager.generateLevel(*m_tableModel, m_musicWidget->currentText(),
                                      {&m_backgroundForm->getGroundData(), &m_backgroundForm->getCeilingData()}, m_memPlayerDirection);
-    QMessageBox::information(nullptr, "Level", "The level has been successfully generated");
-    m_change = false;
+    if(generated)
+    {
+        QMessageBox::information(nullptr, "Level", "The level has been successfully generated");
+        m_change = false;
+    }
 }
 
 //======================================================================
