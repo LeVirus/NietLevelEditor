@@ -1350,6 +1350,7 @@ void GridEditor::treatElementsDrawing()
         m_lastPositionAdded = {caseIndex.column(), caseIndex.row()};
         setLineSelectableEnabled(false);
         m_currentElementType = LevelElement_e::TARGET_TELEPORT;
+        QMessageBox::information(nullptr, "Teleport", "Please select the target of the teleport.");
     }
     else if(m_currentElementType == LevelElement_e::TRIGGER)
     {
