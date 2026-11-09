@@ -1391,7 +1391,22 @@ void GridEditor::generateLevel()
 {
     if(!m_backgroundForm->backgroundSetted())
     {
-        QMessageBox::warning(nullptr, "Error", "Ground OR/AND Ceiling background are not been setted.");
+        bool ceilingNotSetted = !m_backgroundForm->ceilingDataSet();
+        bool groundNotSetted = !m_backgroundForm->groundDataSet();
+        QString str;
+        if(ceilingNotSetted && groundNotSetted)
+        {
+            str = "Ground and Ceiling backgrounds are not been setted.";
+        }
+        else if(ceilingNotSetted && !groundNotSetted)
+        {
+            str = "Ceiling background are not been setted.";
+        }
+        else if(!ceilingNotSetted && groundNotSetted)
+        {
+            str = "Ground background are not been setted.";
+        }
+        QMessageBox::warning(nullptr, "Error", str);
         return;
     }
     bool generated = m_levelDataManager.generateLevel(*m_tableModel, m_musicWidget->currentText(),

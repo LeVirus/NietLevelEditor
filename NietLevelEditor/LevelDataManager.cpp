@@ -595,7 +595,24 @@ bool LevelDataManager::generateLevel(const TableModel &tableModel, const QString
 {
     if(!tableModel.checkLevelData())
     {
-        QMessageBox::warning(nullptr, "Error", "Player departure or end level enemy, and Exit have to be defined");
+
+        QString str;
+        bool playerDepartureNotSet = !tableModel.playerDepartureLevelSet();
+        bool endLevelNotSet = !tableModel.endLevelSet();
+        if(playerDepartureNotSet && endLevelNotSet)
+        {
+            str = "Player departure and Exit OR end level enemy have to been setted.";
+        }
+        else if(playerDepartureNotSet && !endLevelNotSet)
+        {
+            str = "Player departure has to been setted.";
+        }
+        else if(!playerDepartureNotSet && endLevelNotSet)
+        {
+            str = "Exit OR end level enemy has to been setted.";
+        }
+
+        QMessageBox::warning(nullptr, "Error", str);
         return false;
     }
     QFileDialog dialog;

@@ -92,6 +92,14 @@ public:
     {
         m_levelEndEnemy = pos;
     }
+    inline bool endLevelSet()const
+    {
+        return m_exitPos && m_levelEndEnemy;
+    }
+    inline bool playerDepartureLevelSet()const
+    {
+        return m_departurePlayer != std::nullopt;
+    }
     void clearPreview();
     void clearModel();
     void setPreviewCase(int x, int y);
