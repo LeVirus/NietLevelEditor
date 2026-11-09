@@ -1,5 +1,4 @@
-))
-For teleport add Qmessagebox to tell that target has to be set
+
 
 ============================================================================================
 ============================================================================================
@@ -27,4 +26,7 @@ Add windows to ask saving level while closing grid================OK
 
 ))
 If save and cancel, Window saved success appear.=================OK
+
+))
+For teleport add Qmessagebox to tell that target has to be set==================OK
 
