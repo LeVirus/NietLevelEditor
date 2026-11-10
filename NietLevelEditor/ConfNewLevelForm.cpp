@@ -1,8 +1,10 @@
 #include "ConfNewLevelForm.hpp"
+#include "qprogressbar.h"
 #include "ui_ConfNewLevelForm.h"
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSpinBox>
+#include <QTimer>
 
 //======================================================================
 ConfNewLevelForm::ConfNewLevelForm(QWidget *parent) :
