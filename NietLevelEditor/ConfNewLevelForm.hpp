@@ -35,8 +35,6 @@ public slots:
 private slots:
     void onOkButtonClicked();
     void openExistingLevel();
-    void toggleNewLevel(bool selected);
-    void toggleLoadLevel(bool selected);
     void showProgressBar();
     void hideProgressBar();
 private:
