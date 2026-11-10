@@ -501,6 +501,7 @@ void GridEditor::loadIconPictures(const QString &installDir, QProgressBar *bar)
 {
     m_mapElementID.clear();
     loadWallsPictures(installDir);
+    assert(bar);
     bar->setValue(8);
     QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     loadDoorsPictures();

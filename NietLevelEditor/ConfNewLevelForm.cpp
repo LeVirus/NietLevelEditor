@@ -161,6 +161,7 @@ void ConfNewLevelForm::onOkButtonClicked()
             return;
         }
     }
+    showProgressBar();
     if(m_mode == FormMode_e::NEW_LEVEL)
     {
         m_gridEditorForm->initGrid(m_installDirectory, widthLevelspinBox->value(), heightLevelspinBox->value(), m_bar);
