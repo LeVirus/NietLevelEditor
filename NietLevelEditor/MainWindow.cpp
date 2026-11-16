@@ -24,6 +24,11 @@ void MainWindow::openEmptyEditorGrid()
     {
         QMessageBox::information(nullptr, "Install directory selection", "Please select game install directory.");
         m_confNewLevelForm.onBrowseIniFileClicked();
+        if(!m_confNewLevelForm.isDirectorySelected())
+        {
+            QMessageBox::warning(nullptr, "Error", "No correct install directory has been selected.");
+            return;
+        }
     }
     m_confNewLevelForm.exec();
 }

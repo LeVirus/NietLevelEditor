@@ -1559,7 +1559,6 @@ void GridEditor::closeEvent(QCloseEvent *event)
 {
     if(m_change)
     {
-
         QMessageBox msgBox(this);
         msgBox.setText("Your changes have not been saved.");
         msgBox.setInformativeText("Do you want to save your changes?");
