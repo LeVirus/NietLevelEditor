@@ -1525,16 +1525,32 @@ void GridEditor::closeEvent(QCloseEvent *event)
 {
     if(m_change)
     {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Save", "All your changes have not been saved.\nDo you want to close?",
-                                      QMessageBox::Yes | QMessageBox::No);
-        if (reply == QMessageBox::Yes)
+
+        QMessageBox msgBox(this);
+        msgBox.setText("Your changes have not been saved.");
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int reply = msgBox.exec();
+        if(reply == QMessageBox::Discard)
         {
             event->accept();
         }
-        else
+        else if(reply == QMessageBox::Cancel)
         {
             event->ignore();
+        }
+        else
+        {
+            generateLevel();
+            if(m_change)
+            {
+                event->ignore();
+            }
+            else
+            {
+                event->accept();
+            }
         }
     }
     else
