@@ -1,7 +1,4 @@
 ))
-Pour la pop-up Voulez vous vraiment quitter sans sauvegarder, mettre non selectionné par défaut.
-
-))
 Dans la config des murs mouvants, déplacer l'entrée AUTO dans le menu combo tout à droite
 
 ))
@@ -12,6 +9,9 @@ Dans le cas où la selection du dossier jeu est mauvaise, ajouter un pop-up.
 
 ================================================================================
 ================================================================================
+
+))
+Pour la pop-up Voulez vous vraiment quitter sans sauvegarder, mettre non selectionné par défaut.====================OK
 
 ))
 When enemy end level exists and add a classic exit, enemy disapear of level editor but remain in game===============OK
