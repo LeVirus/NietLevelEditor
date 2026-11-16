@@ -1,4 +1,19 @@
 ))
+Pour la pop-up Voulez vous vraiment quitter sans sauvegarder, mettre non selectionné par défaut.
+
+))
+Dans la config des murs mouvants, déplacer l'entrée AUTO dans le menu combo tout à droite
+
+))
+Si charger un niveau existant, le fermer et créer un nouveau ==> ERREUR
+
+))
+Dans le cas où la selection du dossier jeu est mauvaise, ajouter un pop-up.
+
+================================================================================
+================================================================================
+
+))
 When enemy end level exists and add a classic exit, enemy disapear of level editor but remain in game===============OK
 
 ))
