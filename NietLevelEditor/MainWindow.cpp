@@ -28,6 +28,7 @@ void MainWindow::openEmptyEditorGrid()
         m_confNewLevelForm.onBrowseIniFileClicked();
         if(!m_confNewLevelForm.isDirectorySelected())
         {
+            QMessageBox::warning(nullptr, "Error", "No correct install directory has been selected.");
             return;
         }
     }
