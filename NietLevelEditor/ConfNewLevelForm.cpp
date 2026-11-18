@@ -195,6 +195,8 @@ void ConfNewLevelForm::onOkButtonClicked()
     m_existingLevelFile.clear();
     m_bar->setValue(100);
     hideProgressBar();
+    //PREVENT ISSUE WHILE CLOSE GRID AND RELAUNCH NEW GAME
+    m_mode = FormMode_e::NEW_LEVEL;
     m_gridEditorForm->exec();
     // close();
 }
