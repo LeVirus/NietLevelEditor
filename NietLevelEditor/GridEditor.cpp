@@ -1215,6 +1215,7 @@ void GridEditor::treatWallDrawing()
             if(m_moveableWallForm->getTriggerType() == TriggerType_e::DISTANT_SWITCH &&
                     m_moveableWallForm->getTriggerBehaviour() != TriggerBehaviourType_e::AUTO)
             {
+                QMessageBox::information(nullptr, "Trigger", "Please select the target of the trigger.");
                 m_currentElementType = LevelElement_e::TRIGGER;
                 setLineSelectableEnabled(false);
                 m_currentSelection = m_moveableWallForm->getCurrentTriggerAppearence();
@@ -1223,6 +1224,7 @@ void GridEditor::treatWallDrawing()
             else if(m_moveableWallForm->getTriggerType() == TriggerType_e::GROUND &&
                     m_moveableWallForm->getTriggerBehaviour() != TriggerBehaviourType_e::AUTO)
             {
+                QMessageBox::information(nullptr, "Trigger", "Please select the target of the ground trigger.");
                 m_currentElementType = LevelElement_e::GROUND_TRIGGER;
                 setLineSelectableEnabled(false);
                 m_wallMoveableMode = false;
