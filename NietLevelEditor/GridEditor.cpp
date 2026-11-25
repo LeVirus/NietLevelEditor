@@ -1897,21 +1897,21 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
     case LevelElement_e::ENEMY:
         return "Enemies";
     case LevelElement_e::EXIT:
-        return "Exits";
+        return "Exit";
     case LevelElement_e::OBJECT:
         return "Objects";
     case LevelElement_e::LOG:
-        return "MessageLog";
+        return "MessageLogs";
     case LevelElement_e::STATIC_CEILING:
         return "Static ceiling objects";
     case LevelElement_e::STATIC_GROUND:
         return "Static ground objects";
     case LevelElement_e::TELEPORT:
-        return "Teleport";
+        return "Teleports";
     case LevelElement_e::TARGET_TELEPORT:
         return "Target teleport";
     case LevelElement_e::WALL:
-        return "Wall";
+        return "Walls";
     case LevelElement_e::TRIGGER:
         return "Trigger";
     case LevelElement_e::GROUND_TRIGGER:
@@ -1923,9 +1923,9 @@ QString getStringFromLevelElementEnum(LevelElement_e num)
     case LevelElement_e::SELECTION:
         return "Selection";
     case LevelElement_e::CHECKPOINT:
-        return "Checkpoint";
+        return "Checkpoints";
     case LevelElement_e::SECRET:
-        return "Secret";
+        return "Secrets";
     case LevelElement_e::TOTAL:
         assert(false);
     }

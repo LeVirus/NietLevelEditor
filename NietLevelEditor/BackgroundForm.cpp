@@ -199,6 +199,8 @@ void BackgroundForm::confWidgets(const QVector<BackgroundDataPic> &iconData)
             ui->spriteTiledTextureComboBox->addItem(it->m_icon, it->m_spriteName);
         }
     }
+    ui->spriteSimpleTextureComboBox->setIconSize({30, 30});
+    ui->spriteTiledTextureComboBox->setIconSize({30, 30});
     QObject::connect(ui->coloredRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeColor);
     QObject::connect(ui->simpleTextRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeSimpleTexture);
     QObject::connect(ui->tiledTextRadioButton, &QRadioButton::toggled, this, &BackgroundForm::modifDisplayModeTiledTexture);

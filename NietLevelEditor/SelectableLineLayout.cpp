@@ -34,6 +34,7 @@ void SelectableLineLayout::setIcons(const QVector<DisplayData> &vectIcons, bool 
             m_comboBox->addItem(vectIcons[i].m_icon, "");
         }
     }
+    m_comboBox->setIconSize({30, 30});
 }
 
 //======================================================================
@@ -79,6 +80,7 @@ void SelectableLineLayout::confDoorSelectWidget(GridEditor *parent, const QVecto
     {
         m_comboDoorCard->addItem(cardData[i].m_icon, "");
     }
+    m_comboDoorCard->setIconSize({30, 30});
     addWidget(m_comboDoorCard);
     m_comboDoorCard->setEnabled(false);
     QObject::connect(m_radio, &QRadioButton::toggled, m_cardDoorCheckBox, &QCheckBox::setEnabled);
