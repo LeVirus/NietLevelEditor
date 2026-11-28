@@ -622,7 +622,7 @@ std::optional<QPair<int, int>> LevelDataManager::getLoadedLevelSize()const
 }
 
 //======================================================================
-void LevelDataManager::generateLevel(const TableModel &tableModel, const QString &musicFilename,
+bool LevelDataManager::generateLevel(const TableModel &tableModel, const QString &musicFilename,
                                      const QPair<BackgroundData const*, BackgroundData const*> &backgroundData,
                                      Direction_e playerDirection, const GlobalLevelData &globalLevelData)
 {

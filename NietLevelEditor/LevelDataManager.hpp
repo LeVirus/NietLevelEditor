@@ -146,7 +146,7 @@ public:
     }
     std::optional<ArrayFloat_t> getPictureData(const QString &sprite)const;
     std::optional<QPair<int, int>> getLoadedLevelSize()const;
-    void generateLevel(const TableModel &tableModel, const QString &musicFilename,
+    bool generateLevel(const TableModel &tableModel, const QString &musicFilename,
                        const BackgroundPairData_t &backgroundData, Direction_e playerDirection, const GlobalLevelData &globalLevelData);
 private:
     std::optional<QTemporaryFile *> loadEncryptedINIFile(const QString &filePath, uint32_t encryptKey);
